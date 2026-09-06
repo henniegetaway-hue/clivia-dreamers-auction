@@ -1622,7 +1622,7 @@ function closeOwner(){
 function refreshLotCategorySelect(){
   const select=document.getElementById("lotCategory");
   if(!select) return;
-
+const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
   
   const incrementSelect=document.getElementById("lotIncrement");
 if(auction && auction.currency==="EUR") incrementSelect.innerHTML='<option value="5">€5</option>';
