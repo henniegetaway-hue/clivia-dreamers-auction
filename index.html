@@ -1046,6 +1046,10 @@ function load(){
 }
 localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
 function showPage(page){
+  if(page!=="admin"){
+  document.getElementById("adminArea").classList.add("hidden");
+  document.getElementById("adminLogin").classList.remove("hidden");
+}
   document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
   document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
 
