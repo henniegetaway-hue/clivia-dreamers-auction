@@ -595,7 +595,25 @@ th,td{
     <button class="goldBtn" onclick="openAdmin()">OPEN ADMIN</button>
     <div id="adminLoginMsg" class="small" style="margin-top:8px"></div>
     </div>
-  <div id="ownerArea" class="hidden">
+  <div id="ownerLogin" class="panel" style="max-width:430px;margin:12px auto;">
+  <h2>Owner Access</h2>
+  <p>Dream Clivias Owner Only</p>
+
+  <input id="ownerPassword" type="password" placeholder="Owner Password">
+
+  <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+    <input type="checkbox"
+      onchange="document.getElementById('ownerPassword').type=this.checked?'text':'password';"
+      style="width:auto;">
+    Show password
+  </label>
+
+  <br>
+  <button class="goldBtn" onclick="openOwner()">OPEN OWNER</button>
+
+  <div id="ownerLoginMsg" class="small" style="margin-top:8px"></div>
+</div>
+<div id="ownerArea" class="hidden">
   <div class="panel">
     <h2>Dream Clivias Owner Control</h2>
     <p><b>OWNER ONLY</b> — Private Dream Clivias settings and payment information.</p>
