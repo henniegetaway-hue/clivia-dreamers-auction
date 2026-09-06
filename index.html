@@ -591,6 +591,12 @@ th,td{
   <div id="adminLogin" class="panel" style="max-width:430px;margin:auto">
     <h2>Admin Access</h2>
     <input id="adminPassword" type="password" placeholder="Password">
+    <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+  <input type="checkbox"
+    onchange="document.getElementById('adminPassword').type=this.checked?'text':'password';"
+    style="width:auto;">
+  Show password
+</label>
     <br><br>
     <button class="goldBtn" onclick="openAdmin()">OPEN ADMIN</button>
     <div id="adminLoginMsg" class="small" style="margin-top:8px"></div>
