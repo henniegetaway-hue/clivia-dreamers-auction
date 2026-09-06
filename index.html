@@ -1518,18 +1518,32 @@ function openAdmin(){
     document.getElementById("adminLoginMsg").textContent="Incorrect password.";
   }
 }
-  function openOwner(){
+  async function openOwner(){
   const entered=document.getElementById("ownerPassword").value;
+  d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592  
+const hashBuffer=await crypto.subtle.digest(
+  "SHA-256",
+  new TextEncoder().encode(entered)
+);
 
+const enteredHash=Array.from(new Uint8Array(hashBuffer))
+  .map(b=>b.toString(16).padStart(2,"0"))
+  .join("");
+
+const ownerPasswordHash="d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592";
   if(!entered){
     document.getElementById("ownerLoginMsg").textContent="Please enter the Owner password.";
     return;
   }
+ if(enteredHash!==ownerPasswordHash){
+  document.getElementById("ownerLoginMsg").textContent="Incorrect Owner password.";
+  return;
+}   
 document.getElementById("ownerBank").value=state.settings.bank||"";
 document.getElementById("ownerAccountName").value=state.settings.accountName||"";
 document.getElementById("ownerAccountNumber").value=state.settings.accountNumber||"";
   document.getElementById("ownerLogin").classList.add("hidden");
-  document.getElementById("ownerArea").classList.remove("hidden");
+  async function openOwner(){
   document.getElementById("ownerLoginMsg").textContent="";
 }
 
