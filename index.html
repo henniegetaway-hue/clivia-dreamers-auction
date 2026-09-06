@@ -665,10 +665,12 @@ th,td{
 
 <label>Force / change closing time</label>
 <input id="adminAuctionCloseTimeOverride" type="time">        
-<button class="goldBtn" onclick="forceAuctionDate()">UPDATE AUCTION DATE / TIMES</button>
-    <button class="goldBtn" onclick="extendAuctionDays(1)">ADD 1 DAY</button>
-<button class="goldBtn" onclick="extendAuctionDays(2)">ADD 2 DAYS</button>
-<button class="goldBtn" onclick="extendAuctionDays(3)">ADD 3 DAYS</button>    
+<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;margin-bottom:14px;">
+  <button class="goldBtn" onclick="forceAuctionDate()">UPDATE AUCTION DATE / TIMES</button>
+  <button class="goldBtn" onclick="extendAuctionDays(1)">ADD 1 DAY</button>
+  <button class="goldBtn" onclick="extendAuctionDays(2)">ADD 2 DAYS</button>
+  <button class="goldBtn" onclick="extendAuctionDays(3)">ADD 3 DAYS</button>
+</div>   
   <label>Auction type</label>
   <select id="newAuctionType">
     <option value="Pots" disabled>Pots - Coming later</option>
