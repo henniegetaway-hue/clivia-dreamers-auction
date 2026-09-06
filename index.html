@@ -1520,7 +1520,6 @@ function openAdmin(){
 }
   async function openOwner(){
   const entered=document.getElementById("ownerPassword").value;
-  d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592  
 const hashBuffer=await crypto.subtle.digest(
   "SHA-256",
   new TextEncoder().encode(entered)
@@ -1543,7 +1542,6 @@ document.getElementById("ownerBank").value=state.settings.bank||"";
 document.getElementById("ownerAccountName").value=state.settings.accountName||"";
 document.getElementById("ownerAccountNumber").value=state.settings.accountNumber||"";
   document.getElementById("ownerLogin").classList.add("hidden");
-  async function openOwner(){
   document.getElementById("ownerLoginMsg").textContent="";
 }
 
