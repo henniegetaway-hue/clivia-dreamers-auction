@@ -858,14 +858,6 @@ th,td{
     <h2>Seller Registration</h2>
     <p>Register as a seller to offer your Clivias on Dream Clivias Auction.</p>
     <label>Register as</label>
-  function toggleBidderBusinessFields(){
-  const type=document.getElementById("regEntityType").value;
-  const box=document.getElementById("bidderBusinessFields");
-
-  if(!box) return;
-
-  box.style.display=type==="COMPANY" ? "block" : "none";
-}  
 <select id="sellerEntityType" onchange="toggleSellerBusinessFields()">
   <option value="PRIVATE">Private Individual</option>
   <option value="COMPANY">Company / CC</option>
