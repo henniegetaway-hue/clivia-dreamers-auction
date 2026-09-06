@@ -1440,6 +1440,26 @@ securityProof:"",
   refreshBidderSelect();
 
   document.getElementById("regMsg").textContent="Registered successfully.";
+ const whatsappMessage =
+  "NEW DREAM CLIVIAS BIDDER REGISTRATION\n\n" +
+  "Register as: " + (entityType === "COMPANY" ? "Company / CC" : "Private Individual") + "\n" +
+  "Name: " + name + "\n" +
+  "WhatsApp: " + phone + "\n" +
+  (entityType === "COMPANY"
+    ? "Business / Nursery: " + businessName + "\n" +
+      "Company Registration: " + companyReg + "\n" +
+      "VAT Number: " + (vatNumber || "Not supplied") + "\n"
+    : "") +
+  "Address: " + address + "\n" +
+  "Suburb: " + suburb + "\n" +
+  "Postal Code: " + postal + "\n" +
+  "Country: " + country + "\n" +
+  "Notify next auction: " + bidder.notifyNextAuction;
+
+window.open(
+  "https://wa.me/27606866781?text=" + encodeURIComponent(whatsappMessage),
+  "_blank"
+);   
 }
 
 function refreshBidderSelect(){
