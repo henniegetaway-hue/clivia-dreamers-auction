@@ -553,6 +553,11 @@ th,td{
       <div id="bidderCapacityNotice" class="notice">
   Select a bidder to see bidding capacity.
 </div>
+  <div id="bidderCapacityControl" style="display:none;margin-top:12px;">
+  <button class="goldBtn" type="button" onclick="increaseBidderCapacity()">NEXT CAPACITY</button>
+  <div id="bidderSelectedCapacity" class="notice" style="margin-top:10px;"></div>
+    <div class="small" style="margin-top:8px;">A once-off platform fee applies to your selected bidding capacity, in accordance with the Dream Clivias Auction Rules &amp; Terms.</div>
+</div>
      <div id="registeredBidderPaymentSection" style="display:none;margin-top:18px;">
   <h3 style="margin-bottom:10px;">Security Fee – Proof of Payment</h3>
 
@@ -696,6 +701,9 @@ th,td{
 
   <label>Auction name</label>
   <input id="newAuctionName" placeholder="Auction name">
+   <label>Auction First Bid Amount</label>
+<input id="newAuctionFirstBid" type="number" min="1" step="1" placeholder="e.g. 200">
+<div class="small">This sets the starting point for bidder capacity in this auction.</div>     
 
   <button class="goldBtn" onclick="createAuction()">CREATE AUCTION</button>
   <div id="selectedAuctionNotice" class="notice">
@@ -1629,7 +1637,27 @@ function selectBidder(){
   save();
   selectedBidderNotice();
 }
+function increaseBidderCapacity(){
+  const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
+  const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
 
+  if(!bidder){
+    alert("Please select a bidder first.");
+    return;
+  }
+
+  const firstBid=Number(auction?.firstBid)||5000;
+  const fee=150;
+  const paid=Number(bidder.securityFeesPaidZAR||0);
+  const paidSteps=Math.floor(paid/fee);
+  const currentCapacity=paidSteps===0 ? firstBid : paidSteps*5000;
+  const nextCapacity=currentCapacity<5000 ? 5000 : currentCapacity+5000;
+  const nextFee=Math.ceil(nextCapacity/5000)*fee;
+
+  document.getElementById("bidderSelectedCapacity").textContent=
+    "Selected bidding capacity: R"+nextCapacity.toLocaleString()+
+    " | Once-off platform fee: R"+nextFee.toLocaleString();
+}
 function selectedBidderNotice(){
   const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
   const notice=document.getElementById("selectedBidderNotice");
@@ -1640,10 +1668,15 @@ function selectedBidderNotice(){
   return;
 }
 const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
+  const auctionFirstBid=Number(auction?.firstBid)||0;
 const isEUR=auction && auction.currency==="EUR";
  const fee=isEUR ? 15 : 150;
-const bracket=isEUR ? 350 : 5000; 
-const capacity=bracket + Math.floor(Number(isEUR ? bidder.securityFeesPaidEUR||0 : bidder.securityFeesPaidZAR||0)/fee)*bracket;
+const bracket = auctionFirstBid > 0 ? auctionFirstBid : (isEUR ? 350 : 5000);
+const paidSteps=Math.floor(Number(isEUR ? bidder.securityFeesPaidEUR||0 : bidder.securityFeesPaidZAR||0)/fee);
+const capacity=paidSteps===0 ? bracket : paidSteps*5000;
+  document.getElementById("bidderCapacityControl").style.display="block";
+  document.getElementById("bidderSelectedCapacity").textContent=
+  "Current bidding capacity: "+(isEUR ? "€" : "R")+capacity.toLocaleString();
 document.getElementById("bidderCapacityNotice").textContent=
   "Current bidding capacity: "+(isEUR ? "€" : "R")+capacity.toLocaleString();
   if(
@@ -1870,6 +1903,7 @@ function createAuction(){
 }
   const currency=document.getElementById("newAuctionCurrency").value;
   const name=document.getElementById("newAuctionName").value.trim();
+  const firstBid=Number(document.getElementById("newAuctionFirstBid").value);
   const auctionDate=document.getElementById("newAuctionDate").value;
 const auctionTime=document.getElementById("newAuctionTime").value;
 const auctionCloseTime=document.getElementById("newAuctionCloseTime").value;
@@ -1877,6 +1911,10 @@ const auctionCloseTime=document.getElementById("newAuctionCloseTime").value;
     alert("Please enter an auction name.");
     return;
   }
+  if(!firstBid || firstBid <= 0){
+  alert("Please enter the Auction First Bid Amount.");
+  return;
+}
 if((state.auctions||[]).length===0 && !(auctionDate && auctionTime && auctionCloseTime)){
   alert("Please set the date, start time and closing time for the first auction.");
   return;
@@ -1894,6 +1932,7 @@ if((auctionDate || auctionTime || auctionCloseTime) && !(auctionDate && auctionT
     type:type,
     currency:currency,
     name:name,
+    firstBid:firstBid,
     auctionDate:auctionDate,
     auctionTime:auctionTime,
 auctionCloseTime:auctionCloseTime,
