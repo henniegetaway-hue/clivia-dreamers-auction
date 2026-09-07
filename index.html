@@ -551,7 +551,7 @@ th,td{
       <div id="bidderCapacityNotice" class="notice">
   Select a bidder to see bidding capacity.
 </div>
-      <div style="margin-top:18px;">
+     <div id="registeredBidderPaymentSection" style="display:none;margin-top:18px;">
   <h3 style="margin-bottom:10px;">Security Fee – Proof of Payment</h3>
 
   <input id="securityProof" type="file" accept="image/*,.pdf"
@@ -567,7 +567,7 @@ th,td{
 <hr style="margin:22px 0;opacity:.25;">
 
 <div>
-  <h3 style="margin-bottom:10px;">Bank Account Verification</h3>
+  <div id="registeredBidderBankSection" style="display:none;">
 
 <div id="securityProofMsg" class="small" style="margin-top:10px;min-height:20px;"></div>
     CONFIRM BANK ACCOUNT
@@ -1607,6 +1607,13 @@ function refreshBidderSelect(){
 
 function selectBidder(){
   state.selectedBidderId=document.getElementById("bidderSelect").value;
+
+  document.getElementById("registeredBidderPaymentSection").style.display =
+    state.selectedBidderId ? "block" : "none";
+
+  document.getElementById("registeredBidderBankSection").style.display =
+    state.selectedBidderId ? "block" : "none";
+
   save();
   selectedBidderNotice();
 }
