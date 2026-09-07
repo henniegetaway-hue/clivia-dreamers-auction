@@ -473,13 +473,13 @@ th,td{
           <input id="regEmail">
          </div>
           <div id="bidderBusinessFields" style="display:none;">
-            <label>Registered Company / CC Name</label>
+            <label>Trading As / Company / CC Name</label>
 <input id="regCompanyName" placeholder="Registered company / CC name">
           <label>Trading As / Business / Nursery Name</label> 
             
-<label>Trading As / Company WhatsApp number</label>
+<label>WhatsApp Number *</label>
 <input id="regBusinessPhone" placeholder="e.g. +27 82 123 4567">
-<label>Company Registration Number (optional)</label>
+<label>Company / CC Registration Number (optional)</label>
 <input id="regCompanyReg" placeholder="Company registration number">
 
 <label>VAT Number (optional)</label>
@@ -498,16 +498,16 @@ th,td{
         </div>
 </div>
 </div>
-<label>Street address</label>
+<label>Street address *</label>
 <input id="regAddress" placeholder="Street number and street name">
 
-<label>Suburb</label>
+<label>Suburb *</label>
 <input id="regSuburb">
 
-<label>Postal / ZIP code</label>
+<label>Postal / ZIP code *</label>
 <input id="regPostal">
 
-<label>Country</label>
+<label>Country *</label>
 <input id="regCountry" placeholder="e.g. South Africa, USA, UK, Australia" oninput="updateInternationalBidderNotice()">
 <div id="internationalBidderNotice" class="notice" style="display:none;">
   <b>INTERNATIONAL BIDDER</b><br>
@@ -1181,7 +1181,7 @@ if(!entityType){
   alert("Please select Private Individual or Company / CC.");
   return;
 }
-if(entityType==="COMPANY" && (!companyName || !businessPhone || !companyReg)){
+if(entityType==="COMPANY" && (!companyName || !businessPhone)){
   alert("Company / CC sellers must enter the registered company / CC name, company registration number and company WhatsApp number.");
   return;
 }
@@ -1461,7 +1461,7 @@ if(entityType==="PRIVATE" && (!name || !phone)){
 }
 if(entityType==="COMPANY" && (!companyName || !businessPhone || !companyReg)){
     document.getElementById("regMsg").textContent=
-      "Company / CC bidders must enter the registered company / CC name, company registration number and company WhatsApp number.";
+      "Trading As / Company / CC bidders must enter the registered company / CC name and company WhatsApp number.";
     return;
 }
 if(entityType==="PRIVATE" && !validPhoneNumber(phone)){
