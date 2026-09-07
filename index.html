@@ -457,7 +457,7 @@ th,td{
   <select id="regEntityType" onchange="toggleBidderRegistrationFields()">
   <option value="">-- SELECT HOW YOU ARE BIDDING --</option>
   <option value="PRIVATE">Private Name</option>
-  <option value="COMPANY">Company / CC</option>
+  <option value="COMPANY">Trading As / Company / CC</option>
 </select>
 <div id="bidderPrivateFields" style="display:none;">
       <label>Full name</label>
@@ -486,7 +486,7 @@ th,td{
 <input id="regVatNumber" placeholder="VAT number">
         </div>
           </div>
-         <div id="bidderAddressFields">
+         <div id="bidderAddressFields" style="display:none;">
         <div>
           <label>Street / Physical Address</label>
           <label>Town</label>
@@ -1429,6 +1429,7 @@ toggleBidderRegistrationFields();
   const type=document.getElementById("regEntityType").value;
   document.getElementById("bidderPrivateFields").style.display=type==="PRIVATE" ? "block" : "none";
   document.getElementById("bidderBusinessFields").style.display=type==="COMPANY" ? "block" : "none";
+ document.getElementById("bidderAddressFields").style.display=type ? "block" : "none";   
 }
   
   function registerBidder(){
