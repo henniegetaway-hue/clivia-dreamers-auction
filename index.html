@@ -472,10 +472,13 @@ th,td{
           <label>Email (optional)</label>
           <input id="regEmail">
          </div>
+        </div>
+</div>
           <div id="bidderBusinessFields" style="display:none;">
-            <label>Trading As / Company / CC Name</label>
+            <label>Registered Company / CC Name *</label>
 <input id="regCompanyName" placeholder="Registered company / CC name">
           <label>Trading As / Business / Nursery Name</label> 
+            <input id="regBusinessName" placeholder="Trading name / business / nursery name">
             
 <label>WhatsApp Number *</label>
 <input id="regBusinessPhone" placeholder="e.g. +27 82 123 4567">
@@ -484,20 +487,8 @@ th,td{
 
 <label>VAT Number (optional)</label>
 <input id="regVatNumber" placeholder="VAT number">
-        </div>
           </div>
          <div id="bidderAddressFields" style="display:none;">
-        <div>
-          <label>Street / Physical Address</label>
-          <label>Town</label>
-          <input id="regTown">
-        </div>
-        <div>
-          <label>State / Province / Region</label>
-<input id="regProvince" placeholder="e.g. Western Cape, California, Queensland">
-        </div>
-</div>
-</div>
 <label>Street address *</label>
 <input id="regAddress" placeholder="Street number and street name">
 
@@ -543,10 +534,11 @@ th,td{
   <select id="bidderSelectedAuctions" multiple size="4"></select>
 </div>
       <button class="goldBtn" onclick="registerBidder()">REGISTER BIDDER</button>
-      <div id="regMsg" class="small" style="margin-top:10px"></div>
-    </div>
+<div id="regMsg" class="small" style="margin-top:10px"></div>
+</div>
+</div>
 
-    <div id="registeredBidderSection" class="panel" style="display:none;">
+<div id="registeredBidderSection" class="panel" style="display:none;">
      <h2>Already registered bidder</h2>
       <p>Select your bidder profile on this device.</p>
 
