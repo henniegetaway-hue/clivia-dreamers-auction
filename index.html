@@ -450,7 +450,7 @@ th,td{
 ">
   <label style="font-weight:bold;">REGISTER AS</label>
 
-  <select id="regEntityType">
+  <select id="regEntityType" onchange="toggleBidderRegistrationFields()">
   <option value="">-- SELECT HOW YOU ARE BIDDING --</option>
   <option value="PRIVATE">Private Name</option>
   <option value="COMPANY">Company / CC</option>
@@ -458,6 +458,7 @@ th,td{
 </div>
 
       <label>Full name</label>
+      <div id="bidderPrivateFields" style="display:none;">
       <input id="regName" placeholder="e.g. Johan Smit">
 
       <div class="formGrid">
@@ -468,7 +469,7 @@ th,td{
         <div>
           <label>Email (optional)</label>
           <input id="regEmail">
-          <div id="bidderBusinessFields">
+          <div id="bidderBusinessFields" style="display:none;">
             <label>Registered Company / CC Name</label>
 <input id="regCompanyName" placeholder="Registered company / CC name">
           <label>Trading As / Business / Nursery Name</label>
