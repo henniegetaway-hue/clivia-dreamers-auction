@@ -527,11 +527,16 @@ th,td{
   I have read and accept the Dream Clivias Auction Rules & Terms.
 </label>
       
-      <label>Notify me about the next auction?</label>
-<select id="regNotifyNextAuction">
-  <option value="yes">Yes</option>
-  <option value="no">No</option>
+<label>Notify me about auctions?</label>
+<select id="regNotifyNextAuction" onchange="toggleBidderAuctionNotifications()">
+  <option value="none">No notifications</option>
+  <option value="all">All auctions</option>
+  <option value="selected">Selected auctions only</option>
 </select>
+        <div id="bidderSelectedAuctionsBox" style="display:none;">
+  <label>Select the auction(s) you want notifications for</label>
+  <select id="bidderSelectedAuctions" multiple size="4"></select>
+</div>
       <button class="goldBtn" onclick="registerBidder()">REGISTER BIDDER</button>
       <div id="regMsg" class="small" style="margin-top:10px"></div>
     </div>
@@ -864,6 +869,7 @@ th,td{
     <p>Register as a seller to offer your Clivias on Dream Clivias Auction.</p>
     <label>Register as</label>
 <select id="sellerEntityType" onchange="toggleSellerBusinessFields()">
+  <option value="">-- SELECT HOW YOU ARE SELLING --</option>
   <option value="PRIVATE">Private Individual</option>
   <option value="COMPANY">Company / CC</option>
 </select>
@@ -876,15 +882,20 @@ th,td{
 
     <label>Email address</label>
     <div id="sellerBusinessFields" style="display:none;">
-    <label>Business / Nursery Name (optional)</label>
-<input id="sellerBusinessName" placeholder="Business or nursery name">
+      <label>Registered Company / CC Name</label>
+<input id="sellerCompanyName" placeholder="Registered company / CC name">
+      <label>Trading As / Company WhatsApp number</label>
+<input id="sellerBusinessPhone" placeholder="e.g. +27 82 123 4567">
+ <label>Trading As Name (optional)</label>
+<input id="sellerBusinessName" placeholder="Trading As name">
 
 <label>Company Registration Number (optional)</label>
 <input id="sellerCompanyReg" placeholder="Company registration number">
 
-<label>VAT Number (optional)</label>
-<input id="sellerVatNumber" placeholder="VAT number">
+
     </div>  
+    <label>VAT Number (optional)</label>
+<input id="sellerVatNumber" placeholder="VAT number">
     <input id="sellerEmail" type="email">
 <label>Street / Physical Address</label>
 <input id="sellerAddress" placeholder="Street number and street name">
@@ -956,11 +967,16 @@ th,td{
   <input id="sellerRulesAccepted" type="checkbox" style="width:auto;">
   I have read and accept the Dream Clivias Auction Rules & Terms.
 </label>
-    <label>Notify me about the next auction?</label>
-<select id="sellerNotifyNextAuction">
-  <option value="yes">Yes</option>
-  <option value="no">No</option>
+<label>Notify me about auctions?</label>
+<select id="sellerNotifyNextAuction" onchange="toggleSellerAuctionNotifications()">
+  <option value="none">No notifications</option>
+  <option value="all">All auctions</option>
+  <option value="selected">Selected auctions only</option>
 </select>
+    <div id="sellerSelectedAuctionsBox" style="display:none;">
+  <label>Select the auction(s) you want notifications for</label>
+  <select id="sellerSelectedAuctions" multiple size="4"></select>
+</div>
 <button class="goldBtn" onclick="registerSeller()">REGISTER AS SELLER</button>
     <label>Already registered seller?</label>
 <select id="sellerSelect" onchange="selectSeller()"></select>
@@ -1118,6 +1134,26 @@ function toggleSellerBusinessFields(){
 
   box.style.display=type==="COMPANY" ? "block" : "none";
 }
+  function toggleSellerAuctionNotifications(){
+  const choice=document.getElementById("sellerNotifyNextAuction").value;
+  const box=document.getElementById("sellerSelectedAuctionsBox");
+  const select=document.getElementById("sellerSelectedAuctions");
+
+  if(!box || !select) return;
+
+  box.style.display=choice==="selected" ? "block" : "none";
+
+  if(choice==="selected"){
+    select.innerHTML="";
+
+    (state.auctions||[]).forEach(auction=>{
+      const option=document.createElement("option");
+      option.value=auction.id;
+      option.textContent=auction.name+" - "+auction.auctionDate;
+      select.appendChild(option);
+    });
+  }
+}
   function toggleExporterDocs(){
   const isExporter=document.getElementById("sellerIsExporter").checked;
   const box=document.getElementById("exporterDocsBox");
@@ -1129,14 +1165,26 @@ function toggleSellerBusinessFields(){
 function registerSeller(){
   const name=document.getElementById("sellerName").value.trim();
   const phone=document.getElementById("sellerPhone").value.trim();
+  const companyName=document.getElementById("sellerCompanyName").value.trim();
+const businessPhone=document.getElementById("sellerBusinessPhone").value.trim();
   const email=document.getElementById("sellerEmail").value.trim();
   const businessName=document.getElementById("sellerBusinessName").value.trim();
 const companyReg=document.getElementById("sellerCompanyReg").value.trim();
 const vatNumber=document.getElementById("sellerVatNumber").value.trim();
   const entityType=document.getElementById("sellerEntityType").value;
+if(!entityType){
+  alert("Please select Private Individual or Company / CC.");
+  return;
+}
+if(entityType==="COMPANY" && (!companyName || !businessPhone || !companyReg)){
+  alert("Company / CC sellers must enter the registered company / CC name, company registration number and company WhatsApp number.");
+  return;
+}
+  const notifyChoice=document.getElementById("sellerNotifyNextAuction").value;
+const selectedAuctions=document.getElementById("sellerSelectedAuctions");
 
-if(entityType==="COMPANY" && (!businessName || !companyReg)){
-  alert("Company / CC sellers must enter the business name and company registration number.");
+if(notifyChoice==="selected" && selectedAuctions.selectedOptions.length===0){
+  alert("Please select at least one auction for notifications.");
   return;
 }
   const address=document.getElementById("sellerAddress").value.trim();
@@ -1144,6 +1192,10 @@ const suburb=document.getElementById("sellerSuburb").value.trim();
 const postal=document.getElementById("sellerPostal").value.trim();
   if(!validPhoneNumber(phone)){
   alert("Please enter a valid phone / WhatsApp number.");
+  return;
+}
+  if(entityType==="COMPANY" && !validPhoneNumber(businessPhone)){
+  alert("Please enter a valid Company / Trading As WhatsApp number.");
   return;
 }
   const country=document.getElementById("sellerCountry").value.trim();
@@ -1199,6 +1251,8 @@ if(duplicatePhoneUser){
     email,
     entityType,
     businessName,
+    companyName,
+businessPhone,
 companyReg,
 vatNumber,
 address,
@@ -1219,6 +1273,7 @@ happyBuyers:0,
     rulesAccepted:true,
 rulesAcceptedDate:new Date().toISOString(),
 notifyNextAuction:document.getElementById("sellerNotifyNextAuction").value,
+selectedNotificationAuctions:Array.from(document.getElementById("sellerSelectedAuctions").selectedOptions).map(o=>o.value),    
   };
 
   state.sellers=state.sellers||[];
@@ -1333,6 +1388,26 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
 
   notice.style.display = country && !isSouthAfrica ? "block" : "none";
 }
+  function toggleBidderAuctionNotifications(){
+  const choice=document.getElementById("regNotifyNextAuction").value;
+  const box=document.getElementById("bidderSelectedAuctionsBox");
+  const select=document.getElementById("bidderSelectedAuctions");
+
+  if(!box || !select) return;
+
+  box.style.display=choice==="selected" ? "block" : "none";
+
+  if(choice==="selected"){
+    select.innerHTML="";
+
+    (state.auctions||[]).forEach(auction=>{
+      const option=document.createElement("option");
+      option.value=auction.id;
+      option.textContent=auction.name+" - "+auction.auctionDate;
+      select.appendChild(option);
+    });
+  }
+}
   function registerBidder(){
   const name=document.getElementById("regName").value.trim();
   const phone=document.getElementById("regPhone").value.trim();
@@ -1345,7 +1420,14 @@ const vatNumber=document.getElementById("regVatNumber").value.trim();
 if(!entityType){
   document.getElementById("regMsg").textContent="Please select Private Name or Company / CC.";
   return;
-}    
+}
+   const notifyChoice=document.getElementById("regNotifyNextAuction").value;
+const selectedAuctions=document.getElementById("bidderSelectedAuctions");
+
+if(notifyChoice==="selected" && selectedAuctions.selectedOptions.length===0){
+  document.getElementById("regMsg").textContent="Please select at least one auction for notifications.";
+  return;
+} 
 
 
 
@@ -1446,6 +1528,7 @@ paymentHoldReason:"",
     rulesAccepted:true,
 rulesAcceptedDate:new Date().toISOString(),
     notifyNextAuction:document.getElementById("regNotifyNextAuction").value,
+    selectedNotificationAuctions:Array.from(document.getElementById("bidderSelectedAuctions").selectedOptions).map(o=>o.value),
    securityFeesPaidZAR:0,
 securityFeesPaidEUR:0,
     securityProofStatus:"NONE",
@@ -1475,7 +1558,7 @@ securityProof:"",
   "Suburb: " + suburb + "\n" +
   "Postal Code: " + postal + "\n" +
   "Country: " + country + "\n" +
-  "Notify next auction: " + bidder.notifyNextAuction;
+  "Auction notifications: " + bidder.notifyNextAuction;
 
 window.open(
   "https://wa.me/27606866781?text=" + encodeURIComponent(whatsappMessage),
