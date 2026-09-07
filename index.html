@@ -456,9 +456,8 @@ th,td{
   <option value="COMPANY">Company / CC</option>
 </select>
 </div>
-
+<div id="bidderPrivateFields" style="display:none;">
       <label>Full name</label>
-      <div id="bidderPrivateFields" style="display:none;">
       <input id="regName" placeholder="e.g. Johan Smit">
 
       <div class="formGrid">
@@ -472,8 +471,7 @@ th,td{
           <div id="bidderBusinessFields" style="display:none;">
             <label>Registered Company / CC Name</label>
 <input id="regCompanyName" placeholder="Registered company / CC name">
-          <label>Trading As / Business / Nursery Name</label>
-<input id="regBusinessName" placeholder="Trading As / business / nursery name">
+          <label>Trading As / Business / Nursery Name</label> 
             
 <label>Trading As / Company WhatsApp number</label>
 <input id="regBusinessPhone" placeholder="e.g. +27 82 123 4567">
@@ -483,6 +481,7 @@ th,td{
 <label>VAT Number (optional)</label>
 <input id="regVatNumber" placeholder="VAT number">
         </div>
+          <div id="bidderPrivateFields" style="display:none;">
         <div>
           <label>Street / Physical Address</label>
           <label>Town</label>
@@ -492,9 +491,9 @@ th,td{
           <label>State / Province / Region</label>
 <input id="regProvince" placeholder="e.g. Western Cape, California, Queensland">
         </div>
-      </div>
-
-      <label>Street address</label>
+</div>
+</div>
+<label>Street address</label>
 <input id="regAddress" placeholder="Street number and street name">
 
 <label>Suburb</label>
@@ -1409,6 +1408,13 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
     });
   }
 }
+  function toggleBidderRegistrationFields(){
+  const type=document.getElementById("regEntityType").value;
+  document.getElementById("bidderPrivateFields").style.display=type==="PRIVATE" ? "block" : "none";
+  document.getElementById("bidderBusinessFields").style.display=type==="COMPANY" ? "block" : "none";
+}
+  toggleBidderRegistrationFields();
+  
   function registerBidder(){
   const name=document.getElementById("regName").value.trim();
   const phone=document.getElementById("regPhone").value.trim();
@@ -1431,13 +1437,17 @@ if(notifyChoice==="selected" && selectedAuctions.selectedOptions.length===0){
 } 
 
 
-
+if(entityType==="PRIVATE" && (!name || !phone)){
+  document.getElementById("regMsg").textContent=
+    "Private bidders must enter Full name and WhatsApp number.";
+  return;
+}
 if(entityType==="COMPANY" && (!companyName || !businessPhone || !companyReg)){
     document.getElementById("regMsg").textContent=
       "Company / CC bidders must enter the registered company / CC name, company registration number and company WhatsApp number.";
     return;
 }
-if(!validPhoneNumber(phone)){
+if(entityType==="PRIVATE" && !validPhoneNumber(phone)){
   alert("Please enter a valid phone / WhatsApp number.");
   return;
 }
@@ -1461,18 +1471,20 @@ const accountNumber=document.getElementById("regAccountNumber").value.trim();
 const defaultNumber=document.getElementById("regDefaultNumber").value.trim();
 const rulesAccepted=document.getElementById("regRulesAccepted").checked;
 
-if(!name || !phone || !address || !suburb || !postal || !country || !accountNumber || !defaultNumber || !rulesAccepted){
+if( !address || !suburb || !postal || !country || !accountNumber || !defaultNumber || !rulesAccepted){
   document.getElementById("regMsg").textContent="Please complete all required buyer details, including full address, bank account number and default number.";
   return;
 }
+    const bidderName=entityType==="COMPANY" ? companyName : name;
+const bidderPhone=entityType==="COMPANY" ? businessPhone : phone;
 const duplicateBankUser=[
   ...(state.bidders||[]),
   ...(state.sellers||[])
 ].find(u=>
   String(u.accountNumber||"").replace(/\s/g,"")===String(accountNumber||"").replace(/\s/g,"") &&
   (
-    String(u.name||"").trim().toLowerCase()!==name.trim().toLowerCase() ||
-    String(u.phone||"").replace(/\s/g,"")!==phone.replace(/\s/g,"")
+    String(u.name||"").trim().toLowerCase()!==bidderName.trim().toLowerCase() ||
+    String(u.phone||"").replace(/\s/g,"")!==bidderPhone.replace(/\s/g,"")
   )
 );
 
@@ -1485,9 +1497,9 @@ if(duplicateBankUser){
   ...(state.bidders||[]),
   ...(state.sellers||[])
 ].find(u=>
-  String(u.phone||"").replace(/\s/g,"")===phone.replace(/\s/g,"") &&
+ String(u.phone||"").replace(/\s/g,"")===bidderPhone.replace(/\s/g,"") &&
   (
-    String(u.name||"").trim().toLowerCase()!==name.trim().toLowerCase() ||
+   String(u.name||"").trim().toLowerCase()!==bidderName.trim().toLowerCase() ||
     String(u.accountNumber||"").replace(/\s/g,"")!==String(accountNumber||"").replace(/\s/g,"")
   )
 );
@@ -1499,8 +1511,8 @@ if(duplicatePhoneUser){
 }
   const bidder={
     id:"B"+Date.now(),
-    name,
-    phone,
+    name: bidderName,
+    phone: bidderPhone,
     entityType,
     businessName,
     companyName,
@@ -1546,8 +1558,8 @@ securityProof:"",
  const whatsappMessage =
   "NEW DREAM CLIVIAS BIDDER REGISTRATION\n\n" +
   "Register as: " + (entityType === "COMPANY" ? "Company / CC" : "Private Individual") + "\n" +
-  "Name: " + name + "\n" +
-  "WhatsApp: " + phone + "\n" +
+  "Name: " + bidderName + "\n" +
+  "WhatsApp: " + bidderPhone + "\n" +
   (entityType === "COMPANY"
   ? "Registered Company / CC: " + companyName + "\n" +
     "Trading As: " + (businessName || "Not supplied") + "\n" +
