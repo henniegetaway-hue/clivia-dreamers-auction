@@ -1415,6 +1415,8 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
   function showNewBidderRegistration(){
   document.getElementById("newBidderRegistration").style.display="block";
   document.getElementById("registeredBidderSection").style.display="none";
+   document.getElementById("regEntityType").value="";
+toggleBidderRegistrationFields(); 
 }
   function showRegisteredBidder(){
   document.getElementById("newBidderRegistration").style.display="none";
