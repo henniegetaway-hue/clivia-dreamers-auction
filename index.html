@@ -509,7 +509,7 @@ th,td{
 <label>Bank Account / IBAN Number</label>
 <input id="regAccountNumber">    
 
-<label>Default Number</label>
+<label>Default Number (optional)</label>
 <input id="regDefaultNumber">
 
 <div class="notice">
@@ -1482,7 +1482,9 @@ const accountNumber=document.getElementById("regAccountNumber").value.trim();
 const defaultNumber=document.getElementById("regDefaultNumber").value.trim();
 const rulesAccepted=document.getElementById("regRulesAccepted").checked;
 
-if( !address || !suburb || !postal || !country || !accountNumber || !defaultNumber || !rulesAccepted){
+if(!address || !suburb || !postal || !country || !accountNumber || !rulesAccepted){
+  document.getElementById("regMsg").textContent="Please complete all required buyer details, including full address and bank account number, and accept the Rules & Terms.";
+  return;
   document.getElementById("regMsg").textContent="Please complete all required buyer details, including full address, bank account number and default number.";
   return;
 }
