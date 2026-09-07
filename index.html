@@ -1586,10 +1586,8 @@ securityProof:"",
   "Country: " + country + "\n" +
   "Auction notifications: " + bidder.notifyNextAuction;
 
-window.open(
-  "https://api.whatsapp.com/send?phone=27606866781&text=" + encodeURIComponent(whatsappMessage),
-  "_blank"
-);   
+document.getElementById("regMsg").textContent="Registered successfully. WhatsApp confirmation is optional.";
+ refreshBidderSelect();   
 }
 
 function refreshBidderSelect(){
