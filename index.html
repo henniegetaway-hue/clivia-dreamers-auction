@@ -450,7 +450,7 @@ th,td{
 ">
   <label style="font-weight:bold;">REGISTER AS</label>
 
-  <select id="regEntityType" onchange="toggleBidderRegistrationFields()">
+  <select id="regEntityType" onchange="document.getElementById('bidderPrivateFields').style.display=this.value==='PRIVATE'?'block':'none';document.getElementById('bidderBusinessFields').style.display=this.value==='COMPANY'?'block':'none';">
   <option value="">-- SELECT HOW YOU ARE BIDDING --</option>
   <option value="PRIVATE">Private Name</option>
   <option value="COMPANY">Company / CC</option>
@@ -1413,7 +1413,6 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
   document.getElementById("bidderPrivateFields").style.display=type==="PRIVATE" ? "block" : "none";
   document.getElementById("bidderBusinessFields").style.display=type==="COMPANY" ? "block" : "none";
 }
-  toggleBidderRegistrationFields();
   
   function registerBidder(){
   const name=document.getElementById("regName").value.trim();
