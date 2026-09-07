@@ -535,7 +535,9 @@ th,td{
 </div>
       <button class="goldBtn" onclick="registerBidder()">REGISTER BIDDER</button>
 <div id="regMsg" class="small" style="margin-top:10px"></div>
+    
 </div>
+   <button id="sendBidderWhatsApp" class="goldBtn" style="display:none;margin-top:10px;" onclick="sendBidderRegistrationWhatsApp()">SEND REGISTRATION TO WHATSAPP</button> 
 </div>
 
 <div id="registeredBidderSection" class="panel" style="display:none;">
@@ -1585,12 +1587,21 @@ securityProof:"",
   "Postal Code: " + postal + "\n" +
   "Country: " + country + "\n" +
   "Auction notifications: " + bidder.notifyNextAuction;
+   window.lastBidderWhatsAppMessage = whatsappMessage; 
 
 document.getElementById("regMsg").textContent="Registered successfully. WhatsApp confirmation is optional.";
- alert("✅ REGISTRATION SUCCESSFUL!\n\nYou are now registered with Dream Clivias Auction.\n\nNext time, click ALREADY REGISTERED BIDDER.");   
- refreshBidderSelect();   
+    alert("✅ REGISTRATION SUCCESSFUL!\n\nYou are now registered with Dream Clivias Auction.\n\nNext time, click ALREADY REGISTERED BIDDER.");   
+ document.getElementById("sendBidderWhatsApp").style.display="block";
+    document.getElementById("newBidderRegistration").style.display="none";
+    refreshBidderSelect();   
 }
-
+function sendBidderRegistrationWhatsApp(){
+  const message = window.lastBidderWhatsAppMessage || "Dream Clivias Auction bidder registration.";
+  window.open(
+    "https://api.whatsapp.com/send?phone=27606866781&text=" + encodeURIComponent(message),
+    "_blank"
+  );
+}
 function refreshBidderSelect(){
   const select=document.getElementById("bidderSelect");
   select.innerHTML='<option value="">— Select bidder —</option>';
