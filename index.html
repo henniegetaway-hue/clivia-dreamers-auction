@@ -440,8 +440,12 @@ th,td{
   <div class="grid2">
     <div class="panel">
       <h2>Bidder Registration</h2>
-      <p>Register once before bidding.</p>
-      <div style="
+     <p>Please choose New Bidder or Already Registered Bidder.</p>
+      <div style="display:flex;gap:10px;margin:12px 0;">
+  <button type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
+  <button type="button" class="goldBtn" onclick="showRegisteredBidder()">ALREADY REGISTERED BIDDER</button>
+</div>
+  <div id="newBidderRegistration" style="display:none;
   margin:12px 0;
   padding:14px;
   border:2px solid #ff9800;
@@ -541,8 +545,8 @@ th,td{
       <div id="regMsg" class="small" style="margin-top:10px"></div>
     </div>
 
-    <div class="panel">
-      <h2>Already registered?</h2>
+    <div id="registeredBidderSection" class="panel" style="display:none;">
+     <h2>Already registered bidder</h2>
       <p>Select your bidder profile on this device.</p>
 
       <label>Select bidder</label>
@@ -1407,6 +1411,14 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
       select.appendChild(option);
     });
   }
+}
+  function showNewBidderRegistration(){
+  document.getElementById("newBidderRegistration").style.display="block";
+  document.getElementById("registeredBidderSection").style.display="none";
+}
+  function showRegisteredBidder(){
+  document.getElementById("newBidderRegistration").style.display="none";
+  document.getElementById("registeredBidderSection").style.display="block";
 }
   function toggleBidderRegistrationFields(){
   const type=document.getElementById("regEntityType").value;
