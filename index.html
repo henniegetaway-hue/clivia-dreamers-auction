@@ -1418,10 +1418,12 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
   document.getElementById("registeredBidderSection").style.display="none";
    document.getElementById("regEntityType").value="";
 toggleBidderRegistrationFields(); 
+    document.getElementById("newBidderRegistration").scrollIntoView({behavior:"smooth",block:"start"});
 }
   function showRegisteredBidder(){
   document.getElementById("newBidderRegistration").style.display="none";
   document.getElementById("registeredBidderSection").style.display="block";
+    document.getElementById("registeredBidderSection").scrollIntoView({behavior:"smooth",block:"start"});
 }
   function toggleBidderRegistrationFields(){
   const type=document.getElementById("regEntityType").value;
