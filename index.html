@@ -1408,8 +1408,10 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
   function showNewBidderRegistration(){
   document.getElementById("newBidderRegistration").style.display="block";
   document.getElementById("registeredBidderSection").style.display="none";
+    document.getElementById("bidderAddressFields").style.display="none";
+    document.getElementById("bidderPrivateFields").style.display="none";
+document.getElementById("bidderBusinessFields").style.display="none";
    document.getElementById("regEntityType").value="";
-toggleBidderRegistrationFields(); 
     document.getElementById("newBidderRegistration").scrollIntoView({behavior:"smooth",block:"start"});
 }
   function showRegisteredBidder(){
