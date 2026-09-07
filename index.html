@@ -454,12 +454,11 @@ th,td{
 ">
   <label style="font-weight:bold;">REGISTER AS</label>
 
-  <select id="regEntityType" onchange="document.getElementById('bidderPrivateFields').style.display=this.value==='PRIVATE'?'block':'none';document.getElementById('bidderBusinessFields').style.display=this.value==='COMPANY'?'block':'none';">
+  <select id="regEntityType" onchange="toggleBidderRegistrationFields()">
   <option value="">-- SELECT HOW YOU ARE BIDDING --</option>
   <option value="PRIVATE">Private Name</option>
   <option value="COMPANY">Company / CC</option>
 </select>
-</div>
 <div id="bidderPrivateFields" style="display:none;">
       <label>Full name</label>
       <input id="regName" placeholder="e.g. Johan Smit">
@@ -472,6 +471,7 @@ th,td{
         <div>
           <label>Email (optional)</label>
           <input id="regEmail">
+         </div>
           <div id="bidderBusinessFields" style="display:none;">
             <label>Registered Company / CC Name</label>
 <input id="regCompanyName" placeholder="Registered company / CC name">
@@ -486,7 +486,7 @@ th,td{
 <input id="regVatNumber" placeholder="VAT number">
         </div>
           </div>
-          <div id="bidderPrivateFields" style="display:none;">
+         <div id="bidderAddressFields">
         <div>
           <label>Street / Physical Address</label>
           <label>Town</label>
