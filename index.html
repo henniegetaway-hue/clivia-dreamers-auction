@@ -548,6 +548,13 @@ th,td{
       <select id="bidderSelect" onchange="selectBidder()">
         <option value="">— Select bidder —</option>
       </select>
+  <button type="button" onclick="toggleOwnerTestMode()" style="margin-top:8px;">
+  OWNER TEST MODE ON / OFF
+</button>
+
+<div id="ownerTestModeNotice" class="notice">
+  Owner Test Mode: OFF
+</div>
 
       <div id="selectedBidderNotice" class="notice">No bidder selected yet.</div>
       <div id="bidderCapacityNotice" class="notice">
@@ -1625,6 +1632,26 @@ function refreshBidderSelect(){
   select.value=state.selectedBidderId || "";
   selectedBidderNotice();
 }
+  function toggleOwnerTestMode(){
+  const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
+
+  if(!bidder){
+    alert("Please select a bidder first.");
+    return;
+  }
+
+  bidder.isOwnerTest=!bidder.isOwnerTest;
+  save();
+
+  const notice=document.getElementById("ownerTestModeNotice");
+  notice.textContent=bidder.isOwnerTest
+    ? "OWNER TEST MODE: ON — payment and security fee checks are bypassed for this test bidder."
+    : "Owner Test Mode: OFF";
+
+  alert(bidder.isOwnerTest
+    ? "OWNER TEST MODE is now ON for "+bidder.name
+    : "OWNER TEST MODE is now OFF for "+bidder.name);
+}
 
 function selectBidder(){
   state.selectedBidderId=document.getElementById("bidderSelect").value;
@@ -1663,10 +1690,22 @@ function selectedBidderNotice(){
   const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
   const notice=document.getElementById("selectedBidderNotice");
 
-  if(!bidder){
+ if(!bidder){
   notice.textContent="No bidder selected yet.";
   document.getElementById("bidderCapacityNotice").textContent="Select a bidder to see bidding capacity.";
+
+  const testNotice=document.getElementById("ownerTestModeNotice");
+  if(testNotice){
+    testNotice.textContent="Owner Test Mode: OFF";
+  }
   return;
+}
+
+const testNotice=document.getElementById("ownerTestModeNotice");
+if(testNotice){
+  testNotice.textContent=bidder.isOwnerTest
+    ? "OWNER TEST MODE: ON — payment and security fee checks are bypassed for this test bidder."
+    : "Owner Test Mode: OFF";
 }
 const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
   const auctionFirstBid=Number(auction?.firstBid)||0;
@@ -2527,7 +2566,7 @@ if(auction && auction.auctionDate && auction.auctionCloseTime && lot){
   showPage("register");
   return;
 }
-  if(bidder.isInternational && !bidder.internationalRegistrationPaid){
+  if(!bidder.isOwnerTest && bidder.isInternational && !bidder.internationalRegistrationPaid){
   alert("International bidders must pay the R2,000 registration fee before bidding.");
   return;
 }
@@ -2535,12 +2574,12 @@ if(auction && auction.auctionDate && auction.auctionCloseTime && lot){
   alert("International bidders may only bid on export-eligible plants.");
   return;
 }
-  if(!bidder.bankConfirmed){
+ if(!bidder.isOwnerTest && !bidder.bankConfirmed){
   alert("Please confirm your bank account before bidding.");
   showPage("register");
   return;
 }
-  if(bidder.paymentHold){
+  if(!bidder.isOwnerTest && bidder.paymentHold){
   alert("Your account is ON HOLD because a payment came from an unregistered bank account. No further bidding is allowed until the seller confirms the payment or Admin clears the hold.");
   return;
 }
@@ -2557,7 +2596,7 @@ const matchingSeller=(state.sellers||[]).find(s=>
 const unpaidSellerInvoice=matchingSeller
   ? (state.invoices||[]).find(inv=>inv.sellerId===matchingSeller.id && inv.status!=="PAID")
   : null;
-if(unpaidInvoice || unpaidSellerInvoice){
+if(!bidder.isOwnerTest && (unpaidInvoice || unpaidSellerInvoice)){
   alert(unpaidSellerInvoice
     ? "You have an unpaid seller invoice. Please pay it before you can bid again."
     : "You have an unpaid bidder invoice. Please pay it before you can bid again.");
