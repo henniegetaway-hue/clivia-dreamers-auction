@@ -442,6 +442,54 @@ th,td{
   <button id="navRules" onclick="showPage('rules')">Rules & Terms</button>
  <button id="navOwnEvent" class="ownEventBtn" onclick="showOwnEventPage()">Your Own Event</button>
 </nav>
+  <section id="pageOwnEvent" class="page hidden">
+  <div class="panel">
+    <h2>Your Own Event — See How It Works</h2>
+
+    <p>
+      Create your own online auction for your products, using your own
+      event name, logo, banner, categories and rules.
+    </p>
+
+    <div class="panel">
+      <h2>Sample Event</h2>
+      <p><strong>Your Business / Event Name</strong></p>
+      <p>Your own logo • Your own banner • Your own products</p>
+
+      <div class="grid2">
+
+        <div class="panel">
+          <h3>Sample Item 1</h3>
+          <div style="height:180px;display:flex;align-items:center;justify-content:center;background:#09100b;border-radius:12px;">
+            ITEM PIC 1
+          </div>
+          <p>Starting Bid: R500</p>
+        </div>
+
+        <div class="panel">
+          <h3>Sample Item 2</h3>
+          <div style="height:180px;display:flex;align-items:center;justify-content:center;background:#09100b;border-radius:12px;">
+            ITEM PIC 2
+          </div>
+          <p>Starting Bid: R300</p>
+        </div>
+
+      </div>
+
+      <div class="notice">
+        Your event can have its own name, logo, banner, items, categories,
+        rules, auction date, starting time and closing time.
+      </div>
+    </div>
+
+    <br>
+
+    <button type="button" class="goldBtn" onclick="startOwnEventCreation()">
+      CREATE YOUR OWN EVENT
+    </button>
+
+  </div>
+</section>
 <section id="pageRegister" class="page">
   <div class="grid2">
     <div class="panel">
@@ -1164,37 +1212,22 @@ function showOwnEventPage(){
   document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
   document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
 
-  document.getElementById("pageAdmin").classList.remove("hidden");
+  const page=document.getElementById("pageOwnEvent");
+  const btn=document.getElementById("navOwnEvent");
 
-  const adminLogin=document.getElementById("adminLogin");
-  const ownerLogin=document.getElementById("ownerLogin");
-  const ownerArea=document.getElementById("ownerArea");
-  const adminArea=document.getElementById("adminArea");
-
-  if(adminLogin) adminLogin.classList.add("hidden");
-  if(ownerLogin) ownerLogin.classList.add("hidden");
-  if(ownerArea) ownerArea.classList.add("hidden");
-  if(adminArea) adminArea.classList.remove("hidden");
-
-  const eventType=document.getElementById("newAuctionType");
-
-  if(eventType){
-    eventType.value="GENERAL";
-    toggleGeneralEventFields();
-  }
-
-  const ownEventBtn=document.getElementById("navOwnEvent");
-  if(ownEventBtn) ownEventBtn.classList.add("active");
+  if(page) page.classList.remove("hidden");
+  if(btn) btn.classList.add("active");
 
   setTimeout(()=>{
-    if(eventType){
-      eventType.scrollIntoView({
+    if(page){
+      page.scrollIntoView({
         behavior:"smooth",
         block:"start"
       });
     }
   },100);
 }
+
 
 function showPage(page){
   if(page!=="admin"){
