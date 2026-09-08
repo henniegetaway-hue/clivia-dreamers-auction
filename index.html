@@ -879,6 +879,13 @@ th,td{
 </button>
         <label>Name / Cross</label>
         <input id="lotName" placeholder="e.g. Green Throat × White Stripe">
+            <label>Breeding</label>
+<input id="lotBreeding" placeholder="e.g. Mother Plant × Father Plant">
+           <label>Breeder</label>
+<input id="lotBreeder" placeholder="e.g. Hennie Vermeulen / Dream Clivias"> 
+
+<label>Trophy / Award</label>
+<input id="lotTrophy" placeholder="e.g. Best on Show 2026, First Prize, or leave blank">
         <label>Preferred auction time</label>
 <select id="lotAuctionTime">
   <option value="">Automatic / next available</option>
@@ -2524,6 +2531,9 @@ function fileToDataURL(file){
 
 async function addLot(){
   const name=document.getElementById("lotName").value.trim();
+   const breeding=document.getElementById("lotBreeding").value.trim();
+      const breeder=document.getElementById("lotBreeder").value.trim();
+const trophy=document.getElementById("lotTrophy").value.trim();   
   const preferredAuctionTime=document.getElementById("lotAuctionTime").value;
   const category=document.getElementById("lotCategory").value;
   const start=Number(document.getElementById("lotStart").value);
@@ -2618,6 +2628,9 @@ if(unpaidSellerInvoice || unpaidBidderInvoice){
 listingCurrency:listingCurrency,
     lotNumber:(auction.lots||[]).length+1,
     name,
+breeding,
+breeder,
+trophy,
     category:document.getElementById("lotCategory").value,
     leaves:Number(document.getElementById("lotLeaves").value)||0,
     offsets:Number(document.getElementById("lotOffsets").value)||0,
@@ -2638,7 +2651,7 @@ scheduleAuctionAtHalfFull(auction);
   updateAuctionFullStatus(auction);
   save();
 
-  ["lotName","lotLeaves","lotOffsets","lotStart"].forEach(id=>{
+  ["lotName","lotBreeding","lotBreeder","lotTrophy","lotLeaves","lotOffsets","lotStart"].forEach(id=>{
     document.getElementById(id).value="";
   });
 
@@ -2807,8 +2820,23 @@ const displayLots=[
     const next=nextBid(lot);
     const highest=(lot.bids||[]).slice().sort((a,b)=>b.amount-a.amount)[0];
   const hotBidding=lot.extendedCloseUntil && new Date(lot.extendedCloseUntil).getTime()>Date.now();
+        const lotCloseTime = lot.extendedCloseUntil
+  ? new Date(lot.extendedCloseUntil)
+  : (auction && auction.auctionDate && auction.auctionCloseTime
+      ? new Date(auction.auctionDate+"T"+auction.auctionCloseTime+":00+02:00")
+      : null);
 
-    return `
+const timeLeftMs = lotCloseTime
+  ? lotCloseTime.getTime() - Date.now()
+  : 0;
+
+const timeLeftText = timeLeftMs > 0
+  ? Math.floor(timeLeftMs / 3600000) + "h " +
+    Math.floor((timeLeftMs % 3600000) / 60000) + "m " +
+    Math.floor((timeLeftMs % 60000) / 1000) + "s"
+  : "CLOSED";
+
+return `
     <div class="lotCard" id="lot-${lot.id}">
     <img src="faded pic.png" alt="" style="display:none;">
     
@@ -2824,7 +2852,30 @@ const displayLots=[
 
       <div class="lotBody">
         <div class="lotName">${escapeHtml(lot.name)}</div>
-        ${lot.exportEligible ? `
+        <div class="small" style="margin-top:6px;">
+  <b>Breeding:</b> ${escapeHtml(lot.breeding || "Not supplied")}
+</div>
+<div class="small" style="margin-top:4px;">
+  <b>Breeder:</b> ${escapeHtml(lot.breeder || "Not supplied")}
+</div>
+
+<div class="small" style="margin-top:4px;">
+  <b>Award / Trophy:</b> ${escapeHtml(lot.trophy || "None")}
+</div>
+${lotCloseTime ? `
+  <div class="small" style="margin-top:4px;">
+    Closes: ${lotCloseTime.toLocaleString("en-ZA",{
+      day:"2-digit",
+      month:"short",
+      hour:"2-digit",
+      minute:"2-digit"
+    })}
+  </div>
+` : ""}
+<div class="small" style="margin-top:4px;font-weight:bold;">
+  Time Left: ${timeLeftText}
+</div>
+${lot.exportEligible ? `
   <div class="notice" style="margin:8px 0;">
     🌍 INTERNATIONAL / EXPORT ELIGIBLE
   </div>
@@ -2834,15 +2885,30 @@ const displayLots=[
   Seller: ${escapeHtml(seller.name)}
   ${Number(seller.completedSales||0)>=5 ? '<div class="small">✅ Trusted Seller</div>' : ''}
 </div>
+<div class="small" style="margin-top:4px;">
+  <b>Category:</b> ${escapeHtml(lot.category || "Not supplied")}
+</div>
  <div style="font-size:18px;font-weight:bold;margin:8px 0;padding:6px;border-top:1px solid #ddd;border-bottom:1px solid #ddd;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
     <span style="font-size:26px">🏆</span> ${Number(seller.completedSales||0)} Sales
-💰 R${Number(seller.totalSalesValue||0).toLocaleString()}
 💰 R${Number(seller.totalSalesValue||0).toLocaleString()} &nbsp;
 🙂 ${Math.min(Number(seller.happyBuyers||0),Number(seller.completedSales||0))} Happy
   </div>
 ` : ''} 
         ${lot.preferredAuctionTime ? '<div class="small">Preferred auction time: '+lot.preferredAuctionTime+'</div>' : ''}
-<div class="price">${currencySymbol}${high} + PPC</div>
+<div class="small" style="margin-top:8px;">
+  Starting Bid: ${currencySymbol}${lot.startBid}
+</div>
+
+<div class="price">
+  Current Bid: ${currencySymbol}${high} + PPC
+</div>
+
+<div class="small" style="margin-top:4px;">
+  Next Minimum Bid: ${currencySymbol}${next}
+</div>
+<div class="small" style="margin-top:4px;">
+  <b>Bid Increase:</b> ${currencySymbol}${Number(lot.increment || 50)}
+</div>
 <div class="small">Share this plant:</div>
 <div class="shareRow">
   <button onclick="shareLotWhatsApp('${lot.id}')">WhatsApp</button>
@@ -2863,12 +2929,17 @@ const displayLots=[
 
         <div class="bidRow">
           <input id="bid_${lot.id}" type="number" value="${next}" min="${next}">
-          <button onclick="placeBid('${lot.id}')">BID</button>
+          <button class="goldBtn" onclick="placeBid('${lot.id}')">
+  PLACE BID
+</button>
         </div>
 
-        <div class="bidHistory">
-          ${highest ? "Highest bidder: "+escapeHtml(highest.bidderName) : "No bids yet"}
-        </div>
+        <div class="bidHistory" style="margin-top:10px;">
+  <b>Highest Bidder:</b>
+  ${highest ? escapeHtml(highest.bidderName) : "No bids yet"}<br>
+
+  <b>Number of Bids:</b> ${(lot.bids||[]).length}
+</div>
       </div>
     </div>`;
   }).join("");
