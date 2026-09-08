@@ -174,9 +174,7 @@ button{
   cursor:pointer;
 }
 
-.hidden{display:none!important}
- <button id="navRules" onclick="showPage('rules')">Rules & Terms</button>
-  <button id="navOwnEvent" class="ownEventBtn" onclick="showPage('admin')">Your Own Event</button>  
+.hidden{display:none!important}  
 .ownEventBtn{
   background:#123f2a !important;
   color:#ffffff !important;
@@ -442,7 +440,7 @@ th,td{
   <button id="navInvoices" onclick="showPage('invoices')">Invoices</button>
   <button id="navSeller" onclick="showPage('seller')">Seller</button>
   <button id="navRules" onclick="showPage('rules')">Rules & Terms</button>
-  <button id="navOwnEvent" class="ownEventBtn" onclick="showPage('admin')">Your Own Event</button>
+  <button id="navOwnEvent" class="ownEventBtn" onclick="showOwnEventPage()">Your Own Event</button>
 </nav>
 <section id="pageRegister" class="page">
   <div class="grid2">
@@ -1149,6 +1147,22 @@ function load(){
 });
 }
 localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+ function showOwnEventPage(){
+  showPage("admin");
+
+  setTimeout(()=>{
+    const eventType=document.getElementById("newAuctionType");
+
+    if(eventType){
+      eventType.value="GENERAL";
+      toggleGeneralEventFields();
+      eventType.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+  },100);
+} 
 function showPage(page){
   if(page!=="admin"){
   document.getElementById("adminArea").classList.add("hidden");
