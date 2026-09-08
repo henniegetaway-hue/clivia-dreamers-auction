@@ -2925,7 +2925,11 @@ checkCommissionReminders();
 '<div>Account number: '+escapeHtml(state.settings.accountNumber||"")+'</div>'+
     '<div>Plant: '+escapeHtml(inv.saleLot||"")+'</div>'+
     '<div>Sale amount: '+(inv.currency==="EUR" ? "€" : "R")+Number(inv.saleAmount||0).toLocaleString()+'</div>'+
-    '<div class="small">Platform fee rule: 10% of winning bid less R50 listing fee, only when sale is above R2,000</div>'+
+    (inv.vatExcludedFromFee
+  ? '<div>Amount used for platform fee (excluding VAT): R'+Number(inv.platformFeeBase||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</div>'+
+    '<div class="small"><b>No platform fee is charged on the seller VAT portion.</b></div>'
+  : '')+
+'<div class="small">Platform fee rule: 10% of applicable sale amount less R50 listing fee, only when sale is above R2,000.</div>'+
     '<div><b>Platform fee due: R'+Number(inv.amount||0).toLocaleString()+'</b></div>'+
     '<div>Status: <b>'+escapeHtml(inv.status||"UNPAID")+'</b></div>'+
     (inv.reminderDue
