@@ -1568,6 +1568,7 @@ rulesAcceptedDate:new Date().toISOString(),
    securityFeesPaidZAR:0,
 securityFeesPaidEUR:0,
     securityProofStatus:"NONE",
+    isOwnerTest:false,
 securityProofCurrency:"",
     securityProofAmount:0,
 securityProof:"",
@@ -2598,7 +2599,7 @@ if(!securityProofPending && totalExposureAfterBid>=secondWarningLevel && totalEx
   currencySymbol+maxBidCapacity.toLocaleString()+" bidding limit. Pay the "+
   currencySymbol+securityFeeAmount+" security fee now to avoid bidding being interrupted.");
 }
-if(securityFeeNeeded){
+if(securityFeeNeeded && !bidder.isOwnerTest){
   alert(securityProofPending
   ? "BIDDING PAUSED: Your "+currencySymbol+securityFeeAmount+" payment proof is waiting for verification. Your next "+currencySymbol+securityBracketSize.toLocaleString()+" bidding bracket will unlock after confirmation."
   : "BIDDING PAUSED: Your "+currencySymbol+maxBidCapacity.toLocaleString()+" total bidding capacity has been reached. Pay the "+currencySymbol+securityFeeAmount+" security fee and upload proof of payment to unlock the next "+currencySymbol+securityBracketSize.toLocaleString()+" bidding bracket.");
@@ -2793,11 +2794,18 @@ if(bidder && sale.paymentAccountNumber){
 sale.sellerConfirmationDeadline=null;
   seller.completedSales=Number(seller.completedSales||0)+1;
   seller.totalSalesValue=Number(seller.totalSalesValue||0)+Number(sale.amount||0);
- const commissionAmount=invoice.currency==="ZAR" && Number(sale.amount||0)>2000
-  ? Math.max(0,Number(sale.amount||0)*0.10-50)
+ const saleAmount=Number(sale.amount||0);
+const isVatRegistered=Boolean((seller.vatNumber||"").trim());
+
+const platformFeeBase=isVatRegistered
+  ? saleAmount/1.15
+  : saleAmount;
+
+const commissionAmount=invoice.currency==="ZAR" && saleAmount>2000
+  ? Math.max(0,platformFeeBase*0.10-50)
   : 0;
   const existingCommission=(state.invoices||[]).find(inv=>
-  inv.type==="SELLER_COMMISSION" &&
+ inv.type==="PLATFORM_FEE" &&
   inv.sellerId===seller.id &&
   inv.auctionId===invoice.auctionId &&
   inv.saleLot===sale.lot
@@ -2805,12 +2813,14 @@ sale.sellerConfirmationDeadline=null;
 if(commissionAmount>0 && !existingCommission){
   state.invoices=state.invoices||[];
   state.invoices.push({
-    id:"seller-commission-"+Date.now(),
-    type:"SELLER_COMMISSION",
+    id:"platform-fee-"+Date.now(),
+type:"PLATFORM_FEE",
     sellerId:seller.id,
     auctionId:invoice.auctionId,
     saleLot:sale.lot,
 saleAmount:Number(sale.amount||0),
+    platformFeeBase:platformFeeBase,
+vatExcludedFromFee:isVatRegistered,
     amount:commissionAmount,
     currency:invoice.currency||"ZAR",
     status:"UNPAID",
@@ -2852,7 +2862,7 @@ if(!state.selectedBidderId || invoice.bidderId!==state.selectedBidderId){
   const now=Date.now();
 
   (state.invoices||[]).forEach(inv=>{
-    if(inv.type!=="SELLER_COMMISSION" || inv.status==="PAID") return;
+    if(inv.type!=="PLATFORM_FEE" || inv.status==="PAID") return;
     if(Number(inv.reminderCount||0)>=Number(inv.maxReminders||3)) return;
     if(!inv.nextReminderAt || now<new Date(inv.nextReminderAt).getTime()) return;
 
@@ -2873,7 +2883,7 @@ inv.reminderDue=true;
 }
    
   const invoice=(state.invoices||[]).find(inv=>inv.id===invoiceId);
-  if(!invoice || invoice.type!=="SELLER_COMMISSION") return;
+  if(!invoice || invoice.type!=="PLATFORM_FEE") return;
 
   invoice.status="PAID";
   invoice.paidAt=new Date().toISOString();
@@ -2906,7 +2916,7 @@ checkCommissionReminders();
 
   box.innerHTML=state.invoices.map(inv=>`
     <div class="panel">
-    ${inv.type==="SELLER_COMMISSION"
+    ${inv.type==="PLATFORM_FEE"
   ? '<h3>Clivia Dreamers AUCTION — PLATFORM FEE INVOICE</h3>'+
     '<div class="small"><b>NO VAT CHARGED — Clivia Dreamers Auction is not VAT registered.</b></div>'+
       '<div><b>Payment details:</b></div>'+
@@ -2930,7 +2940,7 @@ checkCommissionReminders();
           : ''))
   : ''
 }
-   ${inv.type==="SELLER_COMMISSION" ? "" : (inv.lots||[]).map(x=>{
+   ${inv.type==="PLATFORM_FEE" ? "" : (inv.lots||[]).map(x=>{
   const seller=(state.sellers||[]).find(s=>s.id===x.sellerId);
 
   return `
@@ -2994,7 +3004,7 @@ The seller may send the payment instructions through Clivia Dreamers or WhatsApp
     </div>
   `;
 }).join("")}
-${inv.type!=="SELLER_COMMISSION" ? '<b>Total: '+(inv.currency==="EUR" ? "€" : "R")+Number(inv.total||0).toLocaleString()+'</b>' : ''}
+${inv.type!=="PLATFORM_FEE" ? '<b>Total: '+(inv.currency==="EUR" ? "€" : "R")+Number(inv.total||0).toLocaleString()+'</b>' : ''}
     </div>
   `).join("");
 }
