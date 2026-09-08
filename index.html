@@ -930,6 +930,17 @@ th,td{
     <h3>Gentleman's Agreement</h3>
 <p>Clivia Dreamers Auction operates in the spirit of trust, fairness and respect between buyers and sellers. Please honour your bids, payments, sales and commitments, and do not abuse the opportunity or privileges provided by this platform.</p>
   </div>  <!-- closes cliviaRulesContent -->
+    <div id="generalRulesContent" style="display:none;">
+  <h2 id="generalRulesTitle">Event Rules &amp; Terms</h2>
+
+  <p>
+    <strong>
+      By registering, bidding, buying or selling in this event, you agree to the event creator's rules.
+    </strong>
+  </p>
+
+  <div id="generalRulesText"></div>
+</div>
 </div>  <!-- closes panel -->
 </section>
   <section id="pageSeller" class="page hidden">
@@ -1150,6 +1161,28 @@ function showPage(page){
   if(page==="live") renderLots();
   if(page==="admin") renderAdminLots();
   if(page==="invoices") renderInvoices();
+  if(page==="rules"){
+  const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
+
+  const cliviaRules=document.getElementById("cliviaRulesContent");
+  const generalRules=document.getElementById("generalRulesContent");
+  const generalTitle=document.getElementById("generalRulesTitle");
+  const generalText=document.getElementById("generalRulesText");
+
+  if(auction && auction.type==="GENERAL"){
+    cliviaRules.style.display="none";
+    generalRules.style.display="block";
+
+    generalTitle.textContent=
+      (auction.generalEventName || auction.name) + " — Rules & Terms";
+
+    generalText.textContent=
+      auction.generalEventRules || "No event-specific rules have been entered.";
+  }else{
+    cliviaRules.style.display="block";
+    generalRules.style.display="none";
+  }
+}
 }
 function toggleRulesVisibility(){
   state.settings.rulesVisible = state.settings.rulesVisible===false ? true : false;
