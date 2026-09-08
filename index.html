@@ -693,7 +693,7 @@ th,td{
 
 <label>Force / change closing time</label>
 <input id="adminAuctionCloseTimeOverride" type="time">        
-<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;margin-bottom:14px;">
+<div id="auctionDateButtons" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;margin-bottom:14px;">
   <button class="goldBtn" onclick="forceAuctionDate()">UPDATE AUCTION DATE / TIMES</button>
   <button class="goldBtn" onclick="extendAuctionDays(1)">ADD 1 DAY</button>
   <button class="goldBtn" onclick="extendAuctionDays(2)">ADD 2 DAYS</button>
@@ -1147,6 +1147,19 @@ function load(){
 });
 }
 localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  function toggleGeneralEventFields(){
+  const type = document.getElementById("newAuctionType")?.value;
+  const generalFields = document.getElementById("generalEventBrandingFields");
+  const dateButtons = document.getElementById("auctionDateButtons");
+
+  if(generalFields){
+    generalFields.style.display = type === "GENERAL" ? "block" : "none";
+  }
+
+  if(dateButtons){
+    dateButtons.style.display = type === "GENERAL" ? "none" : "flex";
+  }
+}
 function showOwnEventPage(){
   document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
   document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
