@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Clivia Dreamers Auction</title>
-<meta name="description" content="Dream Clivias Auction — buy and sell quality Clivia plants through live online auctions in South Africa and internationally.">
+<meta name="description" content="Clivia Dreamers Auction — buy and sell quality Clivia plants through live online auctions in South Africa and internationally.">
 <meta name="keywords" content="Clivia, Clivias, Clivia auction, Clivia plants, Clivia flowers, buy Clivia, sell Clivia, Clivia seeds, rare Clivia, South Africa Clivia, Dream Clivias, online plant auction">
 <meta property="og:title" content="Clivia Dreamers Auction">
 <meta property="og:description" content="Buy and sell quality Clivia plants through live online auctions.">
@@ -414,7 +414,7 @@ th,td{
 <div class="app">
 
 <div class="top">
-  <img class="logo" src="dream-clivias-logo.png" alt="Dream Clivias logo">
+  <img class="logo" src="dream-clivias-logo.png" alt="Clivia Dreamers logo">
   <div class="brand">
     <h1>Dream Clivias Auction</h1>
     <p>Rare • Exquisite • Timeless</p>
@@ -1018,10 +1018,10 @@ const STORAGE_KEY = "dreamCliviasAuctionV2";
 
 let state = {
   settings:{
-    auctionName:"Dream Clivias Live Auction",
+    auctionName:"Clivia Dreamers Live Auction",
     increment:50,
     bank:"",
-    accountName:"Dream Clivias",
+    accountName:"Clivia Dreamers",
     accountNumber:"",
     branchCode:"",
     open:true
@@ -1604,7 +1604,7 @@ document.getElementById("regMsg").textContent="Registered successfully. WhatsApp
     refreshBidderSelect();   
 }
 function sendBidderRegistrationWhatsApp(){
-  const message = window.lastBidderWhatsAppMessage || "Dream Clivias Auction bidder registration.";
+  const message = window.lastBidderWhatsAppMessage || "Clivia Dreamers Auction bidder registration.";
   window.open(
     "https://api.whatsapp.com/send?phone=27606866781&text=" + encodeURIComponent(message),
     "_blank"
@@ -1782,7 +1782,7 @@ function closeOwner(){
   save();
 
   document.getElementById("ownerBankMsg").textContent=
-    "Dream Clivias bank details saved.";
+    "Clivia Dreamers bank details saved.";
 }
  function selectAdminAuction(){
   const auctionId=document.getElementById("adminAuctionSelect").value;
@@ -2087,7 +2087,7 @@ function fillSettings(){
 }
 
 function saveSettings(){
-  state.settings.auctionName=document.getElementById("setAuctionName").value.trim() || "Dream Clivias Live Auction";
+  state.settings.auctionName=document.getElementById("setAuctionName").value.trim() || "Clivia Dreamers Live Auction";
   state.settings.increment=Number(document.getElementById("setIncrement").value)||50;
   
   
@@ -2280,7 +2280,7 @@ const seller=(state.sellers||[]).find(s=>s.id===lot.sellerId);
 
   if(navigator.share){
     navigator.share({
-      title:"Dream Clivias Auction",
+      title:"Clivia Dreamers Auction",
       text:text,
       url:url
     });
