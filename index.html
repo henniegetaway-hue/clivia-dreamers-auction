@@ -3,11 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clivia Dreamers Auction</title>
-<meta name="description" content="Clivia Dreamers Auction — buy and sell quality Clivia plants through live online auctions in South Africa and internationally.">
-<meta name="keywords" content="Clivia, Clivias, Clivia auction, Clivia plants, Clivia flowers, buy Clivia, sell Clivia, Clivia seeds, rare Clivia, South Africa Clivia, Clivia Dreamers, online plant auction">
-<meta property="og:title" content="Clivia Dreamers Auction">
-<meta property="og:description" content="Buy and sell quality Clivia plants through live online auctions.">
+<title id="seoTitle">Clivia Dreamers Auction</title>
+
+<meta id="seoDescription"
+      name="description"
+      content="Clivia Dreamers Auction — buy and sell quality Clivia plants through live online auctions in South Africa and internationally.">
+
+<meta id="seoKeywords"
+      name="keywords"
+      content="Clivia, Clivias, Clivia auction, Clivia plants, Clivia flowers, buy Clivia, sell Clivia, Clivia seeds, rare Clivia, South Africa Clivia, Clivia Dreamers, online plant auction">
+
+<meta id="seoOgTitle"
+      property="og:title"
+      content="Clivia Dreamers Auction">
+
+<meta id="seoOgDescription"
+      property="og:description"
+      content="Buy and sell quality Clivia plants through live online auctions.">
 <meta property="og:type" content="website">
   <meta property="og:url" content="https://henniegetaway-hue.github.io/dream-clivias-auction/">
   <style>
@@ -1216,7 +1228,37 @@ localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
     dateButtons.style.display = type === "GENERAL" ? "none" : "flex";
   }
 }
-function showOwnEventPage(){
+  function setOwnEventSEO(){
+  document.title = "Create Your Own Online Auction";
+
+  const description = document.getElementById("seoDescription");
+  const keywords = document.getElementById("seoKeywords");
+  const ogTitle = document.getElementById("seoOgTitle");
+  const ogDescription = document.getElementById("seoOgDescription");
+
+  if(description){
+    description.content =
+      "An online auction platform where you can create and manage your own auction event for vintage cars, racing horses, Clivias, antiques, art, jewellery, machinery, furniture, farm equipment, motorcycles, boats, property, general goods and more.";
+  }
+
+  if(keywords){
+    keywords.content =
+      "create your own auction, create online auction, host your own auction, run your own online auction, online auction platform, auction event, private auction, business auction, vintage car auction, racing horse auction, horse auction, Clivia auction, antique auction, art auction, jewellery auction, machinery auction, furniture auction, farm equipment auction, motorcycle auction, boat auction, property auction, general goods auction, online bidding, South Africa auction";
+  }
+
+  if(ogTitle){
+    ogTitle.content = "Create Your Own Online Auction";
+  }
+
+  if(ogDescription){
+    ogDescription.content =
+      "Create and manage your own online auction event for cars, horses, plants, antiques, machinery, property, collectables and more.";
+  }
+}
+
+  
+  function showOwnEventPage(){
+      setOwnEventSEO();
   document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
   document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
 
@@ -1236,7 +1278,33 @@ function showOwnEventPage(){
   },100);
 }
 
+function setCliviaSEO(){
+  document.title = "Clivia Dreamers Auction";
 
+  const description = document.getElementById("seoDescription");
+  const keywords = document.getElementById("seoKeywords");
+  const ogTitle = document.getElementById("seoOgTitle");
+  const ogDescription = document.getElementById("seoOgDescription");
+
+  if(description){
+    description.content =
+      "Clivia Dreamers Auction — buy and sell quality Clivia plants through live online auctions in South Africa and internationally.";
+  }
+
+  if(keywords){
+    keywords.content =
+      "Clivia, Clivias, Clivia auction, Clivia plants, Clivia flowers, buy Clivia, sell Clivia, Clivia seeds, rare Clivia, South Africa Clivia, Clivia Dreamers, online plant auction";
+  }
+
+  if(ogTitle){
+    ogTitle.content = "Clivia Dreamers Auction";
+  }
+
+  if(ogDescription){
+    ogDescription.content =
+      "Buy and sell quality Clivia plants through live online auctions.";
+  }
+}
 function showPage(page){
   if(page!=="admin"){
   document.getElementById("adminArea").classList.add("hidden");
