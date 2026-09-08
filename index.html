@@ -1147,22 +1147,42 @@ function load(){
 });
 }
 localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
- function showOwnEventPage(){
-  showPage("admin");
+function showOwnEventPage(){
+  document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
+  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+
+  document.getElementById("pageAdmin").classList.remove("hidden");
+
+  const adminLogin=document.getElementById("adminLogin");
+  const ownerLogin=document.getElementById("ownerLogin");
+  const ownerArea=document.getElementById("ownerArea");
+  const adminArea=document.getElementById("adminArea");
+
+  if(adminLogin) adminLogin.classList.add("hidden");
+  if(ownerLogin) ownerLogin.classList.add("hidden");
+  if(ownerArea) ownerArea.classList.add("hidden");
+  if(adminArea) adminArea.classList.remove("hidden");
+
+  const eventType=document.getElementById("newAuctionType");
+
+  if(eventType){
+    eventType.value="GENERAL";
+    toggleGeneralEventFields();
+  }
+
+  const ownEventBtn=document.getElementById("navOwnEvent");
+  if(ownEventBtn) ownEventBtn.classList.add("active");
 
   setTimeout(()=>{
-    const eventType=document.getElementById("newAuctionType");
-
     if(eventType){
-      eventType.value="GENERAL";
-      toggleGeneralEventFields();
       eventType.scrollIntoView({
         behavior:"smooth",
         block:"start"
       });
     }
   },100);
-} 
+}
+
 function showPage(page){
   if(page!=="admin"){
   document.getElementById("adminArea").classList.add("hidden");
