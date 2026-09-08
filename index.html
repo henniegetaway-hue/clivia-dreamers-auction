@@ -2666,7 +2666,62 @@ scheduleAuctionAtHalfFull(auction);
   renderAdminLots();
 }
 
-function shareLotWhatsApp(id){
+function shareSampleLotWhatsApp(sampleNumber){
+  const url =
+    window.location.origin +
+    window.location.pathname +
+    "#sample-lot-" +
+    sampleNumber;
+
+  const text =
+    "🌸 Clivia Dreamers Auction — Sample Lot " +
+    String(sampleNumber).padStart(3,"0") +
+    "\nView this sample Clivia lot here:\n" +
+    url;
+
+  window.open(
+    "https://wa.me/?text=" + encodeURIComponent(text),
+    "_blank"
+  );
+}
+
+function shareSampleLotFacebook(sampleNumber){
+  const url =
+    window.location.origin +
+    window.location.pathname +
+    "#sample-lot-" +
+    sampleNumber;
+
+  window.open(
+    "https://www.facebook.com/sharer/sharer.php?u=" +
+    encodeURIComponent(url),
+    "_blank"
+  );
+}
+
+function shareSampleLot(sampleNumber){
+  const url =
+    window.location.origin +
+    window.location.pathname +
+    "#sample-lot-" +
+    sampleNumber;
+
+  const text =
+    "Clivia Dreamers Auction — Sample Lot " +
+    String(sampleNumber).padStart(3,"0");
+
+  if(navigator.share){
+    navigator.share({
+      title:text,
+      text:text,
+      url:url
+    });
+  }else{
+    navigator.clipboard.writeText(url);
+    alert("Sample lot link copied.");
+  }
+}
+      function shareLotWhatsApp(id){
   const lot=(state.lots||[]).find(l=>l.id===id);
   if(!lot) return;
 
@@ -2752,10 +2807,27 @@ const auctionLots=state.lots.filter(lot=>{
  if(auctionLots.length===0){
   box.innerHTML=Array.from({length:12},(_,i)=>`
     <div class="lotCard sampleLot" style="pointer-events:none;">
-      <div class="lotTop">
-        <span>Lot ${String(i+1).padStart(3,"0")}</span>
-        <span style="color:#9cff57;font-weight:bold;">LOADING FOR AUCTION</span>
+      <div class="lotTop" style="align-items:flex-start;">
+  <span>LOT-${String(i+1).padStart(3,"0")}</span>
+
+  <span style="text-align:right;">
+    ${lotCloseTime ? `
+      <div>
+        Closes:
+        ${lotCloseTime.toLocaleString("en-ZA",{
+          day:"2-digit",
+          month:"short",
+          hour:"2-digit",
+          minute:"2-digit"
+        })}
       </div>
+
+      <div style="font-size:12px;margin-top:3px;">
+        ${timeLeftText}
+      </div>
+    ` : ""}
+  </span>
+</div>
 
       <div class="flowerWrap">
  <img src="faded pic.png"
@@ -2807,14 +2879,14 @@ const auctionLots=state.lots.filter(lot=>{
     <b>Number of Bids:</b> 7
   </div>
 
-  <div class="small" style="margin-top:6px;">
-    Closes: 14 Sep, 19:30
-  </div>
 
-  <div class="small" style="margin-top:4px;font-weight:bold;">
-    Time Left: 2h 18m 41s
-  </div>
+<div class="small" style="margin-top:8px;">Share this plant:</div>
 
+<div class="shareRow">
+  <button>WhatsApp</button>
+  <button>Facebook</button>
+  <button>Share</button>
+</div>
   <button class="goldBtn" style="width:100%;margin-top:10px;">
     PLACE BID
   </button>
@@ -2845,13 +2917,28 @@ const displayLots=[
   const seller=(state.sellers||[]).find(s=>s.id===lot.sellerId);
     if(lot.isSample){
   return `
-    <div class="lotCard sampleLot" style="opacity:.38;pointer-events:none;">
-      <div class="lotTop">
-        <span>Lot ${String(lot.sampleNumber).padStart(3,"0")}</span>
-        <span style="color:#9cff57;font-weight:bold;">
-          LOADING FOR AUCTION
-        </span>
-      </div>
+  <div class="small" style="margin-top:8px;">Share this sample lot:</div>
+
+<div class="shareRow">
+  <button onclick="shareSampleLotWhatsApp(${lot.sampleNumber})">WhatsApp</button>
+  <button onclick="shareSampleLotFacebook(${lot.sampleNumber})">Facebook</button>
+  <button onclick="shareSampleLot(${lot.sampleNumber})">Share</button>
+</div>
+      <div class="lotTop" style="align-items:flex-start;">
+  <span>
+    Lot ${String(lot.sampleNumber).padStart(3,"0")}
+    <div style="font-size:12px;margin-top:3px;">
+      Min +R50
+    </div>
+  </span>
+
+  <span style="text-align:right;color:#9cff57;font-weight:bold;">
+    <div>Closes: 14 Sep, 19:30</div>
+    <div style="font-size:12px;margin-top:3px;">
+      2h 18m 41s
+    </div>
+  </span>
+</div>
 
       <div style="
         height:220px;
@@ -2876,9 +2963,10 @@ const displayLots=[
     <b>Breeder:</b> Dream Clivias
   </div>
 
-  <div class="small" style="margin-top:4px;">
-    <b>Award / Trophy:</b> Best on Show
-  </div>
+  <div class="small" style="margin-top:4px;font-weight:bold;">
+  <span style="font-size:24px;">🏆</span>
+  12 Successful Sales
+</div>
 
   <div class="small" style="margin-top:4px;">
     <b>Seller:</b> Sample Seller
@@ -2889,33 +2977,21 @@ const displayLots=[
   </div>
 
   <div class="small" style="margin-top:8px;">
-    Starting Bid: R500
+    Starting Bid: 
+    <span style="color:#ff8c00;font-weight:bold;">R500</span>
   </div>
 
   <div class="price">
-    Current Bid: R850
+    Current Bid:
+     <span style="color:#ff8c00;font-weight:bold;">R850</span>
   </div>
 
-  <div class="small" style="margin-top:4px;">
-    Next Minimum Bid: R900
-  </div>
-
-  <div class="small" style="margin-top:4px;">
-    <b>Bid Increase:</b> R50
-  </div>
 
   <div class="bidHistory" style="margin-top:10px;">
-    <b>Highest Bidder:</b> Bidder 104<br>
-    <b>Number of Bids:</b> 7
-  </div>
+  <b>Highest Bidder:</b>
+  <span style="color:#ff8c00;font-weight:bold;">Bidder 104</span>
+</div>
 
-  <div class="small" style="margin-top:6px;">
-    Closes: 14 Sep, 19:30
-  </div>
-
-  <div class="small" style="margin-top:4px;font-weight:bold;">
-    Time Left: 2h 18m 41s
-  </div>
 
   <button class="goldBtn" style="width:100%;margin-top:10px;">
     PLACE BID
@@ -2974,16 +3050,6 @@ return `
 <div class="small" style="margin-top:4px;">
   <b>Award / Trophy:</b> ${escapeHtml(lot.trophy || "None")}
 </div>
-${lotCloseTime ? `
-  <div class="small" style="margin-top:4px;">
-    Closes: ${lotCloseTime.toLocaleString("en-ZA",{
-      day:"2-digit",
-      month:"short",
-      hour:"2-digit",
-      minute:"2-digit"
-    })}
-  </div>
-` : ""}
 <div class="small" style="margin-top:4px;font-weight:bold;">
   Time Left: ${timeLeftText}
 </div>
@@ -3000,11 +3066,10 @@ ${lot.exportEligible ? `
 <div class="small" style="margin-top:4px;">
   <b>Category:</b> ${escapeHtml(lot.category || "Not supplied")}
 </div>
- <div style="font-size:18px;font-weight:bold;margin:8px 0;padding:6px;border-top:1px solid #ddd;border-bottom:1px solid #ddd;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-    <span style="font-size:26px">🏆</span> ${Number(seller.completedSales||0)} Sales
-💰 R${Number(seller.totalSalesValue||0).toLocaleString()} &nbsp;
-🙂 ${Math.min(Number(seller.happyBuyers||0),Number(seller.completedSales||0))} Happy
-  </div>
+ <div style="font-size:18px;font-weight:bold;margin:8px 0;padding:6px;border-top:1px solid #ddd;border-bottom:1px solid #ddd;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+  <span>🏆 ${Number(seller.completedSales||0)} Successful Sales</span>
+  <span>🙂 ${Math.min(Number(seller.happyBuyers||0),Number(seller.completedSales||0))} Happy Buyers</span>
+</div>
 ` : ''} 
         ${lot.preferredAuctionTime ? '<div class="small">Preferred auction time: '+lot.preferredAuctionTime+'</div>' : ''}
 <div class="small" style="margin-top:8px;">
@@ -3016,9 +3081,6 @@ ${lot.exportEligible ? `
 </div>
 
 <div class="small" style="margin-top:4px;">
-  Next Minimum Bid: ${currencySymbol}${next}
-</div>
-<div class="small" style="margin-top:4px;">
   <b>Bid Increase:</b> ${currencySymbol}${Number(lot.increment || 50)}
 </div>
 <div class="small">Share this plant:</div>
@@ -3028,10 +3090,11 @@ ${lot.exportEligible ? `
   <button onclick="shareLot('${lot.id}')">Share</button>
 </div>
 
-<div class="meta">
-
-          Leaves: ${lot.leaves} &nbsp;•&nbsp; Offsets: ${lot.offsets}
-        </div>
+<div class="meta" style="margin-top:8px;">
+  🌿 <b>Leaves:</b> ${lot.leaves || 0}
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  🌱 <b>Offsets:</b> ${lot.offsets || 0}
+</div>
 
         ${lot.plant ? `
           <button class="photoBtn" onclick="showPlantPhoto('${lot.id}')">
@@ -3048,9 +3111,10 @@ ${lot.exportEligible ? `
 
         <div class="bidHistory" style="margin-top:10px;">
   <b>Highest Bidder:</b>
-  ${highest ? escapeHtml(highest.bidderName) : "No bids yet"}<br>
+<span style="color:#ff8c00;font-weight:bold;">
+  ${highest ? escapeHtml(highest.bidderName) : "No bids yet"}
+</span>
 
-  <b>Number of Bids:</b> ${(lot.bids||[]).length}
 </div>
       </div>
     </div>`;
@@ -3069,6 +3133,17 @@ if(window.location.hash.startsWith("#lot=")){
     sharedLot.scrollIntoView({behavior:"smooth",block:"start"});
   }
 }
+     if(window.location.hash.startsWith("#sample-lot-")){
+  const sampleLotId=window.location.hash.substring(1);
+  const sampleLot=document.getElementById(sampleLotId);
+
+  if(sampleLot){
+    sampleLot.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+} 
    const activeHotBidding=auctionLots.some(lot=>
   lot.extendedCloseUntil &&
   new Date(lot.extendedCloseUntil).getTime()>Date.now()
