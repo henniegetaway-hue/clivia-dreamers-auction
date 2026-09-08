@@ -434,7 +434,7 @@ th,td{
   <button id="navLive" onclick="showPage('live')">Live Auction</button>
   <button id="navAdmin" onclick="showPage('admin')">Admin</button>
   <button id="navInvoices" onclick="showPage('invoices')">Invoices</button><button id="navSeller" onclick="showPage('seller')">Seller</button>
-<button id="navRules" onclick="showPage('rules')">Rules & Terms</button>
+<button id="navRules" onclick="showPage('rules'); setTimeout(()=>document.getElementById('pageRules').scrollIntoView({behavior:'smooth',block:'start'}),50);">Rules & Terms</button>
 </nav>
 
 <section id="pageRegister" class="page">
