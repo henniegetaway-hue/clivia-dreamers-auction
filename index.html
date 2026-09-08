@@ -410,15 +410,16 @@ th,td{
 </style>
 </head>
 
-<body>
+<body id="siteBody">
 <div class="app">
 
 <div class="top">
-  <img class="logo" src="new logo.png" alt="Clivia Dreamers logo">
-  <div class="brand">
-    <h1>Clivia Dreamers Auction</h1>
-    <p>Rare • Exquisite • Timeless</p>
-  </div>
+  <img id="siteLogo" class="logo" src="new logo.png" alt="Clivia Dreamers logo">
+
+<div class="brand">
+  <h1 id="siteBrandName">Clivia Dreamers Auction</h1>
+  <p id="siteBrandTagline">Rare • Exquisite • Timeless</p>
+</div>
   <div class="status">
     <span class="statusBadge" id="auctionStatus">OPEN</span>
     <div id="auctionTitleTop" style="margin-top:7px">Clivia Dreamers Live Auction</div>
@@ -433,7 +434,7 @@ th,td{
   <button id="navLive" onclick="showPage('live')">Live Auction</button>
   <button id="navAdmin" onclick="showPage('admin')">Admin</button>
   <button id="navInvoices" onclick="showPage('invoices')">Invoices</button><button id="navSeller" onclick="showPage('seller')">Seller</button>
-<button id="navRules" onclick="document.getElementById('pageRules').classList.remove('hidden');document.getElementById('pageRules').scrollIntoView({behavior:'smooth'});">Rules & Terms</button>
+<button id="navRules" onclick="showPage('rules')">Rules & Terms</button>
 </nav>
 
 <section id="pageRegister" class="page">
@@ -692,19 +693,30 @@ th,td{
   <button class="goldBtn" onclick="extendAuctionDays(2)">ADD 2 DAYS</button>
   <button class="goldBtn" onclick="extendAuctionDays(3)">ADD 3 DAYS</button>
 </div>   
-  <label>Auction type</label>
-  <select id="newAuctionType">
-    <option value="Pots" disabled>Pots - Coming later</option>
-<option value="Seeds" disabled>Seeds - Coming later</option>
-<option value="Tools" disabled>Tools - Coming later</option>
-<option value="Mixed" disabled>Mixed - Coming later</option>
-    <option value="Clivia">Clivia</option>
-  </select>
-   <label>Auction currency</label>
-<select id="newAuctionCurrency">
-  <option value="ZAR">South African Rand (R)</option>
-  <option value="EUR">Euro (€)</option>
-</select>     
+  <label>Event type</label>
+<select id="newAuctionType" onchange="toggleGeneralEventFields()">
+  <option value="CLIVIA">Clivia Auction</option>
+  <option value="GENERAL">Your Own Event — Any Products</option>
+</select>
+
+<div id="generalEventBrandingFields" style="display:none;margin-top:12px;">
+
+  <label>Event / Business Name</label>
+  <input id="generalEventName" placeholder="e.g. Hennie's Weekend Auction">
+
+  <label>Event Logo</label>
+  <input id="generalEventLogo" type="file" accept="image/*">
+
+  <label>Event Banner</label>
+  <input id="generalEventBanner" type="file" accept="image/*">
+
+  <label>Short Event Description</label>
+  <textarea id="generalEventDescription" placeholder="Describe the event and what is being sold"></textarea>
+  <label>Event Rules &amp; Terms</label>
+<textarea id="generalEventRules" rows="10"
+  placeholder="Enter the rules and terms for this event"></textarea>
+
+</div>
 
   <label>Auction name</label>
   <input id="newAuctionName" placeholder="Auction name">
@@ -716,10 +728,32 @@ th,td{
   <div id="selectedAuctionNotice" class="notice">
   No auction selected yet.
 </div>
-<label>Select existing auction</label>
+
+        <label>Select existing auction</label>
+
 <select id="adminAuctionSelect" onchange="selectAdminAuction()">
   <option value="">Select auction</option>
-</select>        
+</select>
+
+<div id="generalCategoryEditor" class="panel" style="display:none;margin-top:12px;">
+  <h3>Event Categories</h3>
+
+  <label>Category 1</label>
+  <input id="generalCategory1" placeholder="e.g. Furniture">
+
+  <label>Category 2</label>
+  <input id="generalCategory2" placeholder="e.g. Tools">
+
+  <label>Category 3</label>
+  <input id="generalCategory3" placeholder="e.g. Collectibles">
+
+  <label>Category 4</label>
+  <input id="generalCategory4" placeholder="e.g. Vehicles">
+
+  <button class="goldBtn" type="button" onclick="saveGeneralCategories()">
+    SAVE EVENT CATEGORIES
+  </button>
+</div>
 </div>
       <div class="panel">
         <h2>Auction Settings</h2>
@@ -833,9 +867,10 @@ th,td{
 
 <section id="pageRules" class="page hidden">
   <div class="panel">
-    <h2>Clivia Dreamers Auction — Rules & Terms</h2>
 
-    <p><strong>By registering as a buyer or seller, you agree to these rules.</strong></p>
+    <div id="cliviaRulesContent">
+      <h2>Clivia Dreamers Auction — Rules & Terms</h2>
+      <p><strong>By registering as a buyer or seller, you agree to these rules.</strong></p>
 
     <h3>Buyer Rules</h3>
 
@@ -894,7 +929,8 @@ th,td{
   <p>26.Clivia Dreamers shall not be liable for delays, interruptions, postponement, cancellation or failure to perform caused by circumstances beyond its reasonable control, including natural disasters, fire, flood, severe weather, war, civil unrest, government action, widespread power or telecommunications failures, strikes, epidemics or pandemics. Where reasonably possible, Clivia Dreamers may postpone, extend, suspend or reschedule an affected auction or event.</p>
     <h3>Gentleman's Agreement</h3>
 <p>Clivia Dreamers Auction operates in the spirit of trust, fairness and respect between buyers and sellers. Please honour your bids, payments, sales and commitments, and do not abuse the opportunity or privileges provided by this platform.</p>
-  </div>
+  </div>  <!-- closes cliviaRulesContent -->
+</div>  <!-- closes panel -->
 </section>
   <section id="pageSeller" class="page hidden">
   <div class="panel">
@@ -1127,11 +1163,51 @@ function toggleRulesVisibility(){
   alert(state.settings.rulesVisible===false ? "Rules are now hidden." : "Rules are now visible.");
 }
 function updateHeader(){
- document.getElementById("navRules").style.display="";
-  document.getElementById("auctionTitleTop").textContent=state.settings.auctionName;
-  document.getElementById("liveTitle").textContent=state.settings.auctionName;
-  document.getElementById("liveDefaultIncrement").textContent=state.settings.increment;
   const selectedAuction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
+
+const siteLogo=document.getElementById("siteLogo");
+const siteBrandName=document.getElementById("siteBrandName");
+const siteBrandTagline=document.getElementById("siteBrandTagline");
+
+if(selectedAuction && selectedAuction.type==="GENERAL"){
+  const siteBody=document.getElementById("siteBody");
+
+if(siteBody && selectedAuction.generalEventBanner){
+  siteBody.style.background=
+    'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)), url("' +
+    selectedAuction.generalEventBanner +
+    '") center top / cover fixed';
+}
+  siteLogo.src=selectedAuction.generalEventLogo || "new logo.png";
+  siteLogo.alt=(selectedAuction.generalEventName || selectedAuction.name)+" logo";
+
+  siteBrandName.textContent=
+    selectedAuction.generalEventName || selectedAuction.name;
+
+  siteBrandTagline.textContent=
+    selectedAuction.generalEventDescription || "";
+}else{
+  const siteBody=document.getElementById("siteBody");
+
+  if(siteBody){
+    siteBody.style.background=
+      'linear-gradient(rgba(2,20,10,.35),rgba(2,20,10,.35)), url("ChatGPT%20Image%20Sep%204%2C%202026%2C%2004_42_00%20PM.png") center top / cover fixed';
+  }
+
+  siteLogo.src="new logo.png";
+  siteLogo.alt="Clivia Dreamers logo";
+  siteBrandName.textContent="Clivia Dreamers Auction";
+  siteBrandTagline.textContent="Rare • Exquisite • Timeless";
+}
+ document.getElementById("navRules").style.display="";
+  const displayAuctionName=
+  selectedAuction && selectedAuction.type==="GENERAL"
+    ? (selectedAuction.generalEventName || selectedAuction.name)
+    : state.settings.auctionName;
+
+document.getElementById("auctionTitleTop").textContent=displayAuctionName;
+document.getElementById("liveTitle").textContent=displayAuctionName;
+  document.getElementById("liveDefaultIncrement").textContent=state.settings.increment;
 let headerStatus="CLOSED";
 
 if(state.settings.open && selectedAuction && selectedAuction.auctionDate && selectedAuction.auctionTime){
@@ -1847,25 +1923,43 @@ function closeOwner(){
   const auctionId=document.getElementById("adminAuctionSelect").value;
   const auction=(state.auctions||[]).find(a=>a.id===auctionId)
 
-  if(!auction){
-    state.selectedAuctionId="";
-    save();
-    document.getElementById("selectedAuctionNotice").textContent="No auction selected yet.";
-    return;
-  }
+if(!auction){
+  state.selectedAuctionId="";
+  save();
+  document.getElementById("selectedAuctionNotice").textContent="No auction selected yet.";
+
+  const categoryEditor=document.getElementById("generalCategoryEditor");
+  if(categoryEditor) categoryEditor.style.display="none";
+
+  return;
+}
 
   state.selectedAuctionId=auction.id;
   refreshLotCategorySelect(); 
   save();refreshAdminAuctionSelect();
+   const categoryEditor=document.getElementById("generalCategoryEditor");
+
+if(categoryEditor){
+  categoryEditor.style.display=auction.type==="GENERAL" ? "block" : "none";
+}
+
+if(auction.type==="GENERAL"){
+  const cats=auction.categories||[];
+
+  document.getElementById("generalCategory1").value=cats[0]||"";
+  document.getElementById("generalCategory2").value=cats[1]||"";
+  document.getElementById("generalCategory3").value=cats[2]||"";
+  document.getElementById("generalCategory4").value=cats[3]||"";
+}
 
   if(state.selectedAuctionId===auction.id){
-  document.getElementById("selectedAuctionNotice").textContent=
-  "Selected auction: "+auction.name+" ("+auction.type+") | "+auction.auctionDate+" | "+auction.auctionTime+" - "+auction.auctionCloseTime;
+const categoryEditor=document.getElementById("generalCategoryEditor");
+
+  document.getElementById("generalCategory1").value=cats[0]||"";
+  document.getElementById("generalCategory2").value=cats[1]||"";
+  document.getElementById("generalCategory3").value=cats[2]||"";
+  document.getElementById("generalCategory4").value=cats[3]||"";
 }
-   if(auction.auctionDate && auction.auctionTime){
-  document.getElementById("selectedAuctionNotice").textContent +=
-    " | Auction: " + auction.auctionDate + " at " + auction.auctionTime;
-}  
 } 
   function refreshAdminAuctionSelect(){
   const select=document.getElementById("adminAuctionSelect");
@@ -1902,7 +1996,37 @@ if(auction && auction.currency==="ZAR") incrementSelect.innerHTML='<option value
     select.appendChild(option);
   });
 }
-  
+  function saveGeneralCategories(){
+  const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
+
+  if(!auction){
+    alert("Please select an event first.");
+    return;
+  }
+
+  if(auction.type!=="GENERAL"){
+    alert("Event categories can only be changed for Your Own Event.");
+    return;
+  }
+
+  const categories=[
+    document.getElementById("generalCategory1").value.trim(),
+    document.getElementById("generalCategory2").value.trim(),
+    document.getElementById("generalCategory3").value.trim(),
+    document.getElementById("generalCategory4").value.trim()
+  ].filter(Boolean);
+
+  if(categories.length===0){
+    alert("Please enter at least one event category.");
+    return;
+  }
+
+  auction.categories=categories;
+  save();
+  refreshLotCategorySelect();
+
+  alert("Event categories saved.");
+}
     function extendAuctionDays(days){
   const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
 
@@ -1954,10 +2078,30 @@ if(newCloseTime) auction.auctionCloseTime=newCloseTime;
 "Selected auction: "+auction.name+" ("+auction.type+") | "+auction.auctionDate+" | "+auction.auctionTime+" - "+auction.auctionCloseTime;  
   alert("Auction date and times updated.");
 }
-function createAuction(){
+async function createAuction(){
   const type=document.getElementById("newAuctionType").value;
-  if(type!=="Clivia"){
-  alert("This auction type is coming later. Only Clivia auctions are active now.");
+  const generalEventName=document.getElementById("generalEventName")?.value.trim() || "";
+const generalEventDescription=document.getElementById("generalEventDescription")?.value.trim() || "";
+  const generalEventRules=document.getElementById("generalEventRules")?.value.trim() || "";
+  const generalEventLogoFile=document.getElementById("generalEventLogo")?.files?.[0] || null;
+const generalEventBannerFile=document.getElementById("generalEventBanner")?.files?.[0] || null;
+ if(type!=="CLIVIA" && type!=="GENERAL"){
+  alert("Please select a valid event type.");
+  return;
+}
+  
+  if(type==="GENERAL" && !generalEventName){
+  alert("Please enter the Event / Business Name.");
+  return;
+}
+
+if(type==="GENERAL" && !generalEventLogoFile){
+  alert("Please upload your Event Logo.");
+  return;
+}
+
+if(type==="GENERAL" && !generalEventBannerFile){
+  alert("Please upload your Event Banner.");
   return;
 }
   const currency=document.getElementById("newAuctionCurrency").value;
@@ -1989,6 +2133,10 @@ if((auctionDate || auctionTime || auctionCloseTime) && !(auctionDate && auctionT
   const auction={
     id:"A"+Date.now(),
     type:type,
+    generalEventName:generalEventName,
+generalEventDescription:generalEventDescription,
+generalEventLogo:generalEventLogo,
+generalEventBanner:generalEventBanner,
     currency:currency,
     name:name,
     firstBid:firstBid,
@@ -1999,12 +2147,11 @@ auctionCloseTime:auctionCloseTime,
     createdDate:new Date().toISOString(),
     lots:[],
 categories:
-  type==="Clivia" ? ["Seedlings","Offsets","Sets","Mature Plants"] :
-  type==="Pots" ? ["Small Pots","Medium Pots","Large Pots","Decorative Pots","Hanging Pots","Sets"] :
-  type==="Seeds" ? ["Clivia Seeds","Seed Packs","Mixed Seeds","Rare Seeds"] :
-  type==="Tools" ? ["Garden Tools","Plant Tools","Growing Equipment","Other Tools"] :
-  type==="Mixed" ? ["Clivia Plants","Seedlings","Offsets","Seeds","Pots","Tools","Other"] :
-  [],
+  type==="CLIVIA"
+    ? ["Seedlings","Offsets","Sets","Mature Plants"]
+    : type==="GENERAL"
+      ? ["Category 1","Category 2","Category 3","Category 4"]
+      : [],
 categoryCapacity:12,
   };
 
