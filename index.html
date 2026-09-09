@@ -631,6 +631,19 @@ th,td{
       <select id="bidderSelect" onchange="selectBidder()">
         <option value="">— Select bidder —</option>
       </select>
+      <div id="registeredBidderBankNumbers" style="display:none;margin-top:12px;">
+
+  <label>Own Bank Account Number</label>
+  <input id="registeredOwnBankNumber" type="text" readonly>
+
+  <label>Default Bank Account Number</label>
+  <input id="registeredDefaultBankNumber" type="text" readonly>
+
+  <div class="small" style="margin-top:8px;">
+    These two bank account numbers were supplied at registration and cannot be changed by the bidder.
+  </div>
+
+</div>
   <button type="button" onclick="toggleOwnerTestMode()" style="margin-top:8px;">
   OWNER TEST MODE ON / OFF
 </button>
@@ -640,6 +653,23 @@ th,td{
 </div>
 
       <div id="selectedBidderNotice" class="notice">No bidder selected yet.</div>
+      <div id="bidderStatusButtons"
+     style="display:none;gap:10px;flex-wrap:wrap;margin:12px 0;">
+
+  <button id="bidderStatusBtn"
+          type="button"
+          style="background:#ff8c00;color:#111;border:0;border-radius:11px;padding:12px 18px;font-weight:bold;cursor:default;">
+    NON-BIDDER
+  </button>
+
+  <button id="letMeBidBtn"
+          type="button"
+          class="ownEventBtn"
+          onclick="requestBidderActivation()">
+    LET ME BID
+  </button>
+
+</div>
       <div id="bidderCapacityNotice" class="notice">
   Select a bidder to see bidding capacity.
 </div>
@@ -665,10 +695,30 @@ th,td{
 
 <div>
   <div id="registeredBidderBankSection" style="display:none;">
+        <div class="panel" style="margin-top:12px;">
+  <h3>Bank Account Verification</h3>
 
-<div id="securityProofMsg" class="small" style="margin-top:10px;min-height:20px;"></div>
-    CONFIRM BANK ACCOUNT
+  <div class="notice">
+    To activate bidding, upload a bank statement or official bank confirmation showing your bank account number.
+    The account number must match the bank account number registered on your Clivia Dreamers profile.
+  </div>
+
+  <label>Upload Bank Statement / Bank Confirmation</label>
+  <input id="bidderBankStatement"
+         type="file"
+         accept=".pdf,.jpg,.jpeg,.png">
+
+  <br><br>
+
+  <button class="goldBtn" type="button" onclick="submitBidderBankStatement()">
+    SUBMIT FOR VERIFICATION
   </button>
+
+  <div id="bidderBankStatementMsg"
+       class="small"
+       style="margin-top:10px;"></div>
+</div>
+
 </div>
 </div>
 
@@ -684,6 +734,14 @@ th,td{
     <div class="notice">
   <b>PAYMENT NOTICE:</b> Winning bidders pay the seller/owner directly. Clivia Dreamers does not receive payment for the auction item. Transactions between bidder and seller/owner are at their own risk.
 </div>
+       <div id="liveAuctionTiming"
+     style="margin-top:12px;font-weight:bold;color:#d8ff9b;">
+  Auction Date: To be announced
+  &nbsp; | &nbsp;
+  Closes: --
+  &nbsp; | &nbsp;
+  Time Remaining: --
+</div> 
     <div style="text-align:right">
       Default bid increase: R<span id="liveDefaultIncrement">50</span>
     </div>
@@ -1963,9 +2021,121 @@ function refreshBidderSelect(){
     ? "OWNER TEST MODE is now ON for "+bidder.name
     : "OWNER TEST MODE is now OFF for "+bidder.name);
 }
+function requestBidderActivation(){
+  const bidder=(state.bidders||[]).find(b=>b.id===state.selectedBidderId);
 
-function selectBidder(){
+  if(!bidder){
+    alert("Please select your registered bidder profile first.");
+    return;
+  }
+
+  alert(
+    "BIDDING ACTIVATION\n\n" +
+    "The first 50 bidders and sellers register FREE. Thereafter the registration fee is R50.\n\n" +
+    "Your bidding capacity up to R5,000 is FREE.\n\n" +
+    "Before bidding, please upload a bank statement or bank confirmation showing your bank account number. " +
+    "The account number must match the bank account number registered on your Clivia Dreamers profile.\n\n" +
+    "Want to bid above R5,000? Go to Already Registered Bidder → Bidding Capacity → NEXT CAPACITY.\n\n" +
+    "The applicable capacity fee is a once-off fee for that approved bidding capacity, provided your account remains in good standing and you comply with the Clivia Dreamers Auction Rules & Terms."
+  );
+
+  const bankSection=document.getElementById("registeredBidderBankSection");
+
+  if(bankSection){
+    bankSection.style.display="block";
+    bankSection.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+}
+function submitBidderBankStatement(){
+  const bidder=(state.bidders||[]).find(b=>b.id===state.selectedBidderId);
+  const fileInput=document.getElementById("bidderBankStatement");
+  const msg=document.getElementById("bidderBankStatementMsg");
+
+  if(!bidder){
+    alert("Please select your registered bidder profile first.");
+    return;
+  }
+
+  if(!fileInput || !fileInput.files || !fileInput.files[0]){
+    if(msg) msg.textContent="Please choose a bank statement or bank confirmation first.";
+    return;
+  }
+
+  const file=fileInput.files[0];
+
+  bidder.bankStatementFileName=file.name;
+  bidder.bankStatementStatus="PENDING_AI_VERIFICATION";
+  bidder.bankStatementSubmittedDate=new Date().toISOString();
+  bidder.bankConfirmed=false;
+
+  save();
+
+  if(msg){
+    msg.textContent=
+      "Bank document submitted. Status: WAITING FOR VERIFICATION.";
+  }
+
+  alert(
+    "BANK VERIFICATION SUBMITTED\n\n" +
+    "Your bank document has been submitted for verification.\n\n" +
+    "The bank account number shown on the document must match the bank account number registered on your Clivia Dreamers profile.\n\n" +
+    "Bidding will remain blocked until the account has been verified."
+  );
+}
+      function updateBidderStatusButtons(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  const box=document.getElementById("bidderStatusButtons");
+  const statusBtn=document.getElementById("bidderStatusBtn");
+  const letMeBidBtn=document.getElementById("letMeBidBtn");
+
+  if(!box) return;
+
+  if(!bidder){
+    box.style.display="none";
+    return;
+  }
+
+  box.style.display="flex";
+
+  if(bidder.bankConfirmed){
+    statusBtn.textContent="ACTIVE BIDDER";
+    letMeBidBtn.style.display="none";
+  }else{
+    statusBtn.textContent="NON-BIDDER";
+    letMeBidBtn.style.display="inline-block";
+  }
+}
+      function selectBidder(){
   state.selectedBidderId=document.getElementById("bidderSelect").value;
+            const bidder=(state.bidders||[]).find(
+  b=>b.id===state.selectedBidderId
+);
+
+const bankBox=document.getElementById("registeredBidderBankNumbers");
+const ownBank=document.getElementById("registeredOwnBankNumber");
+const defaultBank=document.getElementById("registeredDefaultBankNumber");
+
+if(bidder){
+  if(bankBox) bankBox.style.display="block";
+  if(ownBank) ownBank.value=bidder.accountNumber || "";
+  if(defaultBank) defaultBank.value=bidder.defaultNumber || "";
+}else{
+  if(bankBox) bankBox.style.display="none";
+  if(ownBank) ownBank.value="";
+  if(defaultBank) defaultBank.value="";
+}
+            const statusButtons=document.getElementById("bidderStatusButtons");
+
+if(statusButtons){
+  statusButtons.style.display=
+    state.selectedBidderId ? "flex" : "none";
+}
 
   document.getElementById("registeredBidderPaymentSection").style.display =
     state.selectedBidderId ? "block" : "none";
@@ -1975,6 +2145,7 @@ function selectBidder(){
 
   save();
   selectedBidderNotice();
+   updateBidderStatusButtons();         
 }
 function increaseBidderCapacity(){
   const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
