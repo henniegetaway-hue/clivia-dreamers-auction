@@ -3044,148 +3044,21 @@ cursor:pointer;
    LOAD HERE
   </div>
 </div>
-<div style="
-  width:100%;
-  margin:8px 0 0 0;
-  background:linear-gradient(135deg,#d8ffca 0%,#73ff63 30%,#0bd526 60%,#a8ff69 100%);
-  box-shadow:0 0 14px rgba(80,255,80,.75), inset 0 1px 0 rgba(255,255,255,.85);
-  color:#071407;
-  border:1px solid #8cff73;
-  border-radius:10px;
-  padding:11px 18px;
-  font-weight:900;
-  text-align:center;
-  box-sizing:border-box;
-">
-  🔨 PLACE BID
-</div>
-      <div class="lotBody">
-  <div class="lotName">Sample Clivia</div>
 
-  <div class="small" style="margin-top:6px;">
-    <b>Breeding:</b> Green Throat × White Stripe
+     <div class="lotBody">
+  <div class="lotName">Available Auction Space</div>
+
+  <div class="small" style="margin-top:6px;text-align:center;">
+    Registered sellers can load their plant here.
   </div>
 
-  <div class="small" style="margin-top:4px;">
-    <b>Breeder:</b> Clivia Dreamers
-    <div class="small" style="margin-top:4px;">
-  <b>Award:</b> Best on Show 2026
 </div>
-  </div>
-
-
-  <div class="small" style="margin-top:4px;">
-    <b>Seller:</b> Clivia Dreamers
-  </div>
-  <div style="
-  margin-top:8px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  font-weight:bold;
-">
-  <span style="font-size:28px;">🏆</span>
-  <span>
-    <span style="color:#ff8c00;font-size:20px;font-weight:bold;">12</span>
-    Successful Deals on Site
-  </span>
 </div>
-
-  <div class="small" style="margin-top:4px;">
-    <b>Category:</b> Mature Plant
-    <div class="small" style="margin-top:6px;">
-  🌿 <b>Leaves:</b> 8
-  &nbsp;&nbsp;•&nbsp;&nbsp;
-  🌱 <b>Offsets:</b> 2
-</div>
-  </div>
-
-  <div style="
-  text-align:center;
-  margin:10px 0;
-  padding:8px;
-  border:1px solid rgba(255,140,0,.45);
-  border-radius:8px;
-  font-size:17px;
-  font-weight:bold;
-">
-  Starting Bid:
-  <span style="color:#ff8c00;font-size:22px;font-weight:bold;">
-    R500
-  </span>
-</div>
-
-  <div style="
-  text-align:center;
-  margin:10px 0;
-  padding:8px;
-  border-top:1px solid rgba(255,255,255,.10);
-  border-bottom:1px solid rgba(255,255,255,.10);
-  font-size:18px;
-  font-weight:bold;
-">
-  Current Bid:
-  <span style="
-    color:#ff8c00;
-    font-size:28px;
-    font-weight:bold;
-  ">
-    R850
-  </span>
-</div>
-  <b>Highest Bidder:</b><br>
-
-  <span style="
-    color:#ff8c00;
-    font-size:24px;
-    font-weight:bold;
-  ">
-    Bidder 104
-  </span>
-</div>
-
-
-<div class="small" style="margin-top:10px;text-align:center;">
-  Share this plant
-</div>
-
-<div class="shareRow" style="justify-content:center;">
-  <button
-    title="Share on WhatsApp"
-    onclick="shareSampleLotWhatsApp(1)"
-    style="font-size:22px;">
-    🟢
-  </button>
-
-  <button
-    title="Share on Facebook"
-    onclick="shareSampleLotFacebook(1)"
-    style="font-size:22px;font-weight:bold;">
-    f
-  </button>
-
-  <button
-    title="Share"
-    onclick="shareSampleLot(1)"
-    style="font-size:22px;">
-    ↗
- 
-
-  <div class="small" style="margin-top:8px;">
-    DEMONSTRATION ONLY
-  </div>
-</div>
-    </div>
-  `).join("");
-  return;
+`).join("");
+return;
 }
 
-  
-
-
-  const sampleCount=Math.max(0,12-auctionLots.length);
-
+const sampleCount=Math.max(0,12-auctionLots.length);
 const displayLots=[
   ...auctionLots,
   ...Array.from({length:sampleCount},(_,i)=>({
@@ -3198,10 +3071,6 @@ const displayLots=[
   const seller=(state.sellers||[]).find(s=>s.id===lot.sellerId);
     if(lot.isSample){
   return `
- <div class="small" style="margin-top:10px;text-align:center;">
-  Share this plant
-</div>
-
 <div class="shareRow" style="justify-content:center;gap:10px;">
   <button
     onclick="shareSampleLotWhatsApp(${lot.sampleNumber})"
@@ -3266,7 +3135,7 @@ const displayLots=[
     text-shadow:0 2px 8px #000;
     letter-spacing:2px;
   ">
-    SAMPLE
+    LOAD HERE
   </div>
 
 </div>
@@ -3316,38 +3185,6 @@ const displayLots=[
     Successful Deals on Site
   </span>
 </div>
-
-<div style="
-  text-align:center;
-  margin:10px 0;
-  padding:8px;
-  border-top:1px solid rgba(255,255,255,.10);
-  border-bottom:1px solid rgba(255,255,255,.10);
-  font-size:18px;
-  font-weight:bold;
-">
-  Current Bid:
-  <span style="color:#ff8c00;font-size:28px;font-weight:bold;">
-    R850
-  </span>
-</div>
-  <div class="bidHistory" style="
-  margin-top:10px;
-  text-align:center;
-  font-size:17px;
-">
-  <b>Highest Bidder:</b><br>
-
-  <span style="
-    color:#ff8c00;
-    font-size:24px;
-    font-weight:bold;
-  ">
-    Bidder 104
-  </span>
-</div>
-
-
 
   <div class="small" style="margin-top:8px;">
     DEMONSTRATION ONLY
@@ -3530,32 +3367,6 @@ ${lot.exportEligible ? `
 </div>
 </div>
 
-<div class="small" style="margin-top:10px;text-align:center;">
-  Share this plant
-</div>
-
-<div class="shareRow" style="justify-content:center;gap:10px;">
-  <button
-    onclick="shareLotWhatsApp('${lot.id}')"
-    title="WhatsApp"
-    style="font-size:22px;">
-    🟢
-  </button>
-
-  <button
-    onclick="shareLotFacebook('${lot.id}')"
-    title="Facebook"
-    style="font-size:22px;font-weight:bold;">
-    f
-  </button>
-
-  <button
-    onclick="shareLot('${lot.id}')"
-    title="Share"
-    style="font-size:22px;">
-    ↗
-  </button>
-</div>
 
 <div class="meta" style="margin-top:8px;">
   🌿 <b>Leaves:</b> ${lot.leaves || 0}
