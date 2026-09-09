@@ -3004,7 +3004,7 @@ const auctionLots=state.lots.filter(lot=>{
        alt="Sample Clivia flower"
        style="width:100%;height:100%;object-fit:cover;opacity:0.35;">
 
-  <div style="
+  <div onclick="openSellerLoadFromLot()" style="
     position:absolute;
     inset:0;
     display:flex;
@@ -3012,12 +3012,13 @@ const auctionLots=state.lots.filter(lot=>{
     justify-content:center;
     font-size:28px;
     font-weight:900;
-    color:white;
+   color:#7ddcff;
     letter-spacing:2px;
     text-shadow:0 2px 8px #000;
-    pointer-events:none;
+    pointer-events:auto;
+cursor:pointer;
   ">
-    SAMPLE
+   LOAD HERE
   </div>
 </div>
 <div style="
@@ -3070,6 +3071,11 @@ const auctionLots=state.lots.filter(lot=>{
 
   <div class="small" style="margin-top:4px;">
     <b>Category:</b> Mature Plant
+    <div class="small" style="margin-top:6px;">
+  🌿 <b>Leaves:</b> 8
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  🌱 <b>Offsets:</b> 2
+</div>
   </div>
 
   <div style="
@@ -3269,7 +3275,11 @@ const displayLots=[
     <b>Breeder:</b> Clivia Dreamers
   </div>
 
- <div style="
+<div class="small" style="margin-top:4px;">
+  <b>Seller:</b> Clivia Dreamers
+</div>
+
+<div style="
   margin-top:8px;
   display:flex;
   align-items:center;
@@ -3278,22 +3288,13 @@ const displayLots=[
   font-weight:bold;
 ">
   <span style="font-size:28px;">🏆</span>
-
   <span>
-    <span style="color:#ff8c00;font-size:20px;">12</span>
+    <span style="color:#ff8c00;font-size:20px;font-weight:bold;">12</span>
     Successful Deals on Site
   </span>
 </div>
 
-  <div class="small" style="margin-top:4px;">
-    <b>Seller:</b> Sample Seller
-  </div>
-
-  <div class="small" style="margin-top:4px;">
-    <b>Category:</b> Mature Plant
-  </div>
-
-  <div style="
+<div style="
   text-align:center;
   margin:10px 0;
   padding:8px;
@@ -3305,10 +3306,8 @@ const displayLots=[
   Current Bid:
   <span style="color:#ff8c00;font-size:28px;font-weight:bold;">
     R850
-</span>
+  </span>
 </div>
-
-
   <div class="bidHistory" style="
   margin-top:10px;
   text-align:center;
@@ -3753,7 +3752,36 @@ if(Date.now()>=closeTime.getTime()-60000){
   save();
   renderLots();
 }
+function openSellerLoadFromLot(){
+  const seller=(state.sellers||[]).find(
+    s=>s.id===state.selectedSellerId
+  );
 
+  if(!seller){
+    alert("Please register or select your seller profile before loading a plant.");
+    showPage("seller");
+    return;
+  }
+
+  if(!seller.rulesAccepted){
+    alert("You must accept the Rules & Terms before loading a plant.");
+    showPage("rules");
+    return;
+  }
+
+  showPage("seller");
+
+  setTimeout(()=>{
+    const lotName=document.getElementById("lotName");
+    if(lotName){
+      lotName.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+      });
+      lotName.focus();
+    }
+  },100);
+}
 function showPlantPhoto(lotId){
   const lot=state.lots.find(l=>l.id===lotId);
   if(!lot || !lot.plant) return;
