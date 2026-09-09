@@ -230,8 +230,9 @@ button{
 }
 
 .flowerWrap{
+  position:relative;
   width:100%;
-  aspect-ratio:1/1;
+  height:280px;
   background:#050805;
   overflow:hidden;
 }
@@ -2986,10 +2987,9 @@ const auctionLots=state.lots.filter(lot=>{
   box.innerHTML=Array.from({length:12},(_,i)=>`
     <div class="lotCard sampleLot" style="pointer-events:none;">
       <div class="lotTop" style="align-items:flex-start;">
-  <span>
-    LOT-${String(i+1).padStart(3,"0")}
-    <div style="font-size:12px;margin-top:3px;">Min +R50</div>
-  </span>
+      <span>
+  LOT-${String(i+1).padStart(3,"0")}
+</span>
 
   <span style="text-align:right;color:#9cff57;font-weight:bold;">
     <div>Closes: To be announced</div>
@@ -3016,9 +3016,6 @@ const auctionLots=state.lots.filter(lot=>{
     <b>Breeder:</b> Dream Clivias
   </div>
 
-  <div class="small" style="margin-top:4px;">
-    <b>Award / Trophy:</b> Best on Show
-  </div>
 
   <div class="small" style="margin-top:4px;">
     <b>Seller:</b> Sample Seller
@@ -3036,30 +3033,52 @@ const auctionLots=state.lots.filter(lot=>{
     Current Bid: R850
   </div>
 
-  <div class="small" style="margin-top:4px;">
-    Next Minimum Bid: R900
-  </div>
-
-  <div class="small" style="margin-top:4px;">
-    <b>Bid Increase:</b> R50
-  </div>
-
   <div class="bidHistory" style="margin-top:10px;">
-    <b>Highest Bidder:</b> Bidder 104<br>
-    <b>Number of Bids:</b> 7
-  </div>
-
-
-<div class="small" style="margin-top:8px;">Share this plant:</div>
-
-<div class="shareRow">
-  <button>WhatsApp</button>
-  <button>Facebook</button>
-  <button>Share</button>
+  <b>Highest Bidder:</b> Bidder 104
 </div>
-  <button class="goldBtn" style="width:100%;margin-top:10px;">
-    PLACE BID
+
+
+<div class="small" style="margin-top:10px;text-align:center;">
+  Share this plant
+</div>
+
+<div class="shareRow" style="justify-content:center;">
+  <button
+    title="Share on WhatsApp"
+    onclick="shareSampleLotWhatsApp(1)"
+    style="font-size:22px;">
+    🟢
   </button>
+
+  <button
+    title="Share on Facebook"
+    onclick="shareSampleLotFacebook(1)"
+    style="font-size:22px;font-weight:bold;">
+    f
+  </button>
+
+  <button
+    title="Share"
+    onclick="shareSampleLot(1)"
+    style="font-size:22px;">
+    ↗
+  </button>
+</div>
+  <button
+  style="
+    width:100%;
+    margin-top:10px;
+    background:linear-gradient(135deg,#caffb8 0%,#62ff59 35%,#08d419 60%,#9cff57 100%);
+    box-shadow:0 0 12px rgba(80,255,80,.65), inset 0 1px 0 rgba(255,255,255,.8);
+    color:#111;
+    border:0;
+    border-radius:11px;
+    padding:12px 18px;
+    font-weight:bold;
+    cursor:pointer;
+  ">
+  🔨 PLACE BID
+</button>
 
   <div class="small" style="margin-top:8px;">
     DEMONSTRATION ONLY
@@ -3111,18 +3130,56 @@ const displayLots=[
 </div>
 
       <div style="
-        height:220px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        background:rgba(0,0,0,.30);
-        font-size:22px;
-        font-weight:bold;
-      ">
-        SAMPLE FLOWER
-      </div>
+  position:relative;
+  height:220px;
+  overflow:hidden;
+  background:#050805;
+">
 
-      <div class="lotBody">
+  <img src="faded pic.png"
+       alt="Sample Clivia flower"
+       style="
+         width:100%;
+         height:100%;
+         object-fit:cover;
+         display:block;
+         opacity:0.35;
+       ">
+
+  <div style="
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    font-weight:bold;
+    color:#ffffff;
+    text-shadow:0 2px 8px #000;
+    letter-spacing:2px;
+  ">
+    SAMPLE
+  </div>
+
+</div>
+
+<button
+  style="
+    width:100%;
+    margin:8px 0 0 0;
+    background:linear-gradient(135deg,#caffb8 0%,#62ff59 35%,#08d419 60%,#9cff57 100%);
+    box-shadow:0 0 12px rgba(80,255,80,.65), inset 0 1px 0 rgba(255,255,255,.8);
+    color:#111;
+    border:0;
+    border-radius:11px;
+    padding:12px 18px;
+    font-weight:bold;
+    cursor:pointer;
+  ">
+  🔨 PLACE BID
+</button>
+
+<div class="lotBody">
   <div class="lotName">Sample Clivia</div>
 
   <div class="small" style="margin-top:6px;">
@@ -3133,9 +3190,20 @@ const displayLots=[
     <b>Breeder:</b> Dream Clivias
   </div>
 
-  <div class="small" style="margin-top:4px;font-weight:bold;">
-  <span style="font-size:24px;">🏆</span>
-  12 Successful Sales
+ <div style="
+  margin-top:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  font-weight:bold;
+">
+  <span style="font-size:28px;">🏆</span>
+
+  <span>
+    <span style="color:#ff8c00;font-size:20px;">12</span>
+    Successful Deals on Site
+  </span>
 </div>
 
   <div class="small" style="margin-top:4px;">
@@ -3146,26 +3214,54 @@ const displayLots=[
     <b>Category:</b> Mature Plant
   </div>
 
-  <div class="small" style="margin-top:8px;">
-    Starting Bid: 
-    <span style="color:#ff8c00;font-weight:bold;">R500</span>
-  </div>
+  <div style="
+  text-align:center;
+  margin:10px 0;
+  padding:8px;
+  border:1px solid rgba(255,140,0,.45);
+  border-radius:8px;
+  font-size:18px;
+  font-weight:bold;
+">
+  Starting Bid:
+  <span style="color:#ff8c00;font-size:24px;font-weight:bold;">
+    R500
+  </span>
+</div>
 
-  <div class="price">
-    Current Bid:
-     <span style="color:#ff8c00;font-weight:bold;">R850</span>
-  </div>
-
-
-  <div class="bidHistory" style="margin-top:10px;">
-  <b>Highest Bidder:</b>
-  <span style="color:#ff8c00;font-weight:bold;">Bidder 104</span>
+  <div style="
+  text-align:center;
+  margin:10px 0;
+  padding:8px;
+  border-top:1px solid rgba(255,255,255,.10);
+  border-bottom:1px solid rgba(255,255,255,.10);
+  font-size:18px;
+  font-weight:bold;
+">
+  Current Bid:
+  <span style="color:#ff8c00;font-size:28px;font-weight:bold;">
+    R850
+  </span>
 </div>
 
 
-  <button class="goldBtn" style="width:100%;margin-top:10px;">
-    PLACE BID
-  </button>
+  <div class="bidHistory" style="
+  margin-top:10px;
+  text-align:center;
+  font-size:17px;
+">
+  <b>Highest Bidder:</b><br>
+
+  <span style="
+    color:#ff8c00;
+    font-size:24px;
+    font-weight:bold;
+  ">
+    Bidder 104
+  </span>
+</div>
+
+
 
   <div class="small" style="margin-top:8px;">
     DEMONSTRATION ONLY
@@ -3177,6 +3273,7 @@ const displayLots=[
     const high=currentBid(lot);
     const next=nextBid(lot);
     const highest=(lot.bids||[]).slice().sort((a,b)=>b.amount-a.amount)[0];
+    const seller=(state.sellers||[]).find(s=>s.id===lot.sellerId);    
   const hotBidding=lot.extendedCloseUntil && new Date(lot.extendedCloseUntil).getTime()>Date.now();
         const lotCloseTime = lot.extendedCloseUntil
   ? new Date(lot.extendedCloseUntil)
@@ -3198,18 +3295,78 @@ return `
     <div class="lotCard" id="lot-${lot.id}">
     <img src="faded pic.png" alt="" style="display:none;">
     
-    ${hotBidding ? '<div class="notice">🔥 HOT BIDDING — this plant stays open until 1 minute after the latest bid.</div>' : ''}
+   
       <div class="lotTop">
-        <span>LOT-${String(i+1).padStart(3,"0")}</span>
-        <span>Min +${currencySymbol}${auction && auction.currency==="EUR" ? 5 : Number(lot.increment||state.settings.increment||50)}</span>
-      </div>
+  <span>LOT-${String(i+1).padStart(3,"0")}</span>
+</div>
 
       <div class="flowerWrap">
-        <img src="${lot.flower}" alt="${escapeHtml(lot.name)} flower">
-      </div>
+ <img
+  id="lotPhoto_${lot.id}"
+  src="${lot.flower}"
+  alt="${escapeHtml(lot.name)} flower"
+  ${lot.plant ? `onclick="flipLotPhoto('${lot.id}')" style="cursor:pointer;"` : ""}
+>
 
+  ${hotBidding ? `
+    <div style="
+      position:absolute;
+      top:8px;
+      left:8px;
+      background:linear-gradient(135deg,#ffb347,#ff8c00,#e66a00);
+      color:#111;
+      padding:6px 9px;
+      border-radius:8px;
+      font-size:11px;
+      font-weight:bold;
+      box-shadow:0 0 9px rgba(255,140,0,.75);
+      z-index:3;
+    ">
+      🔥 HOT BIDS
+    </div>
+  ` : ""}
+
+  ${seller && seller.exporterApproved && lot.exportEligible ? `
+
+</div>
+<button
+  onclick="placeBid('${lot.id}')"
+  style="
+    width:100%;
+    margin:8px 0 0 0;
+    background:linear-gradient(135deg,#d8ffca 0%,#73ff63 30%,#0bd526 60%,#a8ff69 100%);
+    box-shadow:0 0 14px rgba(80,255,80,.75), inset 0 1px 0 rgba(255,255,255,.85);
+    color:#071407;
+    border:1px solid #8cff73;
+    border-radius:10px;
+    padding:11px 18px;
+    font-weight:900;
+    cursor:pointer;
+  ">
+  🔨 PLACE BID
+</button>
       <div class="lotBody">
-        <div class="lotName">${escapeHtml(lot.name)}</div>
+
+  <div style="
+    text-align:center;
+    margin:8px 0 10px 0;
+    padding:7px;
+    border:1px solid rgba(255,140,0,.45);
+    border-radius:8px;
+    font-size:17px;
+    font-weight:bold;
+  ">
+    Starting Bid:
+    <span style="
+      color:#ff8c00;
+      font-size:22px;
+      font-weight:bold;
+    ">
+      ${currencySymbol}${lot.startBid}
+    </span>
+  </div>
+
+  <div class="lotName">${escapeHtml(lot.name)}</div>
         <div class="small" style="margin-top:6px;">
   <b>Breeding:</b> ${escapeHtml(lot.breeding || "Not supplied")}
 </div>
@@ -3217,9 +3374,6 @@ return `
   <b>Breeder:</b> ${escapeHtml(lot.breeder || "Not supplied")}
 </div>
 
-<div class="small" style="margin-top:4px;">
-  <b>Award / Trophy:</b> ${escapeHtml(lot.trophy || "None")}
-</div>
 <div class="small" style="margin-top:4px;font-weight:bold;">
   Time Left: ${timeLeftText}
 </div>
@@ -3237,27 +3391,65 @@ ${lot.exportEligible ? `
   <b>Category:</b> ${escapeHtml(lot.category || "Not supplied")}
 </div>
  <div style="font-size:18px;font-weight:bold;margin:8px 0;padding:6px;border-top:1px solid #ddd;border-bottom:1px solid #ddd;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
-  <span>🏆 ${Number(seller.completedSales||0)} Successful Sales</span>
+  <span>
+  🏆
+  <span style="color:#ff8c00;font-size:20px;font-weight:bold;">
+    ${Number(seller.completedSales||0)}
+  </span>
+  Successful Deals on Site
+</span>
   <span>🙂 ${Math.min(Number(seller.happyBuyers||0),Number(seller.completedSales||0))} Happy Buyers</span>
 </div>
 ` : ''} 
         ${lot.preferredAuctionTime ? '<div class="small">Preferred auction time: '+lot.preferredAuctionTime+'</div>' : ''}
-<div class="small" style="margin-top:8px;">
-  Starting Bid: ${currencySymbol}${lot.startBid}
-</div>
 
 <div class="price">
-  Current Bid: ${currencySymbol}${high} + PPC
+ <div style="
+  text-align:center;
+  margin:10px 0;
+  padding:8px;
+  border-top:1px solid rgba(255,255,255,.10);
+  border-bottom:1px solid rgba(255,255,255,.10);
+  font-size:18px;
+  font-weight:bold;
+">
+  Current Bid:
+  <span style="
+    color:#ff8c00;
+    font-size:28px;
+    font-weight:bold;
+  ">
+    ${currencySymbol}${high}
+  </span>
+  + PPC
+</div>
 </div>
 
-<div class="small" style="margin-top:4px;">
-  <b>Bid Increase:</b> ${currencySymbol}${Number(lot.increment || 50)}
+<div class="small" style="margin-top:10px;text-align:center;">
+  Share this plant
 </div>
-<div class="small">Share this plant:</div>
-<div class="shareRow">
-  <button onclick="shareLotWhatsApp('${lot.id}')">WhatsApp</button>
-  <button onclick="shareLotFacebook('${lot.id}')">Facebook</button>
-  <button onclick="shareLot('${lot.id}')">Share</button>
+
+<div class="shareRow" style="justify-content:center;gap:10px;">
+  <button
+    onclick="shareLotWhatsApp('${lot.id}')"
+    title="WhatsApp"
+    style="font-size:22px;">
+    🟢
+  </button>
+
+  <button
+    onclick="shareLotFacebook('${lot.id}')"
+    title="Facebook"
+    style="font-size:22px;font-weight:bold;">
+    f
+  </button>
+
+  <button
+    onclick="shareLot('${lot.id}')"
+    title="Share"
+    style="font-size:22px;">
+    ↗
+  </button>
 </div>
 
 <div class="meta" style="margin-top:8px;">
@@ -3272,19 +3464,24 @@ ${lot.exportEligible ? `
           </button>
         `:""}
 
-        <div class="bidRow">
-          <input id="bid_${lot.id}" type="number" value="${next}" min="${next}">
-          <button class="goldBtn" onclick="placeBid('${lot.id}')">
-  PLACE BID
-</button>
-        </div>
+       <div class="bidRow">
+  <input id="bid_${lot.id}" type="number" value="${next}" min="${next}">
+</div>
 
-        <div class="bidHistory" style="margin-top:10px;">
-  <b>Highest Bidder:</b>
-<span style="color:#ff8c00;font-weight:bold;">
-  ${highest ? escapeHtml(highest.bidderName) : "No bids yet"}
-</span>
+        <div class="bidHistory" style="
+  margin-top:10px;
+  text-align:center;
+  font-size:17px;
+">
+  <b>Highest Bidder:</b><br>
 
+  <span style="
+    color:#ff8c00;
+    font-size:24px;
+    font-weight:bold;
+  ">
+    ${highest ? escapeHtml(highest.bidderName) : "No bids yet"}
+  </span>
 </div>
       </div>
     </div>`;
@@ -3482,7 +3679,24 @@ function showPlantPhoto(lotId){
   document.getElementById("modalImage").src=lot.plant;
   document.getElementById("photoModal").classList.remove("hidden");
 }
+function flipLotPhoto(lotId){
+  const lot=(state.lots||[]).find(l=>l.id===lotId);
+  const img=document.getElementById("lotPhoto_"+lotId);
 
+  if(!lot || !img || !lot.plant) return;
+
+  const showingFlower = img.src === lot.flower || img.dataset.view !== "plant";
+
+  if(showingFlower){
+    img.src=lot.plant;
+    img.dataset.view="plant";
+    img.alt=escapeHtml(lot.name)+" plant";
+  }else{
+    img.src=lot.flower;
+    img.dataset.view="flower";
+    img.alt=escapeHtml(lot.name)+" flower";
+  }
+}
 function hidePhotoModal(){
   document.getElementById("photoModal").classList.add("hidden");
 }
