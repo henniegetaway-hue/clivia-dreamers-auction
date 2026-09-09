@@ -603,7 +603,7 @@ th,td{
 
       <br><br>
       <label style="display:flex;gap:8px;align-items:center;margin:12px 0;">
-  <input id="regRulesAccepted" type="checkbox" style="width:auto;">
+  <input id="reg" type="checkbox" style="width:auto;">
   I have read and accept the Clivia Dreamers Auction Rules & Terms.
 </label>
       
@@ -1168,7 +1168,7 @@ th,td{
   <label>Upload exporter documentation</label>
   <input id="sellerExporterDocs" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple>
   <label style="margin-top:12px;display:flex;align-items:flex-start;gap:10px;">
-  <input id="sellerExporterRulesAccepted" type="checkbox"
+  <input id="sellerExporter" type="checkbox"
          style="width:auto;margin-top:3px;flex:0 0 auto;">
   <span>
     I confirm that I comply with all applicable export rules, permits, documentation and qualification requirements for every country to which I offer plants for export.
@@ -1196,7 +1196,7 @@ th,td{
 
     <br><br>
     <label style="display:flex;gap:8px;align-items:center;margin:12px 0;">
-  <input id="sellerRulesAccepted" type="checkbox" style="width:auto;">
+  <input id="seller" type="checkbox" style="width:auto;">
   I have read and accept the Clivia Dreamers Auction Rules & Terms.
 </label>
 <label>Notify me about auctions?</label>
@@ -1654,14 +1654,14 @@ bankConfirmed:false,
 totalSalesValue:0,
 happyBuyers:0,
     bankChangePending:false,
-    rulesAccepted:true,
+    rulesAccepted:rulesAccepted,
 rulesAcceptedDate:new Date().toISOString(),
 notifyNextAuction:document.getElementById("sellerNotifyNextAuction").value,
 selectedNotificationAuctions:Array.from(document.getElementById("sellerSelectedAuctions").selectedOptions).map(o=>o.value),    
   };
 
-  state.sellers=state.sellers||[];
-  state.sellers.push(seller);
+ state.sellers=state.sellers||[];
+(seller);
 save();
 refreshSellerSelect();
   alert("Seller registration successful. You can now list plants for auction.");
@@ -1742,12 +1742,35 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
   const seller=(state.sellers||[]).find(s=>s.id===sellerId);
   const notice=document.getElementById("selectedSellerNotice");
 
-  notice.textContent="Selected seller: " + seller.name;
+  if(!seller){
+    state.selectedSellerId="";
+    save();
+
+    if(notice){
+      notice.textContent="No seller selected yet.";
+    }
+
+    return;
+  }
+
+  state.selectedSellerId=seller.id;
+  save();
+
+  if(notice){
+    notice.textContent="Selected seller: " + seller.name;
+  }
 }
   function confirmSellerBank(){
   const sellerId=document.getElementById("sellerSelect").value;
   const seller=(state.sellers||[]).find(s=>s.id===sellerId);
+
+  if(!seller){
+    alert("Please select a seller first.");
+    return;
+  }
+
   const last4=String(seller.accountNumber||"").slice(-4);
+
   const ok=confirm(
     "Please confirm your seller bank account ending in " + last4 + " is correct."
   );
@@ -3763,7 +3786,7 @@ function openSellerLoadFromLot(){
     return;
   }
 
-  if(!seller.rulesAccepted){
+  if(!seller.){
     alert("You must accept the Rules & Terms before loading a plant.");
     showPage("rules");
     return;
