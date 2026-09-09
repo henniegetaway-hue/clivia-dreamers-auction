@@ -3786,7 +3786,7 @@ function openSellerLoadFromLot(){
     return;
   }
 
-  if(!seller.){
+  if(!seller.rulesAccepted){
     alert("You must accept the Rules & Terms before loading a plant.");
     showPage("rules");
     return;
