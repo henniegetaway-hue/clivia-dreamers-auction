@@ -3345,7 +3345,7 @@ const displayLots=[
     const high=currentBid(lot);
     const next=nextBid(lot);
     const highest=(lot.bids||[]).slice().sort((a,b)=>b.amount-a.amount)[0];
-    const seller=(state.sellers||[]).find(s=>s.id===lot.sellerId);    
+   
   const hotBidding=lot.extendedCloseUntil && new Date(lot.extendedCloseUntil).getTime()>Date.now();
         const lotCloseTime = lot.extendedCloseUntil
   ? new Date(lot.extendedCloseUntil)
