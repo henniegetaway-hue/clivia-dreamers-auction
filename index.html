@@ -2072,6 +2072,8 @@ function submitBidderBankStatement(){
   bidder.bankConfirmed=false;
 
   save();
+ updateBidderStatusButtons();
+selectedBidderNotice();     
 
   if(msg){
     msg.textContent=
@@ -2104,12 +2106,17 @@ function submitBidderBankStatement(){
   box.style.display="flex";
 
   if(bidder.bankConfirmed){
-    statusBtn.textContent="ACTIVE BIDDER";
-    letMeBidBtn.style.display="none";
-  }else{
-    statusBtn.textContent="NON-BIDDER";
-    letMeBidBtn.style.display="inline-block";
-  }
+  statusBtn.textContent="ACTIVE BIDDER";
+  letMeBidBtn.style.display="none";
+
+}else if(bidder.bankStatementStatus==="PENDING_AI_VERIFICATION"){
+  statusBtn.textContent="BANK CHECK PENDING";
+  letMeBidBtn.style.display="none";
+
+}else{
+  statusBtn.textContent="NON-BIDDER";
+  letMeBidBtn.style.display="inline-block";
+}
 }
       function selectBidder(){
   state.selectedBidderId=document.getElementById("bidderSelect").value;
