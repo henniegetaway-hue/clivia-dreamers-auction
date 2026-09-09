@@ -941,7 +941,7 @@ th,td{
             <label>Breeding</label>
 <input id="lotBreeding" placeholder="e.g. Mother Plant × Father Plant">
            <label>Breeder</label>
-<input id="lotBreeder" placeholder="e.g. Hennie Vermeulen / Dream Clivias"> 
+<input id="lotBreeder" placeholder="e.g. Hennie Vermeulen / Clivia Dreamers"> 
 
 <label>Trophy / Award</label>
 <input id="lotTrophy" placeholder="e.g. Best on Show 2026, First Prize, or leave blank">
@@ -2999,12 +2999,42 @@ const auctionLots=state.lots.filter(lot=>{
   </span>
 </div>
 
-      <div class="flowerWrap">
- <img src="faded pic.png"
+      <div class="flowerWrap" style="position:relative;">
+  <img src="faded pic.png"
        alt="Sample Clivia flower"
-       style="width:100%;height:220px;object-fit:cover;opacity:0.35;">
-</div>
+       style="width:100%;height:100%;object-fit:cover;opacity:0.35;">
 
+  <div style="
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    font-weight:900;
+    color:white;
+    letter-spacing:2px;
+    text-shadow:0 2px 8px #000;
+    pointer-events:none;
+  ">
+    SAMPLE
+  </div>
+</div>
+<div style="
+  width:100%;
+  margin:8px 0 0 0;
+  background:linear-gradient(135deg,#d8ffca 0%,#73ff63 30%,#0bd526 60%,#a8ff69 100%);
+  box-shadow:0 0 14px rgba(80,255,80,.75), inset 0 1px 0 rgba(255,255,255,.85);
+  color:#071407;
+  border:1px solid #8cff73;
+  border-radius:10px;
+  padding:11px 18px;
+  font-weight:900;
+  text-align:center;
+  box-sizing:border-box;
+">
+  🔨 PLACE BID
+</div>
       <div class="lotBody">
   <div class="lotName">Sample Clivia</div>
 
@@ -3013,28 +3043,84 @@ const auctionLots=state.lots.filter(lot=>{
   </div>
 
   <div class="small" style="margin-top:4px;">
-    <b>Breeder:</b> Dream Clivias
+    <b>Breeder:</b> Clivia Dreamers
+    <div class="small" style="margin-top:4px;">
+  <b>Award:</b> Best on Show 2026
+</div>
   </div>
 
 
   <div class="small" style="margin-top:4px;">
-    <b>Seller:</b> Sample Seller
+    <b>Seller:</b> Clivia Dreamers
   </div>
+  <div style="
+  margin-top:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  font-weight:bold;
+">
+  <span style="font-size:28px;">🏆</span>
+  <span>
+    <span style="color:#ff8c00;font-size:20px;font-weight:bold;">12</span>
+    Successful Deals on Site
+  </span>
+</div>
 
   <div class="small" style="margin-top:4px;">
     <b>Category:</b> Mature Plant
   </div>
 
-  <div class="small" style="margin-top:8px;">
-    Starting Bid: R500
-  </div>
+  <div style="
+  text-align:center;
+  margin:10px 0;
+  padding:8px;
+  border:1px solid rgba(255,140,0,.45);
+  border-radius:8px;
+  font-size:17px;
+  font-weight:bold;
+">
+  Starting Bid:
+  <span style="color:#ff8c00;font-size:22px;font-weight:bold;">
+    R500
+  </span>
+</div>
 
-  <div class="price">
-    Current Bid: R850
-  </div>
+  <div style="
+  text-align:center;
+  margin:10px 0;
+  padding:8px;
+  border-top:1px solid rgba(255,255,255,.10);
+  border-bottom:1px solid rgba(255,255,255,.10);
+  font-size:18px;
+  font-weight:bold;
+">
+  Current Bid:
+  <span style="
+    color:#ff8c00;
+    font-size:28px;
+    font-weight:bold;
+  ">
+    R850
+  </span>
+  + PPC
+</div>
 
-  <div class="bidHistory" style="margin-top:10px;">
-  <b>Highest Bidder:</b> Bidder 104
+  <div class="bidHistory" style="
+  margin-top:10px;
+  text-align:center;
+  font-size:17px;
+">
+  <b>Highest Bidder:</b><br>
+
+  <span style="
+    color:#ff8c00;
+    font-size:24px;
+    font-weight:bold;
+  ">
+    Bidder 104
+  </span>
 </div>
 
 
@@ -3062,23 +3148,7 @@ const auctionLots=state.lots.filter(lot=>{
     onclick="shareSampleLot(1)"
     style="font-size:22px;">
     ↗
-  </button>
-</div>
-  <button
-  style="
-    width:100%;
-    margin-top:10px;
-    background:linear-gradient(135deg,#caffb8 0%,#62ff59 35%,#08d419 60%,#9cff57 100%);
-    box-shadow:0 0 12px rgba(80,255,80,.65), inset 0 1px 0 rgba(255,255,255,.8);
-    color:#111;
-    border:0;
-    border-radius:11px;
-    padding:12px 18px;
-    font-weight:bold;
-    cursor:pointer;
-  ">
-  🔨 PLACE BID
-</button>
+ 
 
   <div class="small" style="margin-top:8px;">
     DEMONSTRATION ONLY
@@ -3106,26 +3176,42 @@ const displayLots=[
   const seller=(state.sellers||[]).find(s=>s.id===lot.sellerId);
     if(lot.isSample){
   return `
-  <div class="small" style="margin-top:8px;">Share this sample lot:</div>
+ <div class="small" style="margin-top:10px;text-align:center;">
+  Share this plant
+</div>
 
-<div class="shareRow">
-  <button onclick="shareSampleLotWhatsApp(${lot.sampleNumber})">WhatsApp</button>
-  <button onclick="shareSampleLotFacebook(${lot.sampleNumber})">Facebook</button>
-  <button onclick="shareSampleLot(${lot.sampleNumber})">Share</button>
+<div class="shareRow" style="justify-content:center;gap:10px;">
+  <button
+    onclick="shareSampleLotWhatsApp(${lot.sampleNumber})"
+    title="WhatsApp"
+    style="font-size:22px;">
+    🟢
+  </button>
+
+  <button
+    onclick="shareSampleLotFacebook(${lot.sampleNumber})"
+    title="Facebook"
+    style="font-size:22px;font-weight:bold;">
+    f
+  </button>
+
+  <button
+    onclick="shareSampleLot(${lot.sampleNumber})"
+    title="Share"
+    style="font-size:22px;">
+    ↗
+  </button>
 </div>
       <div class="lotTop" style="align-items:flex-start;">
-  <span>
-    Lot ${String(lot.sampleNumber).padStart(3,"0")}
-    <div style="font-size:12px;margin-top:3px;">
-      Min +R50
-    </div>
-  </span>
+ <span>
+  LOT-${String(lot.sampleNumber).padStart(3,"0")}
+</span>
 
   <span style="text-align:right;color:#9cff57;font-weight:bold;">
-    <div>Closes: 14 Sep, 19:30</div>
-    <div style="font-size:12px;margin-top:3px;">
-      2h 18m 41s
-    </div>
+    <div>Closes: To be announced</div>
+<div style="font-size:12px;margin-top:3px;">
+  Time Remaining: --
+</div>
   </span>
 </div>
 
@@ -3187,7 +3273,7 @@ const displayLots=[
   </div>
 
   <div class="small" style="margin-top:4px;">
-    <b>Breeder:</b> Dream Clivias
+    <b>Breeder:</b> Clivia Dreamers
   </div>
 
  <div style="
@@ -3218,21 +3304,6 @@ const displayLots=[
   text-align:center;
   margin:10px 0;
   padding:8px;
-  border:1px solid rgba(255,140,0,.45);
-  border-radius:8px;
-  font-size:18px;
-  font-weight:bold;
-">
-  Starting Bid:
-  <span style="color:#ff8c00;font-size:24px;font-weight:bold;">
-    R500
-  </span>
-</div>
-
-  <div style="
-  text-align:center;
-  margin:10px 0;
-  padding:8px;
   border-top:1px solid rgba(255,255,255,.10);
   border-bottom:1px solid rgba(255,255,255,.10);
   font-size:18px;
@@ -3241,7 +3312,8 @@ const displayLots=[
   Current Bid:
   <span style="color:#ff8c00;font-size:28px;font-weight:bold;">
     R850
-  </span>
+</span>
++ PPC
 </div>
 
 
@@ -3346,7 +3418,20 @@ return `
   🔨 PLACE BID
 </button>
       <div class="lotBody">
-
+ <div style="
+  text-align:center;
+  margin:10px 0;
+  padding:8px;
+  border:1px solid rgba(255,140,0,.45);
+  border-radius:8px;
+  font-size:18px;
+  font-weight:bold;
+">
+  Starting Bid:
+  <span style="color:#ff8c00;font-size:24px;font-weight:bold;">
+    R500
+  </span>
+</div>
   <div style="
     text-align:center;
     margin:8px 0 10px 0;
