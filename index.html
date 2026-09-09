@@ -2986,24 +2986,16 @@ const auctionLots=state.lots.filter(lot=>{
   box.innerHTML=Array.from({length:12},(_,i)=>`
     <div class="lotCard sampleLot" style="pointer-events:none;">
       <div class="lotTop" style="align-items:flex-start;">
-  <span>LOT-${String(i+1).padStart(3,"0")}</span>
+  <span>
+    LOT-${String(i+1).padStart(3,"0")}
+    <div style="font-size:12px;margin-top:3px;">Min +R50</div>
+  </span>
 
-  <span style="text-align:right;">
-    ${lotCloseTime ? `
-      <div>
-        Closes:
-        ${lotCloseTime.toLocaleString("en-ZA",{
-          day:"2-digit",
-          month:"short",
-          hour:"2-digit",
-          minute:"2-digit"
-        })}
-      </div>
-
-      <div style="font-size:12px;margin-top:3px;">
-        ${timeLeftText}
-      </div>
-    ` : ""}
+  <span style="text-align:right;color:#9cff57;font-weight:bold;">
+    <div>Closes: To be announced</div>
+    <div style="font-size:12px;margin-top:3px;">
+      Time Remaining: --
+    </div>
   </span>
 </div>
 
