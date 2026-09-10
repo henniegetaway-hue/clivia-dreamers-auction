@@ -208,8 +208,35 @@ button{
 /* LIVE AUCTION — 4 LOTS PER ROW */
 .lotsGrid{
   display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-auto-flow:column;
+  grid-auto-columns:calc((100% - 45px) / 4);
   gap:15px;
+
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+touch-action:pan-x pan-y;    
+
+  scroll-behavior:smooth;
+  scroll-snap-type:x proximity;
+
+  padding-bottom:10px;
+}
+  .lotsGrid::-webkit-scrollbar{
+  height:10px;
+}
+
+.lotsGrid::-webkit-scrollbar-thumb{
+  background:#4f6b52;
+  border-radius:10px;
+}
+
+.lotsGrid::-webkit-scrollbar-track{
+  background:#111a13;
+}      
+
+.lotCard{
+  scroll-snap-align:start;
 }
 
 .lotCard{
@@ -388,27 +415,9 @@ th,td{
 }
 
 @media(max-width:1050px){
-  .lotsGrid{grid-template-columns:repeat(4,1fr)}
-}
-
-@media(max-width:780px){
-  .lotsGrid{grid-template-columns:repeat(2,1fr)}
-  .grid2{grid-template-columns:1fr}
-  .brand h1{font-size:27px}
-  .logo{width:100px;height:90px}
-}
-
-@media(max-width:480px){
-  .app{padding:7px}
-  .lotsGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  .lotName{font-size:16px}
-  .price{font-size:21px}
-  .photoBtn{font-size:12px;padding:8px 4px}
-  .top{gap:10px;padding:10px}
-  .logo{width:78px;height:70px}
-  .brand h1{font-size:21px}
-  .brand p{font-size:12px}
-  .status{font-size:12px}
+  .lotsGrid{
+    grid-auto-columns:minmax(240px, 85vw);
+  }
 }
 .lotCard:target{
   outline:3px solid gold;
@@ -748,7 +757,45 @@ th,td{
     </div>
   </div>
 
-  <div id="lotsGrid" class="lotsGrid"></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+
+  <button type="button"
+        onclick="scrollAuctionLots(-1)"
+        style="
+          width:44px;
+          height:70px;
+          flex:0 0 44px;
+          border:1px solid #4c7654;
+          border-radius:10px;
+          background:#111a13;
+          color:#9cff57;
+          font-size:28px;
+          font-weight:bold;
+          cursor:pointer;
+        ">
+  ◀
+</button>
+
+  <div id="lotsGrid" class="lotsGrid" style="flex:1;min-width:0;"></div>
+
+  <button type="button"
+        onclick="scrollAuctionLots(1)"
+        style="
+          width:44px;
+          height:70px;
+          flex:0 0 44px;
+          border:1px solid #4c7654;
+          border-radius:10px;
+          background:#111a13;
+          color:#9cff57;
+          font-size:28px;
+          font-weight:bold;
+          cursor:pointer;
+        ">
+  ▶
+</button>
+
+</div>
 </section>
 
 <section id="pageAdmin" class="page hidden">
@@ -2989,7 +3036,29 @@ function nextBid(lot){
   return currentBid(lot)+increment;
 }
 
-function renderLots(){
+ document.addEventListener("DOMContentLoaded",()=>{
+  const box=document.getElementById("lotsGrid");
+  if(!box) return;
+
+  box.addEventListener("wheel",(e)=>{
+    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+      e.preventDefault();
+      box.scrollLeft += e.deltaY;
+    }
+  },{passive:false});
+});     
+function scrollAuctionLots(direction){
+  const box=document.getElementById("lotsGrid");
+  if(!box) return;
+
+  const amount=box.clientWidth * 0.9;
+
+  box.scrollBy({
+    left: direction * amount,
+    behavior:"smooth"
+  });
+}
+      function renderLots(){
   const box=document.getElementById("lotsGrid");
   const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
 const currencySymbol=auction && auction.currency==="EUR" ? "€" : "R";
