@@ -3690,9 +3690,27 @@ function getNextAuction(currentAuction){
   (!lot.bids || lot.bids.length===0)
 );  
     unsoldLots.forEach(lot=>{
-  lot.auctionAppearances=Number(lot.auctionAppearances||1)+1;
+   const nextRowCount=(state.lots||[]).filter(l=>
+  l.auctionId===nextAuction.id &&
+  l.startRow===lot.startRow
+).length;
+
+if(nextRowCount>=8){
+  lot.rolloverPending=true;
+  return;
+}       
+  const currentAppearances=Number(lot.auctionAppearances||1);
+
+if(currentAppearances>=3){
+  lot.rolloverReviewRequired=true;
+  return;
+}
+
+lot.auctionAppearances=currentAppearances+1;
 });
   if(lot.auctionAppearances<=3){
+   lot.rolloverPending=false;     
+   currentAuction.lots=(currentAuction.lots||[]).filter(l=>l.id!==lot.id);     
   lot.auctionId=nextAuction.id;
    nextAuction.lots=nextAuction.lots||[];
 nextAuction.lots.push(lot);     
