@@ -401,7 +401,7 @@ th,td{
 }
 
 .auctionRowScroll .lotCard{
-  flex:0 0 calc((100% - 45px) / 4);
+  flex:0 0 calc((100% - 60px) / 4);
   min-width:240px;
 }
 
@@ -981,7 +981,6 @@ th,td{
   <label>Starting Bid</label>
   <input id="lotStart" type="number" min="200" step="50">
 </div>
-            <input id="lotStart" type="number">
           </div>
         </div>
 
@@ -2746,8 +2745,32 @@ function fileToDataURL(file){
   });
 }
 
-  function updateLotStartBidOptions(){
+ function getStartRowSpacesLeft(rowKey){
+  const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
+  if(!auction) return 0;
+
+  const lots=(state.lots||[]).filter(lot=>
+    lot.auctionId===auction.id &&
+    lot.startRow===rowKey
+  );
+
+  const maxPerRow=8;
+  return Math.max(0,maxPerRow-lots.length);
+}
+      function updateLotStartBidOptions(){
   const row=document.getElementById("lotStartRow").value;
+ const rowSelect=document.getElementById("lotStartRow");
+
+["ROW1","ROW2","ROW3","ROW4","ROW5","ROW6"].forEach(rowKey=>{
+  const option=rowSelect.querySelector(`option[value="${rowKey}"]`);
+  if(!option) return;
+
+  const spaces=getStartRowSpacesLeft(rowKey);
+
+  option.disabled=spaces===0;
+  option.textContent=option.textContent.split(" — ")[0] +
+    " — " + (spaces===0 ? "FULL" : spaces+" spaces left");
+});           
   const input=document.getElementById("lotStart");
 
   if(!input) return;
@@ -2800,6 +2823,7 @@ function fileToDataURL(file){
   }
 }    
 async function addLot(){
+   const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);   
   const name=document.getElementById("lotName").value.trim();
    const breeding=document.getElementById("lotBreeding").value.trim();
       const breeder=document.getElementById("lotBreeder").value.trim();
@@ -2808,6 +2832,11 @@ const trophy=document.getElementById("lotTrophy").value.trim();
   const category=document.getElementById("lotCategory").value;
   const start=Number(document.getElementById("lotStart").value);
    const startRow=document.getElementById("lotStartRow").value;
+      if(startRow && getStartRowSpacesLeft(startRow)<=0){
+  document.getElementById("lotMsg").textContent=
+    "That Starting Bid Row is FULL. Please choose another row.";
+  return;
+}
 
 if(!startRow){
   document.getElementById("lotMsg").textContent=
@@ -2932,7 +2961,7 @@ if(unpaidSellerInvoice || unpaidBidderInvoice){
     exportEligible:exportEligible,
     listingFee:listingFee,
 listingCurrency:listingCurrency,
-    lotNumber:(auction.lots||[]).length+1,
+    lotNumber:Math.max(0,...(state.lots||[]).map(l=>Number(l.lotNumber)||0))+1,
     name,
 breeding,
 breeder,
@@ -2947,6 +2976,7 @@ trophy,
     plant,
     preferredAuctionTime:preferredAuctionTime,
     bids:[],
+        auctionAppearances:1,
   });
   
 const newLot=state.lots[state.lots.length-1];
@@ -3355,9 +3385,6 @@ const rowCardsHtml=rowCards.join("");
 
   return `
     <div class="auctionRowBlock" style="margin-bottom:24px;">
-      <h3 style="margin:0 0 10px 0;">
-        ${auctionRowInfo[rowKey]}
-      </h3>
 
      <div style="display:flex;align-items:center;gap:4px;">
 
@@ -3579,6 +3606,7 @@ if(Date.now()>=closeTime.getTime()-60000){
   renderLots();
 }
 function openSellerLoadFromLot(){
+  updateLotStartBidOptions();
   const seller=(state.sellers||[]).find(
     s=>s.id===state.selectedSellerId
   );
@@ -3641,8 +3669,36 @@ function hidePhotoModal(){
 function closePhotoModal(e){
   if(e.target.id==="photoModal") hidePhotoModal();
 }
+function getNextAuction(currentAuction){
+  if(!currentAuction) return null;
 
-function setAuctionOpen(open){
+  return (state.auctions||[])
+    .filter(a=>
+      a.id!==currentAuction.id &&
+      a.type===currentAuction.type &&
+      new Date(a.createdDate).getTime() > new Date(currentAuction.createdDate).getTime()
+    )
+    .sort((a,b)=>
+      new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime()
+    )[0] || null;
+}
+      function rolloverUnsoldLots(currentAuction){
+  const nextAuction=getNextAuction(currentAuction);
+  if(!nextAuction) return;
+         const unsoldLots=(state.lots||[]).filter(lot=>
+  lot.auctionId===currentAuction.id &&
+  (!lot.bids || lot.bids.length===0)
+);  
+    unsoldLots.forEach(lot=>{
+  lot.auctionAppearances=Number(lot.auctionAppearances||1)+1;
+});
+  if(lot.auctionAppearances<=3){
+  lot.auctionId=nextAuction.id;
+   nextAuction.lots=nextAuction.lots||[];
+nextAuction.lots.push(lot);     
+}          
+}
+      function setAuctionOpen(open){
   state.settings.open=open;
 
   if(!open){
@@ -3653,6 +3709,11 @@ function setAuctionOpen(open){
 );
     if(!hotLot){
   createInvoices();
+
+  const currentAuction=(state.auctions||[]).find(
+    a=>a.id===state.selectedAuctionId
+  );
+  rolloverUnsoldLots(currentAuction);        
 }
 
 if(hotLot){
