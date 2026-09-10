@@ -207,33 +207,9 @@ button{
 
 /* LIVE AUCTION — 4 LOTS PER ROW */
 .lotsGrid{
-  display:grid;
-  grid-auto-flow:column;
-  grid-auto-columns:calc((100% - 45px) / 4);
-  gap:15px;
-
-  overflow-x:auto;
-  overflow-y:hidden;
-  -webkit-overflow-scrolling:touch;
-touch-action:pan-x pan-y;    
-
-  scroll-behavior:smooth;
-  scroll-snap-type:x proximity;
-
-  padding-bottom:10px;
+  display:block;
+  width:100%;
 }
-  .lotsGrid::-webkit-scrollbar{
-  height:10px;
-}
-
-.lotsGrid::-webkit-scrollbar-thumb{
-  background:#4f6b52;
-  border-radius:10px;
-}
-
-.lotsGrid::-webkit-scrollbar-track{
-  background:#111a13;
-}      
 
 .lotCard{
   scroll-snap-align:start;
@@ -413,12 +389,22 @@ th,td{
   border-bottom:1px solid #2d3c2f;
   text-align:left;
 }
-
-@media(max-width:1050px){
-  .lotsGrid{
-    grid-auto-columns:minmax(240px, 85vw);
-  }
+.auctionRowScroll{
+  display:flex;
+  gap:15px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-behavior:smooth;
+  padding-bottom:10px;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-x pan-y;
 }
+
+.auctionRowScroll .lotCard{
+  flex:0 0 calc((100% - 45px) / 4);
+  min-width:240px;
+}
+
 .lotCard:target{
   outline:3px solid gold;
   scroll-margin-top:20px;
@@ -1016,7 +1002,21 @@ th,td{
 <select id="lotCategory">
   <option value="">Select category</option>
 </select>
-            <label>Start bid</label>
+            <label>Starting Bid Row</label>
+<select id="lotStartRow" onchange="updateLotStartBidOptions()">
+  <option value="">-- SELECT STARTING BID ROW --</option>
+  <option value="ROW1">Row 1 — R200 to R300</option>
+  <option value="ROW2">Row 2 — R400</option>
+  <option value="ROW3">Row 3 — R600</option>
+  <option value="ROW4">Row 4 — R800</option>
+  <option value="ROW5">Row 5 — R1,000+</option>
+  <option value="ROW6">Row 6 — Sets / Bulk Plants — R1,000+</option>
+</select>
+
+<div id="lotStartBidChoice" style="margin-top:8px;">
+  <label>Starting Bid</label>
+  <input id="lotStart" type="number" min="200" step="50">
+</div>
             <input id="lotStart" type="number">
           </div>
         </div>
@@ -2778,6 +2778,59 @@ function fileToDataURL(file){
   });
 }
 
+  function updateLotStartBidOptions(){
+  const row=document.getElementById("lotStartRow").value;
+  const input=document.getElementById("lotStart");
+
+  if(!input) return;
+
+  if(row==="ROW1"){
+    input.value="";
+    input.min="200";
+    input.max="300";
+    input.step="50";
+    input.readOnly=false;
+    input.placeholder="Choose R200 to R300";
+  }
+  else if(row==="ROW2"){
+    input.value="400";
+    input.min="400";
+    input.max="400";
+    input.readOnly=true;
+  }
+  else if(row==="ROW3"){
+    input.value="600";
+    input.min="600";
+    input.max="600";
+    input.readOnly=true;
+  }
+  else if(row==="ROW4"){
+    input.value="800";
+    input.min="800";
+    input.max="800";
+    input.readOnly=true;
+  }
+  else if(row==="ROW5"){
+    input.value="1000";
+    input.min="1000";
+    input.removeAttribute("max");
+    input.step="100";
+    input.readOnly=false;
+    input.placeholder="R1000 or higher";
+  }
+  else if(row==="ROW6"){
+    input.value="1000";
+    input.min="1000";
+    input.removeAttribute("max");
+    input.step="100";
+    input.readOnly=false;
+    input.placeholder="R1000 or higher";
+  }
+  else{
+    input.value="";
+    input.readOnly=false;
+  }
+}    
 async function addLot(){
   const name=document.getElementById("lotName").value.trim();
    const breeding=document.getElementById("lotBreeding").value.trim();
@@ -2786,6 +2839,42 @@ const trophy=document.getElementById("lotTrophy").value.trim();
   const preferredAuctionTime=document.getElementById("lotAuctionTime").value;
   const category=document.getElementById("lotCategory").value;
   const start=Number(document.getElementById("lotStart").value);
+   const startRow=document.getElementById("lotStartRow").value;
+
+if(!startRow){
+  document.getElementById("lotMsg").textContent=
+    "Please select a Starting Bid Row.";
+  return;
+}   
+      if(startRow==="ROW1" && (start<200 || start>300)){
+  document.getElementById("lotMsg").textContent=
+    "Row 1 starting bid must be between R200 and R300.";
+  return;
+}
+
+if(startRow==="ROW2" && start!==400){
+  document.getElementById("lotMsg").textContent=
+    "Row 2 starting bid must be R400.";
+  return;
+}
+
+if(startRow==="ROW3" && start!==600){
+  document.getElementById("lotMsg").textContent=
+    "Row 3 starting bid must be R600.";
+  return;
+}
+
+if(startRow==="ROW4" && start!==800){
+  document.getElementById("lotMsg").textContent=
+    "Row 4 starting bid must be R800.";
+  return;
+}
+
+if((startRow==="ROW5" || startRow==="ROW6") && start<1000){
+  document.getElementById("lotMsg").textContent=
+    "This row requires a starting bid of at least R1000.";
+  return;
+}
   const flowerFile=document.getElementById("lotFlower").files[0];
   const plantFile=document.getElementById("lotPlant").files[0];
   const sellerId=document.getElementById("adminSellerSelect").value;
@@ -2883,6 +2972,7 @@ trophy,
     category:document.getElementById("lotCategory").value,
     leaves:Number(document.getElementById("lotLeaves").value)||0,
     offsets:Number(document.getElementById("lotOffsets").value)||0,
+    startRow:document.getElementById("lotStartRow").value,    
     startBid:start,
     increment:auction.currency==="EUR" ? 5 : Number(document.getElementById("lotIncrement").value)||50,
     flower,
@@ -2902,6 +2992,7 @@ scheduleAuctionAtHalfFull(auction);
 
   ["lotName","lotBreeding","lotBreeder","lotTrophy","lotLeaves","lotOffsets","lotStart"].forEach(id=>{
     document.getElementById(id).value="";
+   document.getElementById("lotStartRow").value="";     
   });
 
   document.getElementById("lotFlower").value="";
@@ -3127,6 +3218,23 @@ cursor:pointer;
 return;
 }
 
+
+  const auctionRows={
+  ROW1:auctionLots.filter(lot=>lot.startRow==="ROW1"),
+  ROW2:auctionLots.filter(lot=>lot.startRow==="ROW2"),
+  ROW3:auctionLots.filter(lot=>lot.startRow==="ROW3"),
+  ROW4:auctionLots.filter(lot=>lot.startRow==="ROW4"),
+  ROW5:auctionLots.filter(lot=>lot.startRow==="ROW5"),
+  ROW6:auctionLots.filter(lot=>lot.startRow==="ROW6")
+};  
+const auctionRowInfo={
+  ROW1:"ROW 1 — STARTING BID R200–R300",
+  ROW2:"ROW 2 — STARTING BID R400",
+  ROW3:"ROW 3 — STARTING BID R600",
+  ROW4:"ROW 4 — STARTING BID R800",
+  ROW5:"ROW 5 — STARTING BID R1,000+",
+  ROW6:"ROW 6 — SETS / BULK PLANTS — STARTING BID R1,000+"
+};            
 const sampleCount=Math.max(0,12-auctionLots.length);
 const displayLots=[
   ...auctionLots,
@@ -3136,7 +3244,7 @@ const displayLots=[
   }))
 ];
   
-  box.innerHTML=displayLots.map((lot,i)=>{
+ const renderedLots=displayLots.map((lot,i)=>{
   const seller=(state.sellers||[]).find(s=>s.id===lot.sellerId);
     if(lot.isSample){
   return `
@@ -3289,7 +3397,7 @@ return `
     
    
       <div class="lotTop">
-  <span>LOT-${String(i+1).padStart(3,"0")}</span>
+ <span>LOT-${String(lot.lotNumber || (i+1)).padStart(3,"0")}</span>
 </div>
 
       <div class="flowerWrap">
@@ -3470,7 +3578,33 @@ ${lot.exportEligible ? `
 </div>
       </div>
     </div>`;
-  }).join("");
+});
+
+const rowOrder=["ROW1","ROW2","ROW3","ROW4","ROW5","ROW6"];
+
+box.innerHTML=rowOrder.map(rowKey=>{
+  const rowLots=displayLots
+    .map((lot,index)=>({lot,index}))
+    .filter(item=>item.lot.isSample || item.lot.startRow===rowKey);
+
+  const rowCards=rowLots
+    .map(item=>renderedLots[item.index])
+    .join("");
+
+  return `
+    <div class="auctionRowBlock" style="margin-bottom:24px;">
+      <h3 style="margin:0 0 10px 0;">
+        ${auctionRowInfo[rowKey]}
+      </h3>
+
+      <div class="auctionRowScroll">
+        ${rowCards}
+      </div>
+    </div>
+  `;
+}).join("");
+
+const sharedLotId=window.location.hash.replace("#lot=","");
 const sharedLotId=window.location.hash.replace("#lot=","");
 const sharedLotData=state.lots.find(lot=>lot.id===sharedLotId);
 if(sharedLotData && sharedLotData.auctionId!==state.selectedAuctionId){
