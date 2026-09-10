@@ -743,43 +743,7 @@ th,td{
     </div>
   </div>
 
-  <div style="display:flex;align-items:center;gap:8px;">
-
-  <button type="button"
-        onclick="scrollAuctionLots(-1)"
-        style="
-          width:44px;
-          height:70px;
-          flex:0 0 44px;
-          border:1px solid #4c7654;
-          border-radius:10px;
-          background:#111a13;
-          color:#9cff57;
-          font-size:28px;
-          font-weight:bold;
-          cursor:pointer;
-        ">
-  ◀
-</button>
-
   <div id="lotsGrid" class="lotsGrid" style="flex:1;min-width:0;"></div>
-
-  <button type="button"
-        onclick="scrollAuctionLots(1)"
-        style="
-          width:44px;
-          height:70px;
-          flex:0 0 44px;
-          border:1px solid #4c7654;
-          border-radius:10px;
-          background:#111a13;
-          color:#9cff57;
-          font-size:28px;
-          font-weight:bold;
-          cursor:pointer;
-        ">
-  ▶
-</button>
 
 </div>
 </section>
@@ -1555,8 +1519,11 @@ document.getElementById("auctionStatus").textContent=headerStatus;
   const now=Date.now();
 const nextAuction=(state.auctions||[]).filter(a=>a.auctionDate && a.auctionTime && new Date(a.auctionDate+"T"+a.auctionTime+":00+02:00").getTime()>now).sort((a,b)=>new Date(a.auctionDate+"T"+a.auctionTime+":00+02:00")-new Date(b.auctionDate+"T"+b.auctionTime+":00+02:00"))[0];
 document.getElementById("nextAuctionTop").textContent=
-  nextAuction ? "Next Auction: "+new Date(nextAuction.auctionDate+"T00:00:00").toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"})+" at "+nextAuction.auctionTime
-  : "Next Auction: date to be announced";
+  nextAuction
+    ? (nextAuction.status==="FULL" ? "Next Auction: " : "Possible Auction Date: ")
+      +new Date(nextAuction.auctionDate+"T00:00:00").toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"})
+      +" at "+nextAuction.auctionTime
+    : "Possible Auction Date: to be announced";
 function toggleSellerBusinessFields(){
   const type=document.getElementById("sellerEntityType").value;
   const box=document.getElementById("sellerBusinessFields");
@@ -2663,9 +2630,11 @@ if(totalLots>=48) return true;
 function isAuctionHalfFull(auction){
   if(!auction || !auction.categories || auction.categories.length===0) return false;
 
-  const currentLots=(state.lots||[]).filter(lot=>lot.auctionId===auction.id).length;
+  const currentLots=(state.lots||[])
+    .filter(lot=>lot.auctionId===auction.id).length;
 
-return currentLots>=24;
+  return currentLots>=39;
+}
 }  
   function getNextAuctionSlot(preferredTime){
   const normalSlots=["15:00","17:00","19:00"];
@@ -2716,8 +2685,8 @@ return {date:dateKey,time:time,closeTime:closeTime};
   return null;
 }
   function updateAuctionHalfFullStatus(auction){
-  if(isAuctionHalfFull(auction) && !auction.halfFullDate){
-    auction.halfFullDate=new Date().toISOString();
+  if(isAuctionHalfFull(auction) && !auction.eightyPercentDate){
+  auction.eightyPercentDate=new Date().toISOString();
     auction.status="SCHEDULING";
     save();
     updateHeader();
@@ -3003,63 +2972,21 @@ scheduleAuctionAtHalfFull(auction);
   "Lot added. Listing fee: " +
   (listingCurrency==="ZAR" ? "R"+listingFee : "€"+listingFee);
 
-  renderAdminLots();
+ renderAdminLots();
 }
 
-function shareSampleLotWhatsApp(sampleNumber){
-  const url =
-    window.location.origin +
-    window.location.pathname +
-    "#sample-lot-" +
-    sampleNumber;
+function scrollAuctionRow(button,direction){
+  const wrapper=button.parentElement;
+  const row=wrapper.querySelector(".auctionRowScroll");
 
-  const text =
-    "🌸 Clivia Dreamers Auction — Sample Lot " +
-    String(sampleNumber).padStart(3,"0") +
-    "\nView this sample Clivia lot here:\n" +
-    url;
+  if(!row) return;
 
-  window.open(
-    "https://wa.me/?text=" + encodeURIComponent(text),
-    "_blank"
-  );
-}
+  const amount=row.clientWidth * 0.9;
 
-function shareSampleLotFacebook(sampleNumber){
-  const url =
-    window.location.origin +
-    window.location.pathname +
-    "#sample-lot-" +
-    sampleNumber;
-
-  window.open(
-    "https://www.facebook.com/sharer/sharer.php?u=" +
-    encodeURIComponent(url),
-    "_blank"
-  );
-}
-
-function shareSampleLot(sampleNumber){
-  const url =
-    window.location.origin +
-    window.location.pathname +
-    "#sample-lot-" +
-    sampleNumber;
-
-  const text =
-    "Clivia Dreamers Auction — Sample Lot " +
-    String(sampleNumber).padStart(3,"0");
-
-  if(navigator.share){
-    navigator.share({
-      title:text,
-      text:text,
-      url:url
-    });
-  }else{
-    navigator.clipboard.writeText(url);
-    alert("Sample lot link copied.");
-  }
+  row.scrollBy({
+    left:direction * amount,
+    behavior:"smooth"
+  });
 }
       function shareLotWhatsApp(id){
   const lot=(state.lots||[]).find(l=>l.id===id);
@@ -3126,29 +3053,6 @@ function nextBid(lot){
   if(!lot.bids || lot.bids.length===0) return lot.startBid;
   return currentBid(lot)+increment;
 }
-
- document.addEventListener("DOMContentLoaded",()=>{
-  const box=document.getElementById("lotsGrid");
-  if(!box) return;
-
-  box.addEventListener("wheel",(e)=>{
-    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
-      e.preventDefault();
-      box.scrollLeft += e.deltaY;
-    }
-  },{passive:false});
-});     
-function scrollAuctionLots(direction){
-  const box=document.getElementById("lotsGrid");
-  if(!box) return;
-
-  const amount=box.clientWidth * 0.9;
-
-  box.scrollBy({
-    left: direction * amount,
-    behavior:"smooth"
-  });
-}
       function renderLots(){
   const box=document.getElementById("lotsGrid");
   const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
@@ -3166,57 +3070,7 @@ const auctionLots=state.lots.filter(lot=>{
 
   return true;
 });
- if(auctionLots.length===0){
-  box.innerHTML=Array.from({length:12},(_,i)=>`
-    <div class="lotCard sampleLot" style="pointer-events:none;">
-      <div class="lotTop" style="align-items:flex-start;">
-      <span>
-  LOT-${String(i+1).padStart(3,"0")}
-</span>
-
-  <span style="text-align:right;color:#9cff57;font-weight:bold;">
-    <div>Closes: To be announced</div>
-    <div style="font-size:12px;margin-top:3px;">
-      Time Remaining: --
-    </div>
-  </span>
-</div>
-
-      <div class="flowerWrap" style="position:relative;">
-  <img src="faded pic.png"
-       alt="Sample Clivia flower"
-       style="width:100%;height:100%;object-fit:cover;opacity:0.35;">
-
-  <div onclick="openSellerLoadFromLot()" style="
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:28px;
-    font-weight:900;
-   color:#7ddcff;
-    letter-spacing:2px;
-    text-shadow:0 2px 8px #000;
-    pointer-events:auto;
-cursor:pointer;
-  ">
-   LOAD HERE
-  </div>
-</div>
-
-     <div class="lotBody">
-  <div class="lotName">Available Auction Space</div>
-
-  <div class="small" style="margin-top:6px;text-align:center;">
-    Registered sellers can load their plant here.
-  </div>
-
-</div>
-</div>
-`).join("");
-return;
-}
+ 
 
 
   const auctionRows={
@@ -3235,141 +3089,10 @@ const auctionRowInfo={
   ROW5:"ROW 5 — STARTING BID R1,000+",
   ROW6:"ROW 6 — SETS / BULK PLANTS — STARTING BID R1,000+"
 };            
-const sampleCount=Math.max(0,12-auctionLots.length);
-const displayLots=[
-  ...auctionLots,
-  ...Array.from({length:sampleCount},(_,i)=>({
-    isSample:true,
-    sampleNumber:auctionLots.length+i+1
-  }))
-];
+const displayLots=[...auctionLots];
   
  const renderedLots=displayLots.map((lot,i)=>{
   const seller=(state.sellers||[]).find(s=>s.id===lot.sellerId);
-    if(lot.isSample){
-  return `
-<div class="shareRow" style="justify-content:center;gap:10px;">
-  <button
-    onclick="shareSampleLotWhatsApp(${lot.sampleNumber})"
-    title="WhatsApp"
-    style="font-size:22px;">
-    🟢
-  </button>
-
-  <button
-    onclick="shareSampleLotFacebook(${lot.sampleNumber})"
-    title="Facebook"
-    style="font-size:22px;font-weight:bold;">
-    f
-  </button>
-
-  <button
-    onclick="shareSampleLot(${lot.sampleNumber})"
-    title="Share"
-    style="font-size:22px;">
-    ↗
-  </button>
-</div>
-      <div class="lotTop" style="align-items:flex-start;">
- <span>
-  LOT-${String(lot.sampleNumber).padStart(3,"0")}
-</span>
-
-  <span style="text-align:right;color:#9cff57;font-weight:bold;">
-    <div>Closes: To be announced</div>
-<div style="font-size:12px;margin-top:3px;">
-  Time Remaining: --
-</div>
-  </span>
-</div>
-
-      <div style="
-  position:relative;
-  height:220px;
-  overflow:hidden;
-  background:#050805;
-">
-
-  <img src="faded pic.png"
-       alt="Sample Clivia flower"
-       style="
-         width:100%;
-         height:100%;
-         object-fit:cover;
-         display:block;
-         opacity:0.35;
-       ">
-
-  <div style="
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:30px;
-    font-weight:bold;
-    color:#ffffff;
-    text-shadow:0 2px 8px #000;
-    letter-spacing:2px;
-  ">
-    LOAD HERE
-  </div>
-
-</div>
-
-<button
-  style="
-    width:100%;
-    margin:8px 0 0 0;
-    background:linear-gradient(135deg,#caffb8 0%,#62ff59 35%,#08d419 60%,#9cff57 100%);
-    box-shadow:0 0 12px rgba(80,255,80,.65), inset 0 1px 0 rgba(255,255,255,.8);
-    color:#111;
-    border:0;
-    border-radius:11px;
-    padding:12px 18px;
-    font-weight:bold;
-    cursor:pointer;
-  ">
-  🔨 PLACE BID
-</button>
-
-<div class="lotBody">
-  <div class="lotName">Sample Clivia</div>
-
-  <div class="small" style="margin-top:6px;">
-    <b>Breeding:</b> Green Throat × White Stripe
-  </div>
-
-  <div class="small" style="margin-top:4px;">
-    <b>Breeder:</b> Clivia Dreamers
-  </div>
-
-<div class="small" style="margin-top:4px;">
-  <b>Seller:</b> Clivia Dreamers
-</div>
-
-<div style="
-  margin-top:8px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  font-weight:bold;
-">
-  <span style="font-size:28px;">🏆</span>
-  <span>
-    <span style="color:#ff8c00;font-size:20px;font-weight:bold;">12</span>
-    Successful Deals on Site
-  </span>
-</div>
-
-  <div class="small" style="margin-top:8px;">
-    DEMONSTRATION ONLY
-  </div>
-</div>
-    </div>
-  `;
-}
     const high=currentBid(lot);
     const next=nextBid(lot);
     const highest=(lot.bids||[]).slice().sort((a,b)=>b.amount-a.amount)[0];
@@ -3585,11 +3308,51 @@ const rowOrder=["ROW1","ROW2","ROW3","ROW4","ROW5","ROW6"];
 box.innerHTML=rowOrder.map(rowKey=>{
   const rowLots=displayLots
     .map((lot,index)=>({lot,index}))
-    .filter(item=>item.lot.isSample || item.lot.startRow===rowKey);
+    .filter(item=>item.lot.startRow===rowKey);
 
-  const rowCards=rowLots
-    .map(item=>renderedLots[item.index])
-    .join("");
+ const rowCards=rowLots
+  .map(item=>renderedLots[item.index]);
+
+const samplesNeeded=Math.max(0,4-rowLots.length);
+
+for(let i=0;i<samplesNeeded;i++){
+  rowCards.push(`
+    <div class="lotCard sampleLot" style="pointer-events:none;">
+      <div class="lotTop">
+        <span>SAMPLE</span>
+      </div>
+
+      <div class="flowerWrap" style="position:relative;">
+        <img src="faded pic.png"
+             alt="Sample Clivia flower"
+             style="width:100%;height:100%;object-fit:cover;opacity:0.35;">
+
+        <div onclick="openSellerLoadFromLot()" style="
+          position:absolute;
+          inset:0;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:28px;
+          font-weight:900;
+          color:#7ddcff;
+          letter-spacing:2px;
+          text-shadow:0 2px 8px #000;
+          pointer-events:auto;
+          cursor:pointer;
+        ">
+          LOAD HERE
+        </div>
+      </div>
+
+      <div class="lotBody">
+        <div class="lotName">Available Auction Space</div>
+      </div>
+    </div>
+  `);
+}
+
+const rowCardsHtml=rowCards.join("");
 
   return `
     <div class="auctionRowBlock" style="margin-bottom:24px;">
@@ -3597,14 +3360,51 @@ box.innerHTML=rowOrder.map(rowKey=>{
         ${auctionRowInfo[rowKey]}
       </h3>
 
-      <div class="auctionRowScroll">
-        ${rowCards}
-      </div>
+     <div style="display:flex;align-items:center;gap:4px;">
+
+  <button type="button"
+    onclick="scrollAuctionRow(this,-1)"
+    style="
+      width:26px;
+      height:46px;
+      flex:0 0 26px;
+      border:1px solid #4c7654;
+      border-radius:10px;
+      background:#111a13;
+      color:#9cff57;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+    ">
+    ◀
+  </button>
+
+  <div class="auctionRowScroll" style="flex:1;min-width:0;">
+    ${rowCardsHtml}
+  </div>
+
+  <button type="button"
+    onclick="scrollAuctionRow(this,1)"
+    style="
+      width:26px;
+      height:46px;
+      flex:0 0 26px;
+      border:1px solid #4c7654;
+      border-radius:10px;
+      background:#111a13;
+      color:#9cff57;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+    ">
+    ▶
+  </button>
+
+</div>
     </div>
   `;
 }).join("");
 
-const sharedLotId=window.location.hash.replace("#lot=","");
 const sharedLotId=window.location.hash.replace("#lot=","");
 const sharedLotData=state.lots.find(lot=>lot.id===sharedLotId);
 if(sharedLotData && sharedLotData.auctionId!==state.selectedAuctionId){
@@ -3618,18 +3418,6 @@ if(window.location.hash.startsWith("#lot=")){
   if(sharedLot){
     sharedLot.scrollIntoView({behavior:"smooth",block:"start"});
   }
-}
-     if(window.location.hash.startsWith("#sample-lot-")){
-  const sampleLotId=window.location.hash.substring(1);
-  const sampleLot=document.getElementById(sampleLotId);
-
-  if(sampleLot){
-    sampleLot.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-  }
-} 
    const activeHotBidding=auctionLots.some(lot=>
   lot.extendedCloseUntil &&
   new Date(lot.extendedCloseUntil).getTime()>Date.now()
