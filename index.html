@@ -3709,7 +3709,9 @@ if(currentAppearances>=3){
 lot.auctionAppearances=currentAppearances+1;
 });
   if(lot.auctionAppearances<=3){
-   lot.rolloverPending=false;     
+   lot.rolloverPending=false;   
+  lot.bids=[];
+lot.extendedCloseUntil=null;      
    currentAuction.lots=(currentAuction.lots||[]).filter(l=>l.id!==lot.id);     
   lot.auctionId=nextAuction.id;
    nextAuction.lots=nextAuction.lots||[];
