@@ -1118,6 +1118,21 @@ th,td{
   <div class="panel">
     <h2>Seller Registration</h2>
     <p>Register as a seller to offer your Clivias on Clivia Dreamers.</p>
+   <div style="display:flex;gap:10px;margin-bottom:12px;">
+  <button type="button" class="goldBtn" onclick="showNewSellerRegistration()">NEW SELLER</button>
+  <button type="button" class="goldBtn" onclick="showRegisteredSeller()">ALREADY REGISTERED SELLER</button>
+</div>  
+  <div id="registeredSellerSection" style="display:none;margin-top:12px;">
+
+  <label>Already Registered Seller</label>
+  <select id="sellerSelect" onchange="selectSeller()"></select>
+
+  <div id="selectedSellerNotice" class="notice">
+    No seller selected yet.
+  </div>
+
+</div>  
+    <div id="newSellerRegistrationSection" style="display:none;">    
     <label>Register as</label>
 <select id="sellerEntityType" onchange="toggleSellerBusinessFields()">
   <option value="">-- SELECT HOW YOU ARE SELLING --</option>
@@ -1229,6 +1244,8 @@ th,td{
   <select id="sellerSelectedAuctions" multiple size="4"></select>
 </div>
 <button class="goldBtn" onclick="registerSeller()">REGISTER AS SELLER</button>
+        
+   </div>     
     <label>Already registered seller?</label>
 <select id="sellerSelect" onchange="selectSeller()"></select>
 
@@ -1679,6 +1696,17 @@ save();
 refreshSellerSelect();
   alert("Seller registration successful. You can now list plants for auction.");
   }
+ function showNewSellerRegistration(){
+  document.getElementById("registeredSellerSection").style.display="none";
+  document.getElementById("newSellerRegistrationSection").style.display="block";
+}
+
+function showRegisteredSeller(){
+  document.getElementById("newSellerRegistrationSection").style.display="none";
+  document.getElementById("registeredSellerSection").style.display="block";
+  refreshSellerSelect();
+}      
+      
   function refreshSellerSelect(){
   const select=document.getElementById("sellerSelect");
    const adminSelect=document.getElementById("adminSellerSelect"); 
