@@ -3707,7 +3707,7 @@ if(currentAppearances>=3){
 }
 
 lot.auctionAppearances=currentAppearances+1;
-});
+
   if(lot.auctionAppearances<=3){
    lot.rolloverPending=false;   
   lot.bids=[];
@@ -3716,7 +3716,8 @@ lot.extendedCloseUntil=null;
   lot.auctionId=nextAuction.id;
    nextAuction.lots=nextAuction.lots||[];
 nextAuction.lots.push(lot);     
-}          
+}  
+});          
 }
       function setAuctionOpen(open){
   state.settings.open=open;
@@ -3743,7 +3744,13 @@ if(hotLot){
 
   save();
   updateHeader();
-  alert(open ? "Auction opened." : (state.settings.open ? "Normal auction closed. HOT BIDDING is still continuing." : "Auction closed and invoices created."));
+ alert(open
+  ? "Auction opened."
+  : (state.settings.open
+      ? "Normal auction closed. HOT BIDDING is still continuing."
+      : "Auction closed. Invoices created and unsold lots checked for rollover."
+    )
+);
 }
 
 function createInvoices(){
