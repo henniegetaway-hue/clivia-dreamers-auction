@@ -2634,7 +2634,6 @@ function isAuctionHalfFull(auction){
     .filter(lot=>lot.auctionId===auction.id).length;
 
   return currentLots>=39;
-}
 }  
   function getNextAuctionSlot(preferredTime){
   const normalSlots=["15:00","17:00","19:00"];
