@@ -613,11 +613,33 @@ th,td{
 </label>
       
 <label>Notify me about auctions?</label>
-<select id="regNotifyNextAuction" onchange="toggleBidderAuctionNotifications()">
-  <option value="none">No notifications</option>
-  <option value="all">All auctions</option>
-  <option value="selected">Selected auctions only</option>
-</select>
+
+<div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin:8px 0 12px;">
+
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="sellerNotifyChoice"
+      value="none"
+      checked
+      onchange="setSellerNotifyChoice('none')"
+      style="width:auto;"
+    >
+    NO NOTIFICATIONS
+  </label>
+
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="sellerNotifyChoice"
+      value="all"
+      onchange="setSellerNotifyChoice('all')"
+      style="width:auto;"
+    >
+    NOTIFY ME ABOUT AUCTIONS
+  </label>
+
+</div>
         <div id="bidderSelectedAuctionsBox" style="display:none;">
   <label>Select the auction(s) you want notifications for</label>
   <select id="bidderSelectedAuctions" multiple size="4"></select>
@@ -1234,24 +1256,9 @@ th,td{
   I have read and accept the Clivia Dreamers Auction Rules & Terms.
 </label>
 <label>Notify me about auctions?</label>
-<select id="sellerNotifyNextAuction" onchange="toggleSellerAuctionNotifications()">
-  <option value="none">No notifications</option>
-  <option value="all">All auctions</option>
-  <option value="selected">Selected auctions only</option>
-</select>
-    <div id="sellerSelectedAuctionsBox" style="display:none;">
-  <label>Select the auction(s) you want notifications for</label>
-  <select id="sellerSelectedAuctions" multiple size="4"></select>
-</div>
 <button class="goldBtn" onclick="registerSeller()">REGISTER AS SELLER</button>
         
    </div>     
-    <label>Already registered seller?</label>
-<select id="sellerSelect" onchange="selectSeller()"></select>
-
-<div id="selectedSellerNotice" class="notice">
-  No seller selected yet.
-</div>
 
 </div>
 </section>
@@ -1541,6 +1548,10 @@ document.getElementById("nextAuctionTop").textContent=
       +" at "+nextAuction.auctionTime
     : "Possible Auction Date: to be announced";
 function toggleSellerBusinessFields(){
+   function setSellerNotifyChoice(choice){
+  state.sellerNotifyChoice=choice;
+  save();
+}   
   const type=document.getElementById("sellerEntityType").value;
   const box=document.getElementById("sellerBusinessFields");
 
@@ -1548,25 +1559,9 @@ function toggleSellerBusinessFields(){
 
   box.style.display=type==="COMPANY" ? "block" : "none";
 }
-  function toggleSellerAuctionNotifications(){
-  const choice=document.getElementById("sellerNotifyNextAuction").value;
-  const box=document.getElementById("sellerSelectedAuctionsBox");
-  const select=document.getElementById("sellerSelectedAuctions");
-
-  if(!box || !select) return;
-
-  box.style.display=choice==="selected" ? "block" : "none";
-
-  if(choice==="selected"){
-    select.innerHTML="";
-
-    (state.auctions||[]).forEach(auction=>{
-      const option=document.createElement("option");
-      option.value=auction.id;
-      option.textContent=auction.name+" - "+auction.auctionDate;
-      select.appendChild(option);
-    });
-  }
+ function setSellerNotifyChoice(choice){
+  state.sellerNotifyChoice=choice;
+  save();
 }
   function toggleExporterDocs(){
   const isExporter=document.getElementById("sellerIsExporter").checked;
@@ -1592,13 +1587,6 @@ if(!entityType){
 }
 if(entityType==="COMPANY" && (!companyName || !businessPhone)){
   alert("Company / CC sellers must enter the registered company / CC name, company registration number and company WhatsApp number.");
-  return;
-}
-  const notifyChoice=document.getElementById("sellerNotifyNextAuction").value;
-const selectedAuctions=document.getElementById("sellerSelectedAuctions");
-
-if(notifyChoice==="selected" && selectedAuctions.selectedOptions.length===0){
-  alert("Please select at least one auction for notifications.");
   return;
 }
   const address=document.getElementById("sellerAddress").value.trim();
@@ -1686,8 +1674,8 @@ happyBuyers:0,
     bankChangePending:false,
     rulesAccepted:rulesAccepted,
 rulesAcceptedDate:new Date().toISOString(),
-notifyNextAuction:document.getElementById("sellerNotifyNextAuction").value,
-selectedNotificationAuctions:Array.from(document.getElementById("sellerSelectedAuctions").selectedOptions).map(o=>o.value),    
+notifyNextAuction:state.sellerNotifyChoice || "none",
+selectedNotificationAuctions:[],  
   };
 
  state.sellers=state.sellers||[];
