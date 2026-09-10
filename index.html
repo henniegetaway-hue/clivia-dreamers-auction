@@ -3417,7 +3417,9 @@ if(window.location.hash.startsWith("#lot=")){
   if(sharedLot){
     sharedLot.scrollIntoView({behavior:"smooth",block:"start"});
   }
-   const activeHotBidding=auctionLots.some(lot=>
+}
+
+const activeHotBidding=auctionLots.some(lot=>
   lot.extendedCloseUntil &&
   new Date(lot.extendedCloseUntil).getTime()>Date.now()
 );
