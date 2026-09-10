@@ -3695,7 +3695,7 @@ function getNextAuction(currentAuction){
   l.startRow===lot.startRow
 ).length;
 
-if(nextRowCount>=8){
+if(nextRowCount>=8 && Number(lot.auctionAppearances||1)<3){
   lot.rolloverPending=true;
   return;
 }       
