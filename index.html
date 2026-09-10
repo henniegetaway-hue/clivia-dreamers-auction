@@ -1355,15 +1355,6 @@ localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
 
   if(page) page.classList.remove("hidden");
   if(btn) btn.classList.add("active");
-
-  setTimeout(()=>{
-    if(page){
-      page.scrollIntoView({
-        behavior:"smooth",
-        block:"start"
-      });
-    }
-  },100);
 }
 
 function setCliviaSEO(){
