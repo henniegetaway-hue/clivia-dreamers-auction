@@ -681,6 +681,27 @@ th,td{
 </div>
 
       <div id="selectedBidderNotice" class="notice">No bidder selected yet.</div>
+      <div id="bidderPasswordUnlockBox" style="display:none;margin-top:12px;">
+  <label>Bidder Password</label>
+
+  <input
+    id="returningBidderPassword"
+    type="password"
+    placeholder="Enter your bidder password"
+    autocomplete="current-password"
+  >
+
+  <button
+    type="button"
+    class="goldBtn"
+    style="margin-top:10px;"
+    onclick="unlockReturningBidder()"
+  >
+    UNLOCK BIDDING
+  </button>
+
+  <div id="bidderUnlockNotice" class="small" style="margin-top:8px;"></div>
+</div>
       <div id="bidderStatusButtons"
      style="display:none;gap:10px;flex-wrap:wrap;margin:12px 0;">
 
@@ -1874,6 +1895,20 @@ document.getElementById("bidderBusinessFields").style.display="none";
 const companyReg=document.getElementById("regCompanyReg").value.trim();
 const vatNumber=document.getElementById("regVatNumber").value.trim();
  const entityType=document.getElementById("regEntityType").value;
+const bidderPassword=document.getElementById("bidderPassword").value;
+const bidderPasswordConfirm=document.getElementById("bidderPasswordConfirm").value;
+
+if(!bidderPassword || bidderPassword.length < 4){
+  document.getElementById("regMsg").textContent=
+    "Please create a bidder password with at least 4 characters.";
+  return;
+}
+
+if(bidderPassword !== bidderPasswordConfirm){
+  document.getElementById("regMsg").textContent=
+    "Bidder passwords do not match.";
+  return;
+}        
 if(!entityType){
   document.getElementById("regMsg").textContent="Please select Private Name or Company / CC.";
   return;
@@ -1965,6 +2000,7 @@ if(duplicatePhoneUser){
     id:"B"+Date.now(),
     name: bidderName,
     phone: bidderPhone,
+    password: bidderPassword,    
     entityType,
     businessName,
     companyName,
@@ -2125,88 +2161,59 @@ function submitBidderBankStatement(){
   bidder.bankConfirmed=false;
 
   save();
- updateBidderStatusButtons();
-selectedBidderNotice();     
-
-  if(msg){
-    msg.textContent=
-      "Bank document submitted. Status: WAITING FOR VERIFICATION.";
-  }
-
-  alert(
-    "BANK VERIFICATION SUBMITTED\n\n" +
-    "Your bank document has been submitted for verification.\n\n" +
-    "The bank account number shown on the document must match the bank account number registered on your Clivia Dreamers profile.\n\n" +
-    "Bidding will remain blocked until the account has been verified."
-  );
+ updateBidderStatusButtons();         
 }
-      function updateBidderStatusButtons(){
-  const bidder=(state.bidders||[]).find(
-    b=>b.id===state.selectedBidderId
-  );
 
-  const box=document.getElementById("bidderStatusButtons");
-  const statusBtn=document.getElementById("bidderStatusBtn");
-  const letMeBidBtn=document.getElementById("letMeBidBtn");
-
-  if(!box) return;
+function unlockReturningBidder(){
+  const bidderId = state.selectedBidderId;
+  const bidder = (state.bidders || []).find(b => b.id === bidderId);
+  const enteredPassword = document.getElementById("returningBidderPassword").value;
+  const notice = document.getElementById("bidderUnlockNotice");
 
   if(!bidder){
-    box.style.display="none";
+    notice.textContent = "Please select your bidder profile first.";
     return;
   }
 
-  box.style.display="flex";
+  if(!enteredPassword){
+    notice.textContent = "Please enter your bidder password.";
+    return;
+  }
 
-  if(bidder.bankConfirmed){
-  statusBtn.textContent="ACTIVE BIDDER";
-  letMeBidBtn.style.display="none";
+  if(enteredPassword !== bidder.password){
+    notice.textContent = "Incorrect bidder password.";
+    return;
+  }
 
-}else if(bidder.bankStatementStatus==="PENDING_AI_VERIFICATION"){
-  statusBtn.textContent="BANK CHECK PENDING";
-  letMeBidBtn.style.display="none";
+  sessionStorage.setItem("cliviaBidderUnlocked", bidder.id);
 
-}else{
-  statusBtn.textContent="NON-BIDDER";
-  letMeBidBtn.style.display="inline-block";
-}
-}
-      function selectBidder(){
-  state.selectedBidderId=document.getElementById("bidderSelect").value;
-            const bidder=(state.bidders||[]).find(
-  b=>b.id===state.selectedBidderId
-);
+  notice.textContent = "Bidding unlocked for this visit.";
 
-const bankBox=document.getElementById("registeredBidderBankNumbers");
-const ownBank=document.getElementById("registeredOwnBankNumber");
-const defaultBank=document.getElementById("registeredDefaultBankNumber");
+  const passwordBox = document.getElementById("bidderPasswordUnlockBox");
+  if(passwordBox){
+    passwordBox.style.display = "none";
+  }
 
-if(bidder){
-  if(bankBox) bankBox.style.display="block";
-  if(ownBank) ownBank.value=bidder.accountNumber || "";
-  if(defaultBank) defaultBank.value=bidder.defaultNumber || "";
-}else{
-  if(bankBox) bankBox.style.display="none";
-  if(ownBank) ownBank.value="";
-  if(defaultBank) defaultBank.value="";
-}
-            const statusButtons=document.getElementById("bidderStatusButtons");
+  const pendingLotId = sessionStorage.getItem("cliviaPendingBidLot");
 
-if(statusButtons){
-  statusButtons.style.display=
-    state.selectedBidderId ? "flex" : "none";
+  if(pendingLotId){
+    sessionStorage.removeItem("cliviaPendingBidLot");
+
+    showPage("live");
+
+    setTimeout(()=>{
+      const lotElement = document.getElementById("lot-" + pendingLotId);
+
+      if(lotElement){
+        lotElement.scrollIntoView({
+          behavior:"smooth",
+          block:"center"
+        });
+      }
+    },300);
+  }
 }
 
-  document.getElementById("registeredBidderPaymentSection").style.display =
-    state.selectedBidderId ? "block" : "none";
-
-  document.getElementById("registeredBidderBankSection").style.display =
-    state.selectedBidderId ? "block" : "none";
-
-  save();
-  selectedBidderNotice();
-   updateBidderStatusButtons();         
-}
 function increaseBidderCapacity(){
   const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
   const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
@@ -2215,7 +2222,7 @@ function increaseBidderCapacity(){
     alert("Please select a bidder first.");
     return;
   }
-
+  
   const firstBid=Number(auction?.firstBid)||5000;
   const fee=150;
   const paid=Number(bidder.securityFeesPaidZAR||0);
@@ -3517,6 +3524,26 @@ if(auction && auction.auctionDate && auction.auctionCloseTime && lot){
   showPage("register");
   return;
 }
+ const unlockedBidderId=sessionStorage.getItem("cliviaBidderUnlocked");
+
+if(unlockedBidderId!==bidder.id){
+  alert("Please enter your bidder password before placing a bid.");
+      
+  sessionStorage.setItem("cliviaPendingBidLot", lotId);    
+  showPage("register");
+
+  const passwordBox=document.getElementById("bidderPasswordUnlockBox");
+  if(passwordBox){
+    passwordBox.style.display="block";
+  }
+
+  const passwordInput=document.getElementById("returningBidderPassword");
+  if(passwordInput){
+    setTimeout(()=>passwordInput.focus(),200);
+  }
+
+  return;
+}     
   if(!bidder.isOwnerTest && bidder.isInternational && !bidder.internationalRegistrationPaid){
   alert("International bidders must pay the R2,000 registration fee before bidding.");
   return;
@@ -4300,8 +4327,63 @@ window.__lastWhatsAppErrorAlert=now;
 load();
 updateHeader();
 refreshBidderSelect();
-showPage("live");
 refreshSellerSelect();
+
+if(state.selectedBidderId){
+  showPage("live");
+
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(bidder){
+    const passwordBox=document.getElementById("bidderPasswordUnlockBox");
+    const passwordInput=document.getElementById("returningBidderPassword");
+    const unlockNotice=document.getElementById("bidderUnlockNotice");
+
+    sessionStorage.removeItem("cliviaBidderUnlocked");
+
+    if(passwordBox){
+      passwordBox.style.display="block";
+    }
+
+    if(passwordInput){
+      passwordInput.value="";
+    }
+
+    if(unlockNotice){
+      unlockNotice.textContent=
+        "Welcome back. Enter your bidder password before placing a bid.";
+    }
+  }
+
+}else{
+  showPage("live");
+}
+   setTimeout(()=>{
+  const hash = window.location.hash;
+
+  if(hash && hash.startsWith("#lot-")){
+    const lotId = decodeURIComponent(hash.replace("#lot-",""));
+    const lotElement = document.getElementById("lot-"+lotId);
+
+    if(lotElement){
+
+  lotElement.style.outline="4px solid #ff9800";
+  lotElement.style.boxShadow="0 0 24px rgba(255,152,0,.75)";
+
+  setTimeout(()=>{
+    lotElement.style.outline="";
+    lotElement.style.boxShadow="";
+  },4000);
+
+  lotElement.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
+}
+  }
+},500);   
 </script>
 
 <footer style="text-align:center;padding:25px 10px;color:#aaa;font-size:13px;">
