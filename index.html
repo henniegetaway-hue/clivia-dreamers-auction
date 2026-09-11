@@ -1314,6 +1314,7 @@ th,td{
 
 <script>
 const STORAGE_KEY = "dreamCliviasAuctionV2";
+  const USER_LOGIN_KEY = "cliviaDreamersRecognisedUser";    
 
 let state = {
   settings:{
@@ -1354,9 +1355,35 @@ function save(){
 
 function load(){
   const raw=localStorage.getItem(STORAGE_KEY);
+
   if(raw){
-    try{ state=JSON.parse(raw); }catch(e){}
+    try{
+      state=JSON.parse(raw);
+    }catch(e){}
   }
+
+  const savedLogin=localStorage.getItem(USER_LOGIN_KEY);
+
+  if(savedLogin){
+    try{
+      const login=JSON.parse(savedLogin);
+
+      if(login.bidderId){
+        const bidder=(state.bidders||[]).find(
+          b=>b.id===login.bidderId
+        );
+
+        if(bidder){
+          state.selectedBidderId=bidder.id;
+        }
+      }
+
+    }catch(e){
+      console.log("Could not restore recognised bidder",e);
+    }
+  }
+
+  (state.sellers||[]).forEach(seller=>{
   (state.sellers||[]).forEach(seller=>{
   if(seller.completedSales===undefined) seller.completedSales=0;
   if(seller.totalSalesValue===undefined) seller.totalSalesValue=0;
@@ -2065,9 +2092,17 @@ securityProofCurrency:"",
 securityProof:"",
   };
   state.bidders.push(bidder);
-  state.selectedBidderId=bidder.id;
-  save();
-  refreshBidderSelect();
+state.selectedBidderId=bidder.id;
+
+localStorage.setItem(
+  USER_LOGIN_KEY,
+  JSON.stringify({
+    bidderId: bidder.id
+  })
+);
+
+save();
+refreshBidderSelect();
 
   document.getElementById("regMsg").textContent="Registered successfully.";
  const whatsappMessage =
