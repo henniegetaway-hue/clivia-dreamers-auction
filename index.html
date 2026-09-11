@@ -2147,11 +2147,10 @@ function sendBidderRegistrationWhatsApp(){
   );
 }
 
-}
-  function toggleOwnerTestMode(){
+function refreshBidderSelect(){
   const select=document.getElementById("bidderSelect");
   const recognitionNotice=document.getElementById("bidderRecognitionNotice");
-  const liveStatus=document.getElementById("liveBidderStatus");    
+  const liveStatus=document.getElementById("liveBidderStatus");
 
   if(!select) return;
 
@@ -2211,6 +2210,7 @@ if(bidder){
 
   selectedBidderNotice();
 }
+   function toggleOwnerTestMode(){   
   const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
 
   if(!bidder){
