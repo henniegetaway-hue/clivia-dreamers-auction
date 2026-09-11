@@ -2591,7 +2591,7 @@ function fileToDataURL(file){
   }
 }    
 async function addLot(){
-   const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);   
+   let auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
   const name=document.getElementById("lotName").value.trim();
    const breeding=document.getElementById("lotBreeding").value.trim();
       const breeder=document.getElementById("lotBreeder").value.trim();
@@ -2678,11 +2678,13 @@ if(exportEligible && !seller.exporterApproved){
   alert("The "+preferredAuctionTime+" auction is already full. Please choose another time.");
   return;
 }
-  }else{
+   }else{
   alert("The "+preferredAuctionTime+" auction slot is not available yet. Please choose Automatic / next available.");
   return;
 }
 }
+
+const listingCurrency=auction && auction.currency==="EUR" ? "EUR" : "ZAR";
 
 
   const listingCurrency=auction && auction.currency==="EUR" ? "EUR" : "ZAR";
@@ -2847,7 +2849,7 @@ function nextBid(lot){
 }
       function renderLots(){
   const box=document.getElementById("lotsGrid");
-  const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
+  let auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
 const currencySymbol=auction && auction.currency==="EUR" ? "€" : "R";
 const viewerBidder=(state.bidders||[]).find(
   b=>b.id===state.selectedBidderId
