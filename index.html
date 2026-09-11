@@ -1888,7 +1888,7 @@ document.getElementById("bidderBusinessFields").style.display="none";
   document.getElementById("newBidderRegistration").style.display="none";
   document.getElementById("registeredBidderSection").style.display="block";
 
-  refreshBidderSelect();
+  ();
 
   if(state.selectedBidderId){
     const bidder=(state.bidders||[]).find(
@@ -2165,6 +2165,7 @@ if(bidder){
 }
 
   selectedBidderNotice();
+}
 }
   function toggleOwnerTestMode(){
   const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
