@@ -1743,7 +1743,7 @@ selectedNotificationAuctions:[],
   };
 
  state.sellers=state.sellers||[];
-(seller);
+state.sellers.push(seller);
 save();
 refreshSellerSelect();
   alert("Seller registration successful. You can now list plants for auction.");
@@ -2509,8 +2509,7 @@ if(!auction){
 
   return;
 }
-
-  state.selectedAuctionId=auction.id;
+     state.selectedAuctionId=auction.id;  
   refreshLotCategorySelect(); 
   save();refreshAdminAuctionSelect();
    const categoryEditor=document.getElementById("generalCategoryEditor");
@@ -2677,15 +2676,7 @@ function refreshLotCategorySelect(){
     option.textContent=category;
     select.appendChild(option);
   });
-}state.selectedAuctionId=auction.id;
-  save();
-  updateHeader();
-  refreshAdminAuctionSelect();
-  document.getElementById("newAuctionDate").value="";
-document.getElementById("newAuctionTime").value="";
-document.getElementById("newAuctionCloseTime").value="";
-  refreshAdminAuctionSelect();
-  refreshLotCategorySelect();
+}
   document.getElementById("selectedAuctionNotice").textContent=
 "Selected auction: " + name + " (" + type + ")" +
 (auctionDate ? " | " + auctionDate + " | " + auctionTime + " - " + auctionCloseTime : " | Automatic scheduling");
