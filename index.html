@@ -2537,29 +2537,26 @@ const categoryEditor=document.getElementById("generalCategoryEditor");
   document.getElementById("generalCategory4").value=cats[3]||"";
 }
 } 
-  function refreshAdminAuctionSelect(){
-  const select=document.getElementById("adminAuctionSelect");
-  if(!select) return;
 
-  select.innerHTML='<option value="">Select auction</option>';
 
-  (state.auctions||[]).forEach(auction=>{
-    const option=document.createElement("option");
-    option.value=auction.id;
-    option.textContent=auction.name + " (" + auction.type + ")";
-    select.appendChild(option);
-  });
-
-  select.value=state.selectedAuctionId||"";
-}
 function refreshLotCategorySelect(){
   const select=document.getElementById("lotCategory");
   if(!select) return;
-const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
-  
+
+  const auction=(state.auctions||[]).find(
+    a=>a.id===state.selectedAuctionId
+  );
+
   const incrementSelect=document.getElementById("lotIncrement");
-if(auction && auction.currency==="EUR") incrementSelect.innerHTML='<option value="5">€5</option>';
-if(auction && auction.currency==="ZAR") incrementSelect.innerHTML='<option value="50">R50</option><option value="100">R100</option>';
+
+  if(auction && auction.currency==="EUR"){
+    incrementSelect.innerHTML='<option value="5">€5</option>';
+  }
+
+  if(auction && auction.currency==="ZAR"){
+    incrementSelect.innerHTML=
+      '<option value="50">R50</option><option value="100">R100</option>';
+  }
 
   select.innerHTML='<option value="">Select category</option>';
 
@@ -2572,168 +2569,115 @@ if(auction && auction.currency==="ZAR") incrementSelect.innerHTML='<option value
     select.appendChild(option);
   });
 }
-  function saveGeneralCategories(){
-  const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
+      
+ function refreshAdminAuctionSelect(){
+  const select=document.getElementById("adminAuctionSelect");
+  if(!select) return;
 
-  if(!auction){
-    alert("Please select an event first.");
-    return;
+  select.innerHTML='<option value="">Select auction</option>';
+
+  (state.auctions||[]).forEach(auction=>{
+    const option=document.createElement("option");
+    option.value=auction.id;
+    option.textContent=auction.name+" ("+auction.type+")";
+    select.appendChild(option);
+  });
+
+  select.value=state.selectedAuctionId||"";
+}
+
+function refreshBidderSelect(){
+  const select=document.getElementById("bidderSelect");
+  const recognitionNotice=document.getElementById("bidderRecognitionNotice");
+  const liveStatus=document.getElementById("liveBidderStatus");
+
+  if(!select) return;
+
+  select.innerHTML='<option value="">— Select bidder —</option>';
+
+  (state.bidders||[]).forEach(b=>{
+    const option=document.createElement("option");
+    option.value=b.id;
+    option.textContent=b.name+" — "+b.phone;
+    select.appendChild(option);
+  });
+
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(bidder){
+    select.value=bidder.id;
+
+    const unlocked=
+      sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+
+    if(recognitionNotice){
+      recognitionNotice.innerHTML=
+        "✅ REGISTERED BIDDER — "+bidder.name+
+        "<br>"+
+        (unlocked
+          ? "🔓 Bidding is unlocked for this visit."
+          : "🔒 Bidding locked — password required.");
+    }
+
+    if(liveStatus){
+      liveStatus.innerHTML=
+        "✅ REGISTERED BIDDER — "+bidder.name+
+        "<br>"+
+        (unlocked
+          ? "🔓 Bidding unlocked."
+          : "🔒 Bidding locked — password required before placing a bid.");
+    }
+
+  }else{
+
+    if(recognitionNotice){
+      recognitionNotice.innerHTML=
+        "No registered bidder recognised on this device.";
+    }
+
+    if(liveStatus){
+      liveStatus.innerHTML=
+        "No registered bidder recognised on this device.";
+    }
   }
 
-  if(auction.type!=="GENERAL"){
-    alert("Event categories can only be changed for Your Own Event.");
-    return;
+  selectedBidderNotice();
+}
+
+function refreshLotCategorySelect(){
+  const select=document.getElementById("lotCategory");
+  if(!select) return;
+
+  const auction=(state.auctions||[]).find(
+    a=>a.id===state.selectedAuctionId
+  );
+
+  const incrementSelect=document.getElementById("lotIncrement");
+
+  if(auction && incrementSelect){
+    if(auction.currency==="EUR"){
+      incrementSelect.innerHTML='<option value="5">€5</option>';
+    }
+
+    if(auction.currency==="ZAR"){
+      incrementSelect.innerHTML=
+        '<option value="50">R50</option><option value="100">R100</option>';
+    }
   }
 
-  const categories=[
-    document.getElementById("generalCategory1").value.trim(),
-    document.getElementById("generalCategory2").value.trim(),
-    document.getElementById("generalCategory3").value.trim(),
-    document.getElementById("generalCategory4").value.trim()
-  ].filter(Boolean);
+  select.innerHTML='<option value="">Select category</option>';
 
-  if(categories.length===0){
-    alert("Please enter at least one event category.");
-    return;
-  }
+  if(!auction) return;
 
-  auction.categories=categories;
-  save();
-  refreshLotCategorySelect();
-
-  alert("Event categories saved.");
-}
-    function extendAuctionDays(days){
-  const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
-
-  if(!auction || !auction.auctionDate){
-    alert("Please select an auction with a date first.");
-    return;
-  }
-
-  const d=new Date(auction.auctionDate+"T00:00:00");
-  d.setDate(d.getDate()+days);
-  auction.auctionDate=d.toISOString().slice(0,10);
-
-  save();
-  updateHeader();
-  alert("Auction extended by "+days+" day(s).");
-}
-  function forceAuctionDate(){
-  const auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
-  const newDate=document.getElementById("adminAuctionDateOverride").value;
-    const newStartTime=document.getElementById("adminAuctionTimeOverride").value;
-const newCloseTime=document.getElementById("adminAuctionCloseTimeOverride").value;
-
-  if(!auction){
-    alert("Please select an auction first.");
-    return;
-  }
-
-  if(!newDate){
-    alert("Please select a new auction date.");
-    return;
-  }
-const finalStartTime=newStartTime || auction.auctionTime;
-const finalCloseTime=newCloseTime || auction.auctionCloseTime;
-(state.lots||[]).forEach(lot=>{
-  if(lot.auctionId===auction.id) lot.extendedCloseUntil=null;
-});
-if(finalStartTime && finalCloseTime && finalCloseTime<=finalStartTime){
-  alert("Auction closing time must be later than the start time.");
-  return;
-}
-  auction.auctionDate=newDate;
-    if(newStartTime) auction.auctionTime=newStartTime;
-if(newCloseTime) auction.auctionCloseTime=newCloseTime;
-  save();
-  updateHeader();
-  renderLots();  
-  refreshAdminAuctionSelect();  
-  document.getElementById("selectedAuctionNotice").textContent=
-"Selected auction: "+auction.name+" ("+auction.type+") | "+auction.auctionDate+" | "+auction.auctionTime+" - "+auction.auctionCloseTime;  
-  alert("Auction date and times updated.");
-}
-async function createAuction(){
-  const type=document.getElementById("newAuctionType").value;
-  const generalEventName=document.getElementById("generalEventName")?.value.trim() || "";
-const generalEventDescription=document.getElementById("generalEventDescription")?.value.trim() || "";
-  const generalEventRules=document.getElementById("generalEventRules")?.value.trim() || "";
-  const generalEventLogoFile=document.getElementById("generalEventLogo")?.files?.[0] || null;
-const generalEventBannerFile=document.getElementById("generalEventBanner")?.files?.[0] || null;
- if(type!=="CLIVIA" && type!=="GENERAL"){
-  alert("Please select a valid event type.");
-  return;
-}
-  
-  if(type==="GENERAL" && !generalEventName){
-  alert("Please enter the Event / Business Name.");
-  return;
-}
-
-if(type==="GENERAL" && !generalEventLogoFile){
-  alert("Please upload your Event Logo.");
-  return;
-}
-
-if(type==="GENERAL" && !generalEventBannerFile){
-  alert("Please upload your Event Banner.");
-  return;
-}
-  const currency=document.getElementById("newAuctionCurrency").value;
-  const name=document.getElementById("newAuctionName").value.trim();
-  const firstBid=Number(document.getElementById("newAuctionFirstBid").value);
-  const auctionDate=document.getElementById("newAuctionDate").value;
-const auctionTime=document.getElementById("newAuctionTime").value;
-const auctionCloseTime=document.getElementById("newAuctionCloseTime").value;
-  if(!name){
-    alert("Please enter an auction name.");
-    return;
-  }
-  if(!firstBid || firstBid <= 0){
-  alert("Please enter the Auction First Bid Amount.");
-  return;
-}
-if((state.auctions||[]).length===0 && !(auctionDate && auctionTime && auctionCloseTime)){
-  alert("Please set the date, start time and closing time for the first auction.");
-  return;
-}
-if((auctionDate || auctionTime || auctionCloseTime) && !(auctionDate && auctionTime && auctionCloseTime)){
-  alert("Enter the auction date, start time and closing time together, or leave all three blank for automatic scheduling.");
-  return;
-}
-  if(auctionTime && auctionCloseTime && auctionCloseTime<=auctionTime){
-  alert("Auction closing time must be later than the start time.");
-  return;
-}
-  const auction={
-    id:"A"+Date.now(),
-    type:type,
-    generalEventName:generalEventName,
-generalEventDescription:generalEventDescription,
-generalEventLogo:generalEventLogo,
-generalEventBanner:generalEventBanner,
-    currency:currency,
-    name:name,
-    firstBid:firstBid,
-    auctionDate:auctionDate,
-    auctionTime:auctionTime,
-auctionCloseTime:auctionCloseTime,
-    status:"FILLING",
-    createdDate:new Date().toISOString(),
-    lots:[],
-categories:
-  type==="CLIVIA"
-    ? ["Seedlings","Offsets","Sets","Mature Plants"]
-    : type==="GENERAL"
-      ? ["Category 1","Category 2","Category 3","Category 4"]
-      : [],
-categoryCapacity:12,
-  };
-
-  state.auctions=state.auctions||[];
-  state.auctions.push(auction);
-  state.selectedAuctionId=auction.id;
+  (auction.categories||[]).forEach(category=>{
+    const option=document.createElement("option");
+    option.value=category;
+    option.textContent=category;
+    select.appendChild(option);
+  });
+}state.selectedAuctionId=auction.id;
   save();
   updateHeader();
   refreshAdminAuctionSelect();
