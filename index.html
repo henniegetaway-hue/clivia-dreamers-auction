@@ -1492,6 +1492,7 @@ function showPage(page){
   document.getElementById(map[page][1]).classList.add("active");
 
   if(page==="live") renderLots();
+  if(page==="register") refreshBidderSelect();    
   if(page==="admin") renderAdminLots();
   if(page==="invoices") renderInvoices();
   if(page==="rules"){
