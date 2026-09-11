@@ -530,6 +530,11 @@ th,td{
     <div class="panel">
       <h2>Bidder Registration</h2>
      <p>Please choose New Bidder or Already Registered Bidder.</p>
+      <div id="bidderRecognitionNotice"
+     class="notice"
+     style="margin:12px 0;font-weight:bold;">
+  Checking bidder registration...
+</div>    
       <div style="display:flex;gap:10px;margin:12px 0;">
   <button type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
   <button type="button" class="goldBtn" onclick="showRegisteredBidder()">ALREADY REGISTERED BIDDER</button>
@@ -779,6 +784,11 @@ th,td{
 <section id="pageLive" class="page hidden">
   <div class="panel">
     <h2 id="liveTitle">Clivia Dreamers Live Auction</h2>
+    <div id="liveBidderStatus"
+     class="notice"
+     style="margin:10px 0;font-weight:bold;">
+  No registered bidder recognised.
+</div>    
     <div>Register or select a bidder before bidding.</div>
     <div class="notice">
   <b>PAYMENT NOTICE:</b> Winning bidders pay the seller/owner directly. Clivia Dreamers does not receive payment for the auction item. Transactions between bidder and seller/owner are at their own risk.
@@ -1877,7 +1887,24 @@ document.getElementById("bidderBusinessFields").style.display="none";
   function showRegisteredBidder(){
   document.getElementById("newBidderRegistration").style.display="none";
   document.getElementById("registeredBidderSection").style.display="block";
-    document.getElementById("registeredBidderSection").scrollIntoView({behavior:"smooth",block:"start"});
+
+  refreshBidderSelect();
+
+  if(state.selectedBidderId){
+    const bidder=(state.bidders||[]).find(
+      b=>b.id===state.selectedBidderId
+    );
+
+    if(bidder){
+      document.getElementById("bidderSelect").value=bidder.id;
+      selectBidder();
+    }
+  }
+
+  document.getElementById("registeredBidderSection").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
 }
   function toggleBidderRegistrationFields(){
   const type=document.getElementById("regEntityType").value;
@@ -2078,9 +2105,14 @@ function sendBidderRegistrationWhatsApp(){
 }
 function refreshBidderSelect(){
   const select=document.getElementById("bidderSelect");
+  const recognitionNotice=document.getElementById("bidderRecognitionNotice");
+  const liveStatus=document.getElementById("liveBidderStatus");    
+
+  if(!select) return;
+
   select.innerHTML='<option value="">— Select bidder —</option>';
 
-  state.bidders.forEach(b=>{
+  (state.bidders||[]).forEach(b=>{
     const op=document.createElement("option");
     op.value=b.id;
     op.textContent=b.name+" — "+b.phone;
@@ -2088,6 +2120,50 @@ function refreshBidderSelect(){
   });
 
   select.value=state.selectedBidderId || "";
+
+  if(state.selectedBidderId){
+    const bidder=(state.bidders||[]).find(
+      b=>b.id===state.selectedBidderId
+    );
+
+if(bidder){
+  const unlocked=
+    sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+
+  if(recognitionNotice){
+    recognitionNotice.innerHTML=
+      "✅ REGISTERED BIDDER — "+bidder.name+
+      "<br>"+
+      (unlocked
+        ? "🔓 Bidding is unlocked for this visit."
+        : "🔒 Enter your bidder password to bid.");
+  }
+
+  const liveStatus=document.getElementById("liveBidderStatus");
+
+  if(liveStatus){
+    liveStatus.innerHTML=
+      "✅ REGISTERED BIDDER — "+bidder.name+
+      "<br>"+
+      (unlocked
+        ? "🔓 Bidding unlocked."
+        : "🔒 Bidding locked — password required before placing a bid.");
+  }
+
+}else{
+  if(recognitionNotice){
+    recognitionNotice.innerHTML=
+      "No registered bidder recognised on this device.";
+  }
+
+  const liveStatus=document.getElementById("liveBidderStatus");
+
+  if(liveStatus){
+    liveStatus.innerHTML=
+      "No registered bidder recognised on this device.";
+  }
+}
+
   selectedBidderNotice();
 }
   function toggleOwnerTestMode(){
@@ -2186,6 +2262,8 @@ function unlockReturningBidder(){
   }
 
   sessionStorage.setItem("cliviaBidderUnlocked", bidder.id);
+      
+ refreshBidderSelect();     
 
   notice.textContent = "Bidding unlocked for this visit.";
 
@@ -4337,15 +4415,10 @@ if(state.selectedBidderId){
   );
 
   if(bidder){
-    const passwordBox=document.getElementById("bidderPasswordUnlockBox");
-    const passwordInput=document.getElementById("returningBidderPassword");
-    const unlockNotice=document.getElementById("bidderUnlockNotice");
-
     sessionStorage.removeItem("cliviaBidderUnlocked");
 
-    if(passwordBox){
-      passwordBox.style.display="block";
-    }
+    const passwordInput=document.getElementById("returningBidderPassword");
+    const unlockNotice=document.getElementById("bidderUnlockNotice");
 
     if(passwordInput){
       passwordInput.value="";
@@ -4353,7 +4426,7 @@ if(state.selectedBidderId){
 
     if(unlockNotice){
       unlockNotice.textContent=
-        "Welcome back. Enter your bidder password before placing a bid.";
+        "Welcome back, "+bidder.name+". Enter your password before placing a bid.";
     }
   }
 
