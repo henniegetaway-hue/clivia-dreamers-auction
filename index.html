@@ -1888,8 +1888,11 @@ adminSelect.innerHTML='<option value="">Select seller</option>';
 
   notice.style.display = country && !isSouthAfrica ? "block" : "none";
 }
-  function toggleBidderAuctionNotifications(){
-  const choice=document.getElementById("regNotifyNextAuction").value;
+function toggleBidderAuctionNotifications(){
+  const checked=
+    document.querySelector('input[name="bidderNotifyChoice"]:checked');
+
+  const choice=checked ? checked.value : "none";
   const box=document.getElementById("bidderSelectedAuctionsBox");
   const select=document.getElementById("bidderSelectedAuctions");
 
@@ -2014,12 +2017,11 @@ const isSouthAfrica=
 const isInternational=!isSouthAfrica;   
 const accountNumber=document.getElementById("regAccountNumber").value.trim();
 const defaultNumber=document.getElementById("regDefaultNumber").value.trim();
-const rulesAccepted=document.getElementById("regRulesAccepted").checked;
+const rulesAccepted=document.getElementById("reg").checked;
 
 if(!address || !suburb || !postal || !country || !accountNumber || !rulesAccepted){
-  document.getElementById("regMsg").textContent="Please complete all required buyer details, including full address and bank account number, and accept the Rules & Terms.";
-  return;
-  document.getElementById("regMsg").textContent="Please complete all required buyer details, including full address, bank account number and default number.";
+  document.getElementById("regMsg").textContent=
+    "Please complete all required buyer details, including full address and bank account number, and accept the Rules & Terms.";
   return;
 }
     const bidderName=entityType==="COMPANY" ? companyName : name;
@@ -2144,7 +2146,9 @@ function sendBidderRegistrationWhatsApp(){
     "_blank"
   );
 }
-function refreshBidderSelect(){
+
+}
+  function toggleOwnerTestMode(){
   const select=document.getElementById("bidderSelect");
   const recognitionNotice=document.getElementById("bidderRecognitionNotice");
   const liveStatus=document.getElementById("liveBidderStatus");    
@@ -2207,8 +2211,6 @@ if(bidder){
 
   selectedBidderNotice();
 }
-}
-  function toggleOwnerTestMode(){
   const bidder=state.bidders.find(b=>b.id===state.selectedBidderId);
 
   if(!bidder){
