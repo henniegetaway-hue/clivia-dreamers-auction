@@ -546,22 +546,7 @@ th,td{
   border-radius:12px;
   background:rgba(255,152,0,.10);
 ">
-  <label style="font-weight:bold;">REGISTER AS</label>
 
-  <select id="regEntityType" onchange="toggleBidderRegistrationFields()">
-  <option value="">-- SELECT HOW YOU ARE BIDDING --</option>
-  <option value="PRIVATE">Private Name</option>
-  <option value="COMPANY">Trading As / Company / CC</option>
-</select>
-<div id="bidderPrivateFields" style="display:none;">
-      <label>Full name</label>
-      <input id="regName" placeholder="e.g. Johan Smit">
-
-      <div class="formGrid">
-        <div>
-          <label>Private WhatsApp number</label>
-        <input id="regPhone" placeholder="e.g. +27 82 123 4567">
-        </div>
         <div>
           <label>Email (optional)</label>
           <input id="regEmail">
@@ -624,10 +609,10 @@ th,td{
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
     <input
       type="radio"
-      name="sellerNotifyChoice"
+      name="bidderNotifyChoice"
       value="none"
       checked
-      onchange="setSellerNotifyChoice('none')"
+      onchange="setBidderNotifyChoice('none')"
       style="width:auto;"
     >
     NO NOTIFICATIONS
@@ -636,9 +621,9 @@ th,td{
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
     <input
       type="radio"
-      name="sellerNotifyChoice"
+      name="bidderNotifyChoice"
       value="all"
-      onchange="setSellerNotifyChoice('all')"
+      onchange="setBidderNotifyChoice('all')"
       style="width:auto;"
     >
     NOTIFY ME ABOUT AUCTIONS
@@ -1192,6 +1177,21 @@ th,td{
   <option value="PRIVATE">Private Individual</option>
   <option value="COMPANY">Company / CC</option>
 </select>
+ <label style="font-weight:bold;">BIDDER PASSWORD</label>
+<input
+  type="password"
+  id="bidderPassword"
+  placeholder="Create your bidder password"
+  autocomplete="new-password"
+/>
+
+<label style="font-weight:bold;">CONFIRM PASSWORD</label>
+<input
+  type="password"
+  id="bidderPasswordConfirm"
+  placeholder="Enter the same password again"
+  autocomplete="new-password"
+/>         
 
     <label>Full name</label>
     <input id="sellerName" placeholder="Full name">
@@ -1605,11 +1605,17 @@ document.getElementById("nextAuctionTop").textContent=
       +new Date(nextAuction.auctionDate+"T00:00:00").toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"})
       +" at "+nextAuction.auctionTime
     : "Possible Auction Date: to be announced";
-function toggleSellerBusinessFields(){
-   function setSellerNotifyChoice(choice){
+function setBidderNotifyChoice(choice){
+  state.bidderNotifyChoice=choice;
+  save();
+}
+
+function setSellerNotifyChoice(choice){
   state.sellerNotifyChoice=choice;
   save();
-}   
+}
+
+function toggleSellerBusinessFields(){
   const type=document.getElementById("sellerEntityType").value;
   const box=document.getElementById("sellerBusinessFields");
 
@@ -1966,7 +1972,8 @@ if(!entityType){
   document.getElementById("regMsg").textContent="Please select Private Name or Company / CC.";
   return;
 }
-   const notifyChoice=document.getElementById("regNotifyNextAuction").value;
+   const notifyChoice =
+  document.querySelector('input[name="bidderNotifyChoice"]:checked')?.value || "none";
 const selectedAuctions=document.getElementById("bidderSelectedAuctions");
 
 if(notifyChoice==="selected" && selectedAuctions.selectedOptions.length===0){
@@ -2081,7 +2088,7 @@ paymentHold:false,
 paymentHoldReason:"",
     rulesAccepted:true,
 rulesAcceptedDate:new Date().toISOString(),
-    notifyNextAuction:document.getElementById("regNotifyNextAuction").value,
+    notifyNextAuction:notifyChoice,
     selectedNotificationAuctions:Array.from(document.getElementById("bidderSelectedAuctions").selectedOptions).map(o=>o.value),
    securityFeesPaidZAR:0,
 securityFeesPaidEUR:0,
