@@ -2371,12 +2371,6 @@ function refreshLotCategorySelect(){
     select.appendChild(option);
   });
 }
-  document.getElementById("selectedAuctionNotice").textContent=
-"Selected auction: " + name + " (" + type + ")" +
-(auctionDate ? " | " + auctionDate + " | " + auctionTime + " - " + auctionCloseTime : " | Automatic scheduling");
-
-  alert("Auction created: " + name);
-}
   
   function isCategoryFull(auction,category){
   const count=(state.lots||[]).filter(lot=>lot.auctionId===auction.id && lot.category===category).length;
@@ -2675,12 +2669,7 @@ if(exportEligible && !seller.exporterApproved){
     a.auctionDate===auction.auctionDate &&
     (a.auctionTime===preferredAuctionTime || a.preferredAuctionTime===preferredAuctionTime)
   );
-
-  if(matchingAuction){
-  if(matchingAuction.status==="FULL"){
-    alert("The "+preferredAuctionTime+" auction is already full. Please choose another time.");
-    return;
-  }
+        
   auction=matchingAuction;
     if(!auction.auctionTime && !auction.preferredAuctionTime){
   auction.preferredAuctionTime=preferredAuctionTime;
