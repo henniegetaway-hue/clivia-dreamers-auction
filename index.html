@@ -549,11 +549,18 @@ th,td{
 
         <div>
   <label>REGISTER AS</label>
-<select id="regEntityType" onchange="toggleBidderRegistrationFields()">
-  <option value="">-- SELECT --</option>
-  <option value="PRIVATE">Private Name</option>
-  <option value="COMPANY">Company / CC</option>
-</select>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;">
+  <button type="button" class="goldBtn" onclick="selectBidderEntityType('PRIVATE')">
+    PRIVATE
+  </button>
+
+  <button type="button" class="goldBtn" onclick="selectBidderEntityType('COMPANY')">
+    COMPANY / CC - TRADING AS
+  </button>
+</div>
+
+<input id="regEntityType" type="hidden" value="">
 
 <div id="bidderPrivateFields" style="display:none;">
   <label>Full Name *</label>
