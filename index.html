@@ -2066,6 +2066,69 @@ document.getElementById("bidderBusinessFields").style.display="none";
 });    
     document.getElementById("newBidderRegistration").scrollIntoView({behavior:"smooth",block:"start"});
 }
+    function unlockReturningBidder(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!bidder){
+    alert("No registered bidder selected.");
+    return;
+  }
+
+  const passwordInput=document.getElementById("returningBidderPassword");
+  const notice=document.getElementById("bidderUnlockNotice");
+
+  const enteredPassword=passwordInput ? passwordInput.value : "";
+
+  if(!enteredPassword){
+    if(notice){
+      notice.textContent="Please enter your bidder password.";
+    }
+    return;
+  }
+
+  if(enteredPassword!==bidder.password){
+    if(notice){
+      notice.textContent="Incorrect bidder password.";
+    }
+
+    if(passwordInput){
+      passwordInput.value="";
+      passwordInput.focus();
+    }
+    return;
+  }
+
+  sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
+
+  if(notice){
+    notice.textContent="Bidding unlocked for this visit.";
+  }
+
+  if(passwordInput){
+    passwordInput.value="";
+  }
+
+  refreshBidderSelect();
+
+  const pendingLot=sessionStorage.getItem("cliviaPendingBidLot");
+
+  if(pendingLot){
+    sessionStorage.removeItem("cliviaPendingBidLot");
+    showPage("live");
+
+    setTimeout(()=>{
+      const lot=document.getElementById("lot-"+pendingLot);
+      if(lot){
+        lot.scrollIntoView({
+          behavior:"smooth",
+          block:"center"
+        });
+      }
+    },300);
+  }
+}  
   function showRegisteredBidder(){
   document.getElementById("newBidderRegistration").style.display="none";
   document.getElementById("registeredBidderSection").style.display="block";
