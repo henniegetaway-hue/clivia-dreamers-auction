@@ -587,9 +587,25 @@ th,td{
 
   <label>Bidder Password *</label>
   <input id="bidderPassword" type="password" placeholder="Create bidder password">
+   <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+  <input
+    type="checkbox"
+    onchange="document.getElementById('bidderPassword').type=this.checked?'text':'password';"
+    style="width:auto;"
+  >
+  Show password
+</label>   
 
   <label>Confirm Password *</label>
   <input id="bidderPasswordConfirm" type="password" placeholder="Confirm bidder password">
+      <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+  <input
+    type="checkbox"
+    onchange="document.getElementById('bidderPasswordConfirm').type=this.checked?'text':'password';"
+    style="width:auto;"
+  >
+  Show password
+</label>
 </div>     
          <div id="bidderCommonFields" style="display:none;">     
           <label>Email (optional)</label>
@@ -722,6 +738,14 @@ th,td{
     placeholder="Enter your bidder password"
     autocomplete="current-password"
   >
+    <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+  <input
+    type="checkbox"
+    onchange="document.getElementById('returningBidderPassword').type=this.checked?'text':'password';"
+    style="width:auto;"
+  >
+  Show password
+</label>        
 
   <button
     type="button"
@@ -1257,6 +1281,14 @@ th,td{
   placeholder="Create your seller password"
   autocomplete="new-password"
 />
+ <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+  <input
+    type="checkbox"
+    onchange="document.getElementById('sellerPassword').type=this.checked?'text':'password';"
+    style="width:auto;"
+  >
+  Show password
+</label>      
 
 <label style="font-weight:bold;">CONFIRM PASSWORD</label>
 <input
@@ -2130,20 +2162,55 @@ document.getElementById("bidderBusinessFields").style.display="none";
   }
 }  
   function showRegisteredBidder(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!bidder){
+    alert("No registered bidder is recognised on this device yet.");
+    return;
+  }
+
+  const profileUnlocked=
+    sessionStorage.getItem("cliviaBidderProfileUnlocked")===bidder.id;
+
+  if(!profileUnlocked){
+    const passwordBox=document.getElementById("bidderPasswordUnlockBox");
+    const notice=document.getElementById("bidderUnlockNotice");
+
+    document.getElementById("newBidderRegistration").style.display="none";
+    document.getElementById("registeredBidderSection").style.display="block";
+
+    if(passwordBox){
+      passwordBox.style.display="block";
+    }
+
+    if(notice){
+      notice.textContent=
+        "Enter your bidder password to open your registered profile.";
+    }
+
+    document.getElementById("bidderSelect").value=bidder.id;
+
+    document.getElementById("registeredBidderSection").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+    return;
+  }
+
   document.getElementById("newBidderRegistration").style.display="none";
   document.getElementById("registeredBidderSection").style.display="block";
 
+  document.getElementById("bidderSelect").value=bidder.id;
+  selectBidder();
 
-  if(state.selectedBidderId){
-    const bidder=(state.bidders||[]).find(
-      b=>b.id===state.selectedBidderId
-    );
-
-    if(bidder){
-      document.getElementById("bidderSelect").value=bidder.id;
-      selectBidder();
-    }
-  }
+  document.getElementById("registeredBidderSection").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
 
   document.getElementById("registeredBidderSection").scrollIntoView({
     behavior:"smooth",
