@@ -1669,14 +1669,6 @@ function setSellerNotifyChoice(choice){
 
   toggleSellerBusinessFields();
 }
-  const hidden=document.getElementById("sellerEntityType");
-
-  if(hidden){
-    hidden.value=type;
-  }
-
-  toggleSellerBusinessFields();
-}     
 function toggleSellerBusinessFields(){
   const type=document.getElementById("sellerEntityType").value;
   const box=document.getElementById("sellerBusinessFields");
