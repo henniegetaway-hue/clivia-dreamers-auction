@@ -1382,6 +1382,33 @@ th,td{
 </label>
 <label>Notify me about auctions?</label>
 
+<div style="display:flex;gap:28px;align-items:center;flex-wrap:nowrap;margin:8px 0 12px;">
+
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="sellerNotifyChoice"
+      value="none"
+      checked
+      onchange="setSellerNotifyChoice('none')"
+      style="width:auto;"
+    >
+    NO NOTIFICATIONS
+  </label>
+
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="sellerNotifyChoice"
+      value="all"
+      onchange="setSellerNotifyChoice('all')"
+      style="width:auto;"
+    >
+    NOTIFY ME ABOUT AUCTIONS
+  </label>
+
+</div>
+
 <button class="goldBtn" onclick="registerSeller()">REGISTER AS SELLER</button>
 
 </div>
