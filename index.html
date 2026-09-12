@@ -1214,22 +1214,31 @@ th,td{
     <div id="newSellerRegistrationSection" style="display:none;">    
     <label>REGISTER AS</label>
 
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;">
-  <button type="button"
-    class="goldBtn"
-    style="padding:6px 12px;font-size:12px;width:auto;"
-    onclick="selectSellerEntityType('PRIVATE')">
+<div style="display:flex;gap:28px;align-items:center;flex-wrap:nowrap;margin:8px 0 12px;">
+
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="sellerEntityChoice"
+      value="PRIVATE"
+      onchange="selectSellerEntityType('PRIVATE')"
+      style="width:auto;"
+    >
     PRIVATE
-  </button>
+  </label>
 
-  <button type="button"
-    class="goldBtn"
-    style="padding:6px 12px;font-size:12px;width:auto;"
-    onclick="selectSellerEntityType('COMPANY')">
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="sellerEntityChoice"
+      value="COMPANY"
+      onchange="selectSellerEntityType('COMPANY')"
+      style="width:auto;"
+    >
     COMPANY / CC - TRADING AS
-  </button>
-</div>
+  </label>
 
+</div>
 <input id="sellerEntityType" type="hidden" value="">
  <div id="sellerCommonFields" style="display:none;">         
  <label style="font-weight:bold;">SELLER PASSWORD</label>
@@ -1825,6 +1834,9 @@ function showNewSellerRegistration(){
   document.getElementById("sellerCommonFields").style.display="none";
   document.getElementById("sellerBusinessFields").style.display="none";
   document.getElementById("sellerEntityType").value="";
+  document.querySelectorAll('input[name="sellerEntityChoice"]').forEach(radio=>{
+  radio.checked=false;
+});    
 }
 
 function showRegisteredSeller(){
@@ -1993,6 +2005,9 @@ function toggleBidderAuctionNotifications(){
 document.getElementById("bidderBusinessFields").style.display="none";
    document.getElementById("bidderCommonFields").style.display="none";     
    document.getElementById("regEntityType").value="";
+    document.querySelectorAll('input[name="bidderEntityChoice"]').forEach(radio=>{
+  radio.checked=false;
+});    
     document.getElementById("newBidderRegistration").scrollIntoView({behavior:"smooth",block:"start"});
 }
   function showRegisteredBidder(){
