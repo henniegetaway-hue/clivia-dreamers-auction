@@ -2151,7 +2151,13 @@ function refreshBidderSelect(){
   const recognitionNotice=document.getElementById("bidderRecognitionNotice");
   const liveStatus=document.getElementById("liveBidderStatus");
 
-  if(!select) return;
+  if(!select){
+    if(recognitionNotice){
+      recognitionNotice.textContent=
+        "No registered bidder recognised on this device.";
+    }
+    return;
+  }
 
   select.innerHTML='<option value="">— Select bidder —</option>';
 
@@ -2166,45 +2172,48 @@ function refreshBidderSelect(){
     b=>b.id===state.selectedBidderId
   );
 
-  if(bidder){
-    select.value=bidder.id;
-
-    const unlocked=
-      sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+  if(!bidder){
+    select.value="";
 
     if(recognitionNotice){
-      recognitionNotice.innerHTML=
-        "✅ REGISTERED BIDDER — "+bidder.name+
-        "<br>"+
-        (unlocked
-          ? "🔓 Bidding is unlocked for this visit."
-          : "🔒 Bidding locked — password required.");
-    }
-
-    if(liveStatus){
-      liveStatus.innerHTML=
-        "✅ REGISTERED BIDDER — "+bidder.name+
-        "<br>"+
-        (unlocked
-          ? "🔓 Bidding unlocked."
-          : "🔒 Bidding locked — password required before placing a bid.");
-    }
-
-  }else{
-    if(recognitionNotice){
-      recognitionNotice.innerHTML=
+      recognitionNotice.textContent=
         "No registered bidder recognised on this device.";
     }
 
     if(liveStatus){
-      liveStatus.innerHTML=
+      liveStatus.textContent=
         "No registered bidder recognised on this device.";
     }
-      }
+
+    selectedBidderNotice();
+    return;
+  }
+
+  select.value=bidder.id;
+
+  const unlocked=
+    sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+
+  if(recognitionNotice){
+    recognitionNotice.innerHTML=
+      "✅ REGISTERED BIDDER — "+bidder.name+
+      "<br>"+
+      (unlocked
+        ? "🔓 Bidding is unlocked for this visit."
+        : "🔒 Enter your bidder password to bid.");
+  }
+
+  if(liveStatus){
+    liveStatus.innerHTML=
+      "✅ REGISTERED BIDDER — "+bidder.name+
+      "<br>"+
+      (unlocked
+        ? "🔓 Bidding unlocked."
+        : "🔒 Bidding locked — password required before placing a bid.");
+  }
 
   selectedBidderNotice();
 }
-
 function refreshLotCategorySelect(){
   const select=document.getElementById("lotCategory");
   if(!select) return;
