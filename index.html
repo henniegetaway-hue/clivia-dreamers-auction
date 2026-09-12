@@ -548,6 +548,26 @@ th,td{
 ">
 
         <div>
+  <label>REGISTER AS</label>
+<select id="regEntityType" onchange="toggleBidderRegistrationFields()">
+  <option value="">-- SELECT --</option>
+  <option value="PRIVATE">Private Name</option>
+  <option value="COMPANY">Company / CC</option>
+</select>
+
+<div id="bidderPrivateFields" style="display:none;">
+  <label>Full Name *</label>
+  <input id="regName" placeholder="Full name">
+
+  <label>WhatsApp Number *</label>
+  <input id="regPhone" placeholder="e.g. +27 82 123 4567">
+
+  <label>Bidder Password *</label>
+  <input id="bidderPassword" type="password" placeholder="Create bidder password">
+
+  <label>Confirm Password *</label>
+  <input id="bidderPasswordConfirm" type="password" placeholder="Confirm bidder password">
+</div>            
           <label>Email (optional)</label>
           <input id="regEmail">
 </div>
