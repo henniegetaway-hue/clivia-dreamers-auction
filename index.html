@@ -2146,6 +2146,107 @@ function sendBidderRegistrationWhatsApp(){
     "_blank"
   );
 }
+ function refreshBidderSelect(){   
+ function selectedBidderNotice(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  const notice=document.getElementById("selectedBidderNotice");
+  const capacityNotice=document.getElementById("bidderCapacityNotice");
+  const capacityControl=document.getElementById("bidderCapacityControl");
+  const selectedCapacity=document.getElementById("bidderSelectedCapacity");
+  const testNotice=document.getElementById("ownerTestModeNotice");
+
+  if(!bidder){
+    if(notice){
+      notice.textContent="No bidder selected yet.";
+    }
+
+    if(capacityNotice){
+      capacityNotice.textContent=
+        "Select a bidder to see bidding capacity.";
+    }
+
+    if(capacityControl){
+      capacityControl.style.display="none";
+    }
+
+    if(testNotice){
+      testNotice.textContent="Owner Test Mode: OFF";
+    }
+
+    return;
+  }
+
+  if(testNotice){
+    testNotice.textContent=bidder.isOwnerTest
+      ? "OWNER TEST MODE: ON — payment and security fee checks are bypassed for this test bidder."
+      : "Owner Test Mode: OFF";
+  }
+
+  const auction=(state.auctions||[]).find(
+    a=>a.id===state.selectedAuctionId
+  );
+
+  const auctionFirstBid=Number(auction?.firstBid)||0;
+  const isEUR=auction && auction.currency==="EUR";
+  const fee=isEUR ? 15 : 150;
+  const bracket=
+    auctionFirstBid>0
+      ? auctionFirstBid
+      : (isEUR ? 350 : 5000);
+
+  const paidSteps=Math.floor(
+    Number(
+      isEUR
+        ? bidder.securityFeesPaidEUR||0
+        : bidder.securityFeesPaidZAR||0
+    ) / fee
+  );
+
+  const capacity=
+    paidSteps===0
+      ? bracket
+      : paidSteps*5000;
+
+  if(capacityControl){
+    capacityControl.style.display="block";
+  }
+
+  if(selectedCapacity){
+    selectedCapacity.textContent=
+      "Current bidding capacity: "+
+      (isEUR ? "€" : "R")+
+      capacity.toLocaleString();
+  }
+
+  if(capacityNotice){
+    capacityNotice.textContent=
+      "Current bidding capacity: "+
+      (isEUR ? "€" : "R")+
+      capacity.toLocaleString();
+
+    if(
+      bidder.securityProofStatus==="PENDING_AI" &&
+      bidder.securityProofCurrency===(isEUR ? "EUR" : "ZAR")
+    ){
+      capacityNotice.textContent+=
+        " | "+
+        (bidder.securityProofCurrency==="EUR" ? "€" : "R")+
+        Number(bidder.securityProofAmount||0)+
+        " payment proof: WAITING FOR VERIFICATION";
+    }
+  }
+
+  if(notice){
+    notice.textContent=
+      "Selected bidder: "+bidder.name+
+      (bidder.bankConfirmed
+        ? " - ✅ BANK ACCOUNT CONFIRMED - BIDDING ENABLED"
+        : " - 🔴 BANK ACCOUNT NOT CONFIRMED - BIDDING BLOCKED");
+  }
+}      
 function refreshBidderSelect(){
   const select=document.getElementById("bidderSelect");
   const recognitionNotice=document.getElementById("bidderRecognitionNotice");
