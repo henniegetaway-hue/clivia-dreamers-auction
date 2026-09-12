@@ -1844,10 +1844,26 @@ function showNewSellerRegistration(){
 }
 
 function showRegisteredSeller(){
+  const seller=(state.sellers||[]).find(
+    s=>s.id===state.selectedSellerId
+  );
+
+  if(!seller){
+    alert("No registered seller is recognised on this device yet.");
+    return;
+  }
+
   document.getElementById("newSellerRegistrationSection").style.display="none";
   document.getElementById("registeredSellerSection").style.display="block";
-  refreshSellerSelect();
-}      
+
+  document.getElementById("sellerSelect").value=seller.id;
+  selectSeller();
+
+  document.getElementById("registeredSellerSection").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}     
       
   function refreshSellerSelect(){
   const select=document.getElementById("sellerSelect");
