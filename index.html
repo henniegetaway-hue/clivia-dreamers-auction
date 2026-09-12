@@ -548,16 +548,32 @@ th,td{
 ">
 
         <div>
-  <label>REGISTER AS</label>
+ <label>REGISTER AS</label>
 
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;">
-  <button type="button" class="goldBtn" style="padding:6px 12px;font-size:12px;width:auto;" onclick="selectBidderEntityType('PRIVATE')">
+<div style="display:flex;gap:28px;align-items:center;flex-wrap:nowrap;margin:8px 0 12px;">
+
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="bidderEntityChoice"
+      value="PRIVATE"
+      onchange="selectBidderEntityType('PRIVATE')"
+      style="width:auto;"
+    >
     PRIVATE
-  </button>
+  </label>
 
-  <button type="button" class="goldBtn" style="padding:6px 12px;font-size:12px;width:auto;" onclick="selectBidderEntityType('COMPANY')">
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="bidderEntityChoice"
+      value="COMPANY"
+      onchange="selectBidderEntityType('COMPANY')"
+      style="width:auto;"
+    >
     COMPANY / CC - TRADING AS
-  </button>
+  </label>
+
 </div>
 
 <input id="regEntityType" type="hidden" value="">
