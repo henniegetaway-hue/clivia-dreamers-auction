@@ -630,7 +630,7 @@ th,td{
       
 <label>Notify me about auctions?</label>
 
-<div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin:8px 0 12px;">
+<div style="display:flex;gap:20px;align-items:center;flex-wrap:nowrap;margin:8px 0 12px;">
 
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
     <input
@@ -1942,6 +1942,7 @@ function toggleBidderAuctionNotifications(){
     document.getElementById("bidderAddressFields").style.display="none";
     document.getElementById("bidderPrivateFields").style.display="none";
 document.getElementById("bidderBusinessFields").style.display="none";
+   document.getElementById("bidderCommonFields").style.display="none";     
    document.getElementById("regEntityType").value="";
     document.getElementById("newBidderRegistration").scrollIntoView({behavior:"smooth",block:"start"});
 }
