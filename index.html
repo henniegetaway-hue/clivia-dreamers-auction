@@ -1196,27 +1196,41 @@ th,td{
 
 </div>  
     <div id="newSellerRegistrationSection" style="display:none;">    
-    <label>Register as</label>
-<select id="sellerEntityType" onchange="toggleSellerBusinessFields()">
-  <option value="">-- SELECT HOW YOU ARE SELLING --</option>
-  <option value="PRIVATE">Private Individual</option>
-  <option value="COMPANY">Company / CC</option>
-</select>
- <label style="font-weight:bold;">BIDDER PASSWORD</label>
+    <label>REGISTER AS</label>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;">
+  <button type="button"
+    class="goldBtn"
+    style="padding:6px 12px;font-size:12px;width:auto;"
+    onclick="selectSellerEntityType('PRIVATE')">
+    PRIVATE
+  </button>
+
+  <button type="button"
+    class="goldBtn"
+    style="padding:6px 12px;font-size:12px;width:auto;"
+    onclick="selectSellerEntityType('COMPANY')">
+    COMPANY / CC - TRADING AS
+  </button>
+</div>
+
+<input id="sellerEntityType" type="hidden" value="">
+ <div id="sellerCommonFields" style="display:none;">         
+ <label style="font-weight:bold;">SELLER PASSWORD</label>
 <input
   type="password"
-  id="bidderPassword"
-  placeholder="Create your bidder password"
+  id="sellerPassword"
+  placeholder="Create your seller password"
   autocomplete="new-password"
 />
 
 <label style="font-weight:bold;">CONFIRM PASSWORD</label>
 <input
   type="password"
-  id="bidderPasswordConfirm"
+  id="sellerPasswordConfirm"
   placeholder="Enter the same password again"
   autocomplete="new-password"
-/>         
+/>
 
     <label>Full name</label>
     <input id="sellerName" placeholder="Full name">
@@ -1312,6 +1326,7 @@ th,td{
   I have read and accept the Clivia Dreamers Auction Rules & Terms.
 </label>
 <label>Notify me about auctions?</label>
+ </div>         
 <button class="goldBtn" onclick="registerSeller()">REGISTER AS SELLER</button>
         
    </div>     
@@ -1640,6 +1655,28 @@ function setSellerNotifyChoice(choice){
   save();
 }
 
+ function selectSellerEntityType(type){
+  const hidden=document.getElementById("sellerEntityType");
+
+  if(hidden){
+    hidden.value=type;
+  }
+
+  const common=document.getElementById("sellerCommonFields");
+  if(common){
+    common.style.display="block";
+  }
+
+  toggleSellerBusinessFields();
+}
+  const hidden=document.getElementById("sellerEntityType");
+
+  if(hidden){
+    hidden.value=type;
+  }
+
+  toggleSellerBusinessFields();
+}     
 function toggleSellerBusinessFields(){
   const type=document.getElementById("sellerEntityType").value;
   const box=document.getElementById("sellerBusinessFields");
@@ -1773,9 +1810,13 @@ save();
 refreshSellerSelect();
   alert("Seller registration successful. You can now list plants for auction.");
   }
- function showNewSellerRegistration(){
+function showNewSellerRegistration(){
   document.getElementById("registeredSellerSection").style.display="none";
   document.getElementById("newSellerRegistrationSection").style.display="block";
+
+  document.getElementById("sellerCommonFields").style.display="none";
+  document.getElementById("sellerBusinessFields").style.display="none";
+  document.getElementById("sellerEntityType").value="";
 }
 
 function showRegisteredSeller(){
