@@ -2146,139 +2146,6 @@ function sendBidderRegistrationWhatsApp(){
     "_blank"
   );
 }
-
-function refreshBidderSelect(){
-  const select=document.getElementById("bidderSelect");
-  const recognitionNotice=document.getElementById("bidderRecognitionNotice");
-  const liveStatus=document.getElementById("liveBidderStatus");
-
-  if(!select) return;
-
-  select.innerHTML='<option value="">— Select bidder —</option>';
-
-  (state.bidders||[]).forEach(b=>{
-    const op=document.createElement("option");
-    op.value=b.id;
-    op.textContent=b.name+" — "+b.phone;
-    select.appendChild(op);
-  });
-
-  select.value=state.selectedBidderId || "";
-
-  if(state.selectedBidderId){
-    const bidder=(state.bidders||[]).find(
-      b=>b.id===state.selectedBidderId
-    );
-
-if(bidder){
-  const unlocked=
-    sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
-
-  if(recognitionNotice){
-    recognitionNotice.innerHTML=
-      "✅ REGISTERED BIDDER — "+bidder.name+
-      "<br>"+
-      (unlocked
-        ? "🔓 Bidding is unlocked for this visit."
-        : "🔒 Enter your bidder password to bid.");
-  }
-
-  const liveStatus=document.getElementById("liveBidderStatus");
-
-  if(liveStatus){
-    liveStatus.innerHTML=
-      "✅ REGISTERED BIDDER — "+bidder.name+
-      "<br>"+
-      (unlocked
-        ? "🔓 Bidding unlocked."
-        : "🔒 Bidding locked — password required before placing a bid.");
-  }
-
-}else{
-  if(recognitionNotice){
-    recognitionNotice.innerHTML=
-      "No registered bidder recognised on this device.";
-  }
-
-  const liveStatus=document.getElementById("liveBidderStatus");
-
-  if(liveStatus){
-    liveStatus.innerHTML=
-      "No registered bidder recognised on this device.";
-  }
-}
-
-  selectedBidderNotice();
-}
-   function refreshBidderSelect(){
-  const select=document.getElementById("bidderSelect");
-  const recognitionNotice=document.getElementById("bidderRecognitionNotice");
-  const liveStatus=document.getElementById("liveBidderStatus");
-
-  if(!select){
-    if(recognitionNotice){
-      recognitionNotice.textContent=
-        "No registered bidder recognised on this device.";
-    }
-    return;
-  }
-
-  select.innerHTML='<option value="">— Select bidder —</option>';
-
-  (state.bidders||[]).forEach(b=>{
-    const option=document.createElement("option");
-    option.value=b.id;
-    option.textContent=b.name+" — "+b.phone;
-    select.appendChild(option);
-  });
-
-  const bidder=(state.bidders||[]).find(
-    b=>b.id===state.selectedBidderId
-  );
-
-  if(!bidder){
-    select.value="";
-
-    if(recognitionNotice){
-      recognitionNotice.textContent=
-        "No registered bidder recognised on this device.";
-    }
-
-    if(liveStatus){
-      liveStatus.textContent=
-        "No registered bidder recognised on this device.";
-    }
-
-    selectedBidderNotice();
-    return;
-  }
-
-  select.value=bidder.id;
-
-  const unlocked=
-    sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
-
-  if(recognitionNotice){
-    recognitionNotice.innerHTML=
-      "✅ REGISTERED BIDDER — "+bidder.name+
-      "<br>"+
-      (unlocked
-        ? "🔓 Bidding is unlocked for this visit."
-        : "🔒 Enter your bidder password to bid.");
-  }
-
-  if(liveStatus){
-    liveStatus.innerHTML=
-      "✅ REGISTERED BIDDER — "+bidder.name+
-      "<br>"+
-      (unlocked
-        ? "🔓 Bidding unlocked."
-        : "🔒 Bidding locked — password required before placing a bid.");
-  }
-
-  selectedBidderNotice();
-}
-
 function refreshBidderSelect(){
   const select=document.getElementById("bidderSelect");
   const recognitionNotice=document.getElementById("bidderRecognitionNotice");
@@ -2324,7 +2191,6 @@ function refreshBidderSelect(){
     }
 
   }else{
-
     if(recognitionNotice){
       recognitionNotice.innerHTML=
         "No registered bidder recognised on this device.";
@@ -2334,7 +2200,7 @@ function refreshBidderSelect(){
       liveStatus.innerHTML=
         "No registered bidder recognised on this device.";
     }
-  }
+      }
 
   selectedBidderNotice();
 }
