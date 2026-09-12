@@ -2684,9 +2684,6 @@ if(exportEligible && !seller.exporterApproved){
 }
 
 const listingCurrency=auction && auction.currency==="EUR" ? "EUR" : "ZAR";
-
-
-  const listingCurrency=auction && auction.currency==="EUR" ? "EUR" : "ZAR";
 const listingFee=listingCurrency==="EUR" ? 5 : 50;
    
 const unpaidSellerInvoice=(state.invoices||[]).find(inv=>inv.sellerId===seller.id && inv.status!=="PAID");
