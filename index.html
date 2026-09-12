@@ -551,11 +551,11 @@ th,td{
   <label>REGISTER AS</label>
 
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;">
-  <button type="button" class="goldBtn" onclick="selectBidderEntityType('PRIVATE')">
+  <button type="button" class="goldBtn" style="padding:6px 12px;font-size:12px;width:auto;" onclick="selectBidderEntityType('PRIVATE')">
     PRIVATE
   </button>
 
-  <button type="button" class="goldBtn" onclick="selectBidderEntityType('COMPANY')">
+  <button type="button" class="goldBtn" style="padding:6px 12px;font-size:12px;width:auto;" onclick="selectBidderEntityType('COMPANY')">
     COMPANY / CC - TRADING AS
   </button>
 </div>
@@ -574,7 +574,8 @@ th,td{
 
   <label>Confirm Password *</label>
   <input id="bidderPasswordConfirm" type="password" placeholder="Confirm bidder password">
-</div>            
+</div>     
+         <div id="bidderCommonFields" style="display:none;">     
           <label>Email (optional)</label>
           <input id="regEmail">
 </div>
@@ -1971,6 +1972,8 @@ document.getElementById("bidderBusinessFields").style.display="none";
     hidden.value=type;
   }
 
+   const common=document.getElementById("bidderCommonFields");
+if(common) common.style.display="block";       
   toggleBidderRegistrationFields();
 }  
   function toggleBidderRegistrationFields(){
