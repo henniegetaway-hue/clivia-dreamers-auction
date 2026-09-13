@@ -560,7 +560,13 @@ th,td{
     FORGOT PASSWORD
   </label>
 </div>
-
+<button id="bidderWantToSellBtn"
+        type="button"
+        class="accountBtn"
+        style="display:none;margin-top:10px;background:#ffcc80;color:#111;"
+        onclick="openSellerLoadFromBidder()">
+  I WANT TO SELL
+</button>
 <div id="bidderForgotPasswordBox" style="display:none;margin-top:10px;">
   <label>Registered WhatsApp Number</label>
   <input id="bidderForgotPhone" placeholder="e.g. +27 82 123 4567">
@@ -3427,7 +3433,11 @@ function refreshBidderSelect(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
   );
+const sellBtn=document.getElementById("bidderWantToSellBtn");
 
+if(sellBtn){
+  sellBtn.style.display = bidder ? "inline-block" : "none";
+}
   if(!bidder){
     select.value="";
 
@@ -3527,7 +3537,102 @@ function refreshLotCategorySelect(){
     select.appendChild(option);
   });
 }
-  
+      
+      function openSellerLoadFromBidder(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!bidder){
+    alert("Please register as a bidder before loading an item for sale.");
+    return;
+  }
+
+  const currentAuction=(state.auctions||[]).find(
+    a=>a.id===state.selectedAuctionId
+  );
+
+  // Current auction has available space
+  if(currentAuction && !isAuctionFull(currentAuction)){
+    showPage("live");
+
+    setTimeout(()=>{
+      const plantInput=document.getElementById("lotPlant");
+
+      if(plantInput){
+        const loadPanel=plantInput.closest(".panel");
+
+        if(loadPanel){
+          loadPanel.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+          });
+        }
+      }
+    },200);
+
+    return;
+  }
+
+  // Find the next auction with available space
+  const nextAuction=(state.auctions||[])
+    .filter(a=>
+      a.id!==state.selectedAuctionId &&
+      a.status!=="CLOSED" &&
+      a.auctionDate &&
+      !isAuctionFull(a)
+    )
+    .sort((a,b)=>{
+      const aDate=new Date(
+        a.auctionDate+"T"+(a.auctionTime || "00:00")
+      );
+
+      const bDate=new Date(
+        b.auctionDate+"T"+(b.auctionTime || "00:00")
+      );
+
+      return aDate-bDate;
+    })[0];
+
+  if(!nextAuction){
+    alert(
+      "The current auction is full.\n\n"+
+      "There is no next available auction scheduled yet."
+    );
+    return;
+  }
+
+  const ok=confirm(
+    "THE CURRENT AUCTION IS FULL.\n\n"+
+    "Next available auction:\n"+
+    nextAuction.auctionDate+
+    " at "+
+    (nextAuction.auctionTime || "Time to be announced")+
+    "\n\nDo you want to load your item into this auction?"
+  );
+
+  if(!ok) return;
+
+  state.selectedAuctionId=nextAuction.id;
+  save();
+
+  showPage("live");
+
+  setTimeout(()=>{
+    const plantInput=document.getElementById("lotPlant");
+
+    if(plantInput){
+      const loadPanel=plantInput.closest(".panel");
+
+      if(loadPanel){
+        loadPanel.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+      }
+    }
+  },200);
+}
   function isCategoryFull(auction,category){
   const count=(state.lots||[]).filter(lot=>lot.auctionId===auction.id && lot.category===category).length;
   return count >= (auction.categoryCapacity||12);
