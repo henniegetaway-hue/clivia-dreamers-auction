@@ -544,19 +544,6 @@ th,td{
   <div class="grid2">
     <div class="panel">
       <h2>Bidder Registration</h2>
-    <p>Please choose NEW BIDDER or MY BIDDER ACCOUNT.</p>
-      <div id="bidderRecognitionNotice"
-     class="notice"
-     style="margin:12px 0;font-weight:bold;">
-  Checking bidder registration...
-</div>    
-  <p>Please choose NEW BIDDER or MY BIDDER ACCOUNT.</p>
-
-<div id="bidderRecognitionNotice"
-     class="notice"
-     style="margin:12px 0;font-weight:bold;">
-  Checking bidder registration...
-</div>
 
 <div style="display:flex;gap:10px;margin:12px 0;">
   <button type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
@@ -1944,6 +1931,19 @@ function showRegisteredSeller(){
     return;
   }
 
+  const enteredPassword=prompt(
+    "MY SELLER ACCOUNT\n\nPlease enter your seller password:"
+  );
+
+  if(enteredPassword===null){
+    return;
+  }
+
+  if(enteredPassword!==seller.password){
+    alert("Incorrect seller password.");
+    return;
+  }
+
   document.getElementById("newSellerRegistrationSection").style.display="none";
   document.getElementById("registeredSellerSection").style.display="block";
 
@@ -1954,7 +1954,7 @@ function showRegisteredSeller(){
     behavior:"smooth",
     block:"start"
   });
-}     
+}  
       
   function refreshSellerSelect(){
   const select=document.getElementById("sellerSelect");
@@ -2245,32 +2245,16 @@ document.getElementById("bidderBusinessFields").style.display="none";
     return;
   }
 
-  const profileUnlocked=
-    sessionStorage.getItem("cliviaBidderProfileUnlocked")===bidder.id;
+  const enteredPassword=prompt(
+    "MY BIDDER ACCOUNT\n\nPlease enter your bidder password:"
+  );
 
-  if(!profileUnlocked){
-    const passwordBox=document.getElementById("bidderPasswordUnlockBox");
-    const notice=document.getElementById("bidderUnlockNotice");
+  if(enteredPassword===null){
+    return;
+  }
 
-    document.getElementById("newBidderRegistration").style.display="none";
-    document.getElementById("registeredBidderSection").style.display="block";
-
-    if(passwordBox){
-      passwordBox.style.display="block";
-    }
-
-    if(notice){
-      notice.textContent=
-        "Enter your bidder password to open your registered profile.";
-    }
-
-    document.getElementById("bidderSelect").value=bidder.id;
-
-    document.getElementById("registeredBidderSection").scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-
+  if(enteredPassword!==bidder.password){
+    alert("Incorrect bidder password.");
     return;
   }
 
