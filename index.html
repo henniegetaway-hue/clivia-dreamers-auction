@@ -549,7 +549,34 @@ th,td{
   <button type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
   <button type="button" class="accountBtn" onclick="showRegisteredBidder()">MY BIDDER ACCOUNT</button>
 </div>   
-  <div id="newBidderRegistration" style="display:none;
+  <div style="margin-top:8px;">
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="bidderForgotChoice"
+      onchange="showBidderForgotPassword()"
+      style="width:auto;"
+    >
+    FORGOT PASSWORD
+  </label>
+</div>
+
+<div id="bidderForgotPasswordBox" style="display:none;margin-top:10px;">
+  <label>Registered WhatsApp Number</label>
+  <input id="bidderForgotPhone" placeholder="e.g. +27 82 123 4567">
+
+  <button
+    type="button"
+    class="accountBtn"
+    style="margin-top:8px;"
+    onclick="sendBidderPasswordReset()"
+  >
+    SEND RESET
+  </button>
+
+  <div id="bidderForgotMsg" class="small" style="margin-top:8px;"></div>
+</div>
+<div id="newBidderRegistration" style="display:none;
   margin:12px 0;
   padding:14px;
   border:2px solid #ff9800;
