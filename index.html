@@ -549,6 +549,7 @@ th,td{
   <button type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
   <button type="button" class="accountBtn" onclick="showRegisteredBidder()">MY BIDDER ACCOUNT</button>
 </div>
+  <button type="button" class="accountBtn" onclick="showRegisteredBidder()">MY BIDDER ACCOUNT</button>        
   <div id="newBidderRegistration" style="display:none;
   margin:12px 0;
   padding:14px;
@@ -1234,6 +1235,34 @@ th,td{
    <div style="display:flex;gap:10px;margin-bottom:12px;">
   <button type="button" class="goldBtn" onclick="showNewSellerRegistration()">NEW SELLER</button>
   <button type="button" class="accountBtn" onclick="showRegisteredSeller()">MY SELLER ACCOUNT</button>
+</div>  
+      <div style="margin-top:8px;">
+  <label style="display:flex;align-items:center;gap:8px;margin:0;">
+    <input
+      type="radio"
+      name="sellerForgotChoice"
+      onchange="showSellerForgotPassword()"
+      style="width:auto;"
+    >
+    FORGOT PASSWORD
+  </label>
+</div>
+
+<div id="sellerForgotPasswordBox" style="display:none;margin-top:10px;">
+  <label>Registered WhatsApp Number</label>
+  <input id="sellerForgotPhone" placeholder="e.g. +27 82 123 4567">
+
+  <button
+    id="sellerForgotSendBtn"
+    type="button"
+    class="accountBtn"
+    style="margin-top:8px;"
+    onclick="sendSellerPasswordReset()"
+  >
+    SEND RESET
+  </button>
+
+  <div id="sellerForgotMsg" class="small" style="margin-top:8px;"></div>
 </div>  
   <div id="registeredSellerSection" style="display:none;margin-top:12px;">
 
@@ -1921,6 +1950,57 @@ function showNewSellerRegistration(){
 });    
 }
 
+function showSellerForgotPassword(){
+ function sendSellerPasswordReset(){
+  const seller=(state.sellers||[]).find(
+    s=>s.id===state.selectedSellerId
+  );
+
+  const phoneInput=document.getElementById("sellerForgotPhone");
+  const msg=document.getElementById("sellerForgotMsg");
+
+  if(!seller){
+    if(msg) msg.textContent="No registered seller is recognised.";
+    return;
+  }
+
+  const entered=(phoneInput?.value || "").replace(/\D/g,"");
+  const registered=String(seller.phone || "").replace(/\D/g,"");
+
+  if(!entered){
+    if(msg) msg.textContent=
+      "Please enter your registered WhatsApp number.";
+    return;
+  }
+
+  if(entered!==registered){
+    if(msg) msg.textContent=
+      "The WhatsApp number does not match the registered seller.";
+    return;
+  }
+
+  if(msg){
+    msg.textContent=
+      "WhatsApp number confirmed. Password reset can now be sent.";
+  }
+}     
+  const box=document.getElementById("sellerForgotPasswordBox");
+  const phone=document.getElementById("sellerForgotPhone");
+  const msg=document.getElementById("sellerForgotMsg");
+
+  if(box){
+    box.style.display="block";
+  }
+
+  if(msg){
+    msg.textContent="";
+  }
+
+  if(phone){
+    phone.value="";
+    setTimeout(()=>phone.focus(),100);
+  }
+}      
 function showRegisteredSeller(){
   const seller=(state.sellers||[]).find(
     s=>s.id===state.selectedSellerId
@@ -2233,6 +2313,56 @@ document.getElementById("bidderBusinessFields").style.display="none";
         });
       }
     },300);
+  }
+}  
+    function showBidderForgotPassword(){
+  function sendBidderPasswordReset(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  const phoneInput=document.getElementById("bidderForgotPhone");
+  const msg=document.getElementById("bidderForgotMsg");
+
+  if(!bidder){
+    if(msg) msg.textContent="No registered bidder is recognised.";
+    return;
+  }
+
+  const entered=(phoneInput?.value || "").replace(/\D/g,"");
+  const registered=String(bidder.phone || "").replace(/\D/g,"");
+
+  if(!entered){
+    if(msg) msg.textContent="Please enter your registered WhatsApp number.";
+    return;
+  }
+
+  if(entered!==registered){
+    if(msg) msg.textContent=
+      "The WhatsApp number does not match the registered bidder.";
+    return;
+  }
+
+ if(msg){
+  msg.textContent=
+    "WhatsApp number confirmed. A reset code will be sent to this registered WhatsApp number once OTP service is connected.";
+}
+}        
+  const box=document.getElementById("bidderForgotPasswordBox");
+  const phone=document.getElementById("bidderForgotPhone");
+  const msg=document.getElementById("bidderForgotMsg");
+
+  if(box){
+    box.style.display="block";
+  }
+
+  if(msg){
+    msg.textContent="";
+  }
+
+  if(phone){
+    phone.value="";
+    setTimeout(()=>phone.focus(),100);
   }
 }  
   function showRegisteredBidder(){
