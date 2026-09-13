@@ -1330,7 +1330,16 @@ th,td{
     <p>Register as a seller to offer your Clivias on Clivia Dreamers.</p>
    <div style="display:flex;gap:10px;margin-bottom:12px;">
   <button id="newSellerBtn" type="button" class="goldBtn" onclick="showNewSellerRegistration()">NEW SELLER</button>
-  <button type="button" class="accountBtn" onclick="showRegisteredSeller()">MY SELLER ACCOUNT</button>
+<button type="button" class="accountBtn" onclick="showRegisteredSeller()">MY SELLER ACCOUNT</button>
+
+<button id="becomeSellerBtn"
+        type="button"
+        class="accountBtn"
+        style="display:none;"
+        onclick="becomeSellerFromBidder()">
+  BECOME A SELLER
+</button>
+
 </div>  
      <div id="sellerForgotChoiceRow" style="display:none;margin-top:8px;">
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
@@ -2179,6 +2188,60 @@ save();
 refreshSellerSelect();
   alert("Seller registration successful. You can now list plants for auction.");
   }
+  function becomeSellerFromBidder(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!bidder){
+    alert("No recognised bidder found.");
+    return;
+  }
+
+  const existingSeller=(state.sellers||[]).find(
+    s=>s.phone===bidder.phone
+  );
+
+  if(existingSeller){
+    state.selectedSellerId=existingSeller.id;
+    save();
+    refreshSellerSelect();
+    alert("Seller account already exists.");
+    return;
+  }
+
+  const seller={
+    id:"S"+Date.now(),
+    name:bidder.name || "",
+    phone:bidder.phone || "",
+    email:bidder.email || "",
+    address:bidder.address || "",
+    suburb:bidder.suburb || "",
+    postal:bidder.postal || "",
+    country:bidder.country || "",
+    accountNumber:bidder.accountNumber || "",
+    bankConfirmed:bidder.bankConfirmed || false,
+    password:bidder.password || "",
+    entityType:bidder.entityType || "PRIVATE",
+    companyName:bidder.companyName || "",
+    businessPhone:bidder.businessPhone || "",
+    companyReg:bidder.companyReg || "",
+    vatNumber:bidder.vatNumber || "",
+    exporterApproved:false,
+    isExporter:false
+  };
+
+  state.sellers=state.sellers||[];
+  state.sellers.push(seller);
+  state.selectedSellerId=seller.id;
+
+  save();
+  refreshSellerSelect();
+
+  alert(
+    "Seller account created from your existing bidder registration."
+  );
+}    
 function showNewSellerRegistration(){
   document.getElementById("registeredSellerSection").style.display="none";
   document.getElementById("newSellerRegistrationSection").style.display="block";
@@ -2408,15 +2471,28 @@ if(sellerInfo && recognisedSeller){
 
 const newSellerBtn=document.getElementById("newSellerBtn");
 
+const recognisedBidder=(state.bidders||[]).find(
+  b=>b.id===state.selectedBidderId
+);
+
 if(newSellerBtn){
-  newSellerBtn.style.display = recognisedSeller ? "none" : "inline-block";
-  const sellerForgotRow=document.getElementById("sellerForgotChoiceRow");
+  newSellerBtn.style.display =
+    (recognisedSeller || recognisedBidder)
+      ? "none"
+      : "inline-block";
 
 if(sellerForgotRow){
   sellerForgotRow.style.display = recognisedSeller ? "block" : "none";
 }    
 }
+const becomeSellerBtn=document.getElementById("becomeSellerBtn");
 
+if(becomeSellerBtn){
+  becomeSellerBtn.style.display =
+    (recognisedBidder && !recognisedSeller)
+      ? "inline-block"
+      : "none";
+}
 }
   function showSelectedExporterStatus(){
   const sellerId=document.getElementById("adminSellerSelect").value;
