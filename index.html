@@ -166,6 +166,21 @@ button{
   cursor:pointer;
 }
 
+  .accountBtn{
+  background:linear-gradient(135deg,#e8fbff 0%,#9be7ff 30%,#ffffff 48%,#6fd4ff 65%,#c8f2ff 100%);
+  color:#062033;
+  border:1px solid #bdefff;
+  border-radius:11px;
+  padding:12px 18px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(120,220,255,.75), inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.accountBtn:hover{
+  filter:brightness(1.08);
+  box-shadow:0 0 14px rgba(150,230,255,.95), 0 0 24px rgba(80,190,255,.5);
+}      
 .greenBtn{
   background:#2f8747;
   color:white;
@@ -529,15 +544,26 @@ th,td{
   <div class="grid2">
     <div class="panel">
       <h2>Bidder Registration</h2>
-     <p>Please choose New Bidder or Already Registered Bidder.</p>
+    <p>Please choose NEW BIDDER or MY BIDDER ACCOUNT.</p>
       <div id="bidderRecognitionNotice"
      class="notice"
      style="margin:12px 0;font-weight:bold;">
   Checking bidder registration...
 </div>    
       <div style="display:flex;gap:10px;margin:12px 0;">
+   onclick="showNewBidderRegistration()">NEW BIDDER</button>
+  <p>Please choose NEW BIDDER or MY BIDDER ACCOUNT.</p>
+
+<div id="bidderRecognitionNotice"
+     class="notice"
+     style="margin:12px 0;font-weight:bold;">
+  Checking bidder registration...
+</div>
+
+<div style="display:flex;gap:10px;margin:12px 0;">
   <button type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
-  <button type="button" class="goldBtn" onclick="showRegisteredBidder()">ALREADY REGISTERED BIDDER</button>
+  <button type="button" class="accountBtn" onclick="showRegisteredBidder()">MY BIDDER ACCOUNT</button>
+</div>
 </div>
   <div id="newBidderRegistration" style="display:none;
   margin:12px 0;
@@ -1223,11 +1249,11 @@ th,td{
     <p>Register as a seller to offer your Clivias on Clivia Dreamers.</p>
    <div style="display:flex;gap:10px;margin-bottom:12px;">
   <button type="button" class="goldBtn" onclick="showNewSellerRegistration()">NEW SELLER</button>
-  <button type="button" class="goldBtn" onclick="showRegisteredSeller()">ALREADY REGISTERED SELLER</button>
+  <button type="button" class="accountBtn" onclick="showRegisteredSeller()">MY SELLER ACCOUNT</button>
 </div>  
   <div id="registeredSellerSection" style="display:none;margin-top:12px;">
 
-  <label>Already Registered Seller</label>
+  <label>My Seller Account</label>
   <select id="sellerSelect" onchange="selectSeller()"></select>
 
   <div id="selectedSellerNotice" class="notice">
@@ -2465,7 +2491,7 @@ refreshBidderSelect();
    window.lastBidderWhatsAppMessage = whatsappMessage; 
 
 document.getElementById("regMsg").textContent="Registered successfully. WhatsApp confirmation is optional.";
-    alert("✅ REGISTRATION SUCCESSFUL!\n\nYou are now registered with Clivia Dreamers Auction.\n\nNext time, click ALREADY REGISTERED BIDDER.");   
+    alert("✅ REGISTRATION SUCCESSFUL!\n\nYou are now registered with Clivia Dreamers Auction.\n\nNext time, click MY BIDDER ACCOUNT.");
  document.getElementById("sendBidderWhatsApp").style.display="block";
     document.getElementById("newBidderRegistration").style.display="none";
     refreshBidderSelect();   
