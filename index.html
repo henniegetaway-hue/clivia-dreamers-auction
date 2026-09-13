@@ -546,10 +546,10 @@ th,td{
       <h2>Bidder Registration</h2>
 
 <div style="display:flex;gap:10px;margin:12px 0;">
-  <button type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
+  <button id="newBidderBtn" type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
   <button type="button" class="accountBtn" onclick="showRegisteredBidder()">MY BIDDER ACCOUNT</button>
 </div>   
-  <div style="margin-top:8px;">
+ <div id="bidderForgotChoiceRow" style="display:none;margin-top:8px;">
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
     <input
       type="radio"
@@ -1259,10 +1259,10 @@ th,td{
     <h2>Seller Registration</h2>
     <p>Register as a seller to offer your Clivias on Clivia Dreamers.</p>
    <div style="display:flex;gap:10px;margin-bottom:12px;">
-  <button type="button" class="goldBtn" onclick="showNewSellerRegistration()">NEW SELLER</button>
+  <button id="newSellerBtn" type="button" class="goldBtn" onclick="showNewSellerRegistration()">NEW SELLER</button>
   <button type="button" class="accountBtn" onclick="showRegisteredSeller()">MY SELLER ACCOUNT</button>
 </div>  
-      <div style="margin-top:8px;">
+     <div id="sellerForgotChoiceRow" style="display:none;margin-top:8px;">
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
     <input
       type="radio"
@@ -2103,13 +2103,30 @@ function showRegisteredSeller(){
   select.innerHTML='<option value="">Select seller</option>';
 adminSelect.innerHTML='<option value="">Select seller</option>';
   (state.sellers||[]).forEach(seller=>{
-    const option=document.createElement("option");
-    option.value=seller.id;
-    option.textContent=seller.name;
-    select.appendChild(option);
-    adminSelect.appendChild(option.cloneNode(true));
-  });
-    adminSelect.value="";
+  const option=document.createElement("option");
+  option.value=seller.id;
+  option.textContent=seller.name;
+  select.appendChild(option);
+  adminSelect.appendChild(option.cloneNode(true));
+});
+
+adminSelect.value="";
+
+const recognisedSeller=(state.sellers||[]).find(
+  s=>s.id===state.selectedSellerId
+);
+
+const newSellerBtn=document.getElementById("newSellerBtn");
+
+if(newSellerBtn){
+  newSellerBtn.style.display = recognisedSeller ? "none" : "inline-block";
+  const sellerForgotRow=document.getElementById("sellerForgotChoiceRow");
+
+if(sellerForgotRow){
+  sellerForgotRow.style.display = recognisedSeller ? "block" : "none";
+}    
+}
+
 }
   function showSelectedExporterStatus(){
   const sellerId=document.getElementById("adminSellerSelect").value;
@@ -2874,6 +2891,20 @@ function refreshBidderSelect(){
   }
 
   selectedBidderNotice();
+  const recognisedBidder=(state.bidders||[]).find(
+  b=>b.id===state.selectedBidderId
+);
+
+const newBidderBtn=document.getElementById("newBidderBtn");
+
+if(newBidderBtn){
+  newBidderBtn.style.display = recognisedBidder ? "none" : "inline-block";
+} 
+ const bidderForgotRow=document.getElementById("bidderForgotChoiceRow");
+
+if(bidderForgotRow){
+  bidderForgotRow.style.display = recognisedBidder ? "block" : "none";
+}     
 }
 function refreshLotCategorySelect(){
   const select=document.getElementById("lotCategory");
