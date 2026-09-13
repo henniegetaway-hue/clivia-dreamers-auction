@@ -2098,6 +2098,57 @@ document.getElementById("bidderBusinessFields").style.display="none";
 });    
     document.getElementById("newBidderRegistration").scrollIntoView({behavior:"smooth",block:"start"});
 }
+      function startBidderPasswordReset(){
+  const box=document.getElementById("bidderPasswordResetBox");
+  const msg=document.getElementById("bidderResetMsg");
+  const phone=document.getElementById("bidderResetPhone");
+
+  if(box){
+    box.style.display="block";
+  }
+
+  if(msg){
+    msg.textContent="";
+  }
+
+  if(phone){
+    phone.value="";
+    setTimeout(()=>phone.focus(),100);
+  }
+}
+      function requestBidderResetCode(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  const phoneInput=document.getElementById("bidderResetPhone");
+  const msg=document.getElementById("bidderResetMsg");
+
+  if(!bidder){
+    if(msg) msg.textContent="No registered bidder is recognised.";
+    return;
+  }
+
+  const entered=(phoneInput?.value || "").replace(/\D/g,"");
+  const registered=String(bidder.phone || "").replace(/\D/g,"");
+
+  if(!entered){
+    if(msg) msg.textContent=
+      "Please enter your registered WhatsApp number.";
+    return;
+  }
+
+  if(entered!==registered){
+    if(msg) msg.textContent=
+      "The WhatsApp number does not match the registered bidder.";
+    return;
+  }
+
+  if(msg){
+    msg.textContent=
+      "WhatsApp number confirmed. Ready to send your OTP.";
+  }
+}
     function unlockReturningBidder(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
