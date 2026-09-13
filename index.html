@@ -3127,19 +3127,10 @@ function sendBidderRegistrationWhatsApp(){
   );
 
   const capacity=
-    paidSteps===0
-      ? bracket
-      : paidSteps*5000;
+  bracket + (paidSteps * bracket);
 
   if(capacityControl){
     capacityControl.style.display="block";
-  }
-
-  if(selectedCapacity){
-    selectedCapacity.textContent=
-      "Current bidding capacity: "+
-      (isEUR ? "€" : "R")+
-      capacity.toLocaleString();
   }
 
   if(capacityNotice){
