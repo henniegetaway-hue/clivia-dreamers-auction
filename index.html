@@ -2058,8 +2058,7 @@ function showSellerForgotPassword(){
   if(phone){
     phone.value="";
     setTimeout(()=>phone.focus(),100);
-  }
-}      
+  }     
 function showRegisteredSeller(){
   const seller=(state.sellers||[]).find(
     s=>s.id===state.selectedSellerId
