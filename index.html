@@ -2499,16 +2499,33 @@ function sendBidderPasswordReset(){
     return;
   }
 
-  document.getElementById("newBidderRegistration").style.display="none";
-  document.getElementById("registeredBidderSection").style.display="block";
+  const newRegistration=document.getElementById("newBidderRegistration");
+const accountSection=document.getElementById("registeredBidderSection");
+const bidderSelect=document.getElementById("bidderSelect");
 
-  document.getElementById("bidderSelect").value=bidder.id;
-  refreshBidderSelect();
+if(newRegistration){
+  newRegistration.style.display="none";
+}
 
-  document.getElementById("registeredBidderSection").scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
+if(accountSection){
+  accountSection.style.display="block";
+  accountSection.classList.remove("hidden");
+}
+
+if(bidderSelect){
+  bidderSelect.value=bidder.id;
+}
+
+refreshBidderSelect();
+
+setTimeout(()=>{
+  if(accountSection){
+    accountSection.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+},150);
 }
     function selectBidderEntityType(type){
   const hidden=document.getElementById("regEntityType");
