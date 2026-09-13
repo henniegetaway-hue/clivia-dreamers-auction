@@ -881,7 +881,12 @@ th,td{
   Select a bidder to see bidding capacity.
 </div>
   <div id="bidderCapacityControl" style="display:none;margin-top:12px;">
-  <button class="goldBtn" type="button" onclick="increaseBidderCapacity()">NEXT CAPACITY</button>
+ <button class="goldBtn"
+        type="button"
+        onclick="increaseBidderCapacity()"
+        style="background:#ffcc80;color:#111;">
+  NEXT CAPACITY
+</button>
   <div id="bidderSelectedCapacity" class="notice" style="margin-top:10px;"></div>
     <div class="small" style="margin-top:8px;">A once-off platform fee applies to your selected bidding capacity, in accordance with the Clivia Dreamers Auction Rules &amp; Terms.</div>
 </div>
@@ -1401,7 +1406,13 @@ th,td{
   <div id="sellerAddressChangeMsg"
        class="small"
        style="margin-top:10px;"></div>
-</div>       
+</div> 
+   <button type="button"
+        class="accountBtn"
+        style="margin-top:10px;margin-bottom:12px;"
+        onclick="showSellerBankPhoneChange()">
+  CHANGE BANK ACCOUNT / WHATSAPP NUMBER
+</button>     
 </div>  
     <div id="newSellerRegistrationSection" style="display:none;
   margin:12px 0;
@@ -1777,6 +1788,20 @@ function setCliviaSEO(){
   }
 }
 function showPage(page){
+    // Lock account sections whenever another page is opened
+  if(page!=="register"){
+    const bidderAccount=document.getElementById("registeredBidderSection");
+    if(bidderAccount){
+      bidderAccount.style.display="none";
+    }
+  }
+
+  if(page!=="seller"){
+    const sellerAccount=document.getElementById("registeredSellerSection");
+    if(sellerAccount){
+      sellerAccount.style.display="none";
+    }
+  }    
   if(page!=="admin"){
   document.getElementById("adminArea").classList.add("hidden");
   document.getElementById("adminLogin").classList.remove("hidden");
@@ -1823,7 +1848,94 @@ function showPage(page){
   }
 }
 }
-function toggleRulesVisibility(){
+function showSellerBankPhoneChange(){
+  const seller=(state.sellers||[]).find(
+    s=>s.id===state.selectedSellerId
+  );
+
+  if(!seller){
+    alert("No registered seller selected.");
+    return;
+  }
+
+  const unpaidInvoice=(state.invoices||[]).find(inv=>
+    inv.sellerId===seller.id &&
+    inv.status!=="PAID"
+  );
+
+  if(unpaidInvoice){
+    alert(
+      "CHANGE NOT ALLOWED\n\n"+
+      "All outstanding invoices must be paid before your bank account or WhatsApp number can be changed."
+    );
+    return;
+  }
+
+  const box=document.getElementById("sellerBankPhoneChangeBox");
+
+  if(!box) return;
+
+  document.getElementById("changeSellerPhone").value=seller.phone || "";
+  document.getElementById("changeSellerAccountNumber").value=seller.accountNumber || "";
+
+  box.style.display="block";
+
+  box.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}      
+function saveSellerBankPhoneChange(){
+  const seller=(state.sellers||[]).find(
+    s=>s.id===state.selectedSellerId
+  );
+
+  if(!seller){
+    alert("No registered seller selected.");
+    return;
+  }
+
+  const unpaidInvoice=(state.invoices||[]).find(inv=>
+    inv.sellerId===seller.id &&
+    inv.status!=="PAID"
+  );
+
+  if(unpaidInvoice){
+    alert(
+      "CHANGE NOT ALLOWED\n\n"+
+      "All outstanding invoices must be paid before your bank account or WhatsApp number can be changed."
+    );
+    return;
+  }
+
+  const phone=document.getElementById("changeSellerPhone").value.trim();
+  const accountNumber=document.getElementById("changeSellerAccountNumber").value.trim();
+  const msg=document.getElementById("sellerBankPhoneChangeMsg");
+
+  if(!phone || !accountNumber){
+    if(msg){
+      msg.textContent="Please enter both WhatsApp number and bank account number.";
+    }
+    return;
+  }
+
+  seller.phone=phone;
+  seller.accountNumber=accountNumber;
+
+  // Changed bank account must be verified again
+  seller.bankConfirmed=false;
+
+  save();
+  refreshSellerSelect();
+
+  document.getElementById("sellerBankPhoneChangeBox").style.display="none";
+
+  alert(
+    "Details updated successfully.\n\n"+
+    "Your new bank account must be verified again."
+  );
+}
+      function toggleRulesVisibility(){
   state.settings.rulesVisible = state.settings.rulesVisible===false ? true : false;
   save();
 
