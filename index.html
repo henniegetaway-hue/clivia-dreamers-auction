@@ -3052,7 +3052,62 @@ function sendBidderRegistrationWhatsApp(){
         ? " - ✅ BANK ACCOUNT CONFIRMED - BIDDING ENABLED"
         : " - 🔴 BANK ACCOUNT NOT CONFIRMED - BIDDING BLOCKED");
   }
-}      
+} 
+ function increaseBidderCapacity(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!bidder){
+    alert("No registered bidder selected.");
+    return;
+  }
+
+  const auction=(state.auctions||[]).find(
+    a=>a.id===state.selectedAuctionId
+  );
+
+  const isEUR=auction && auction.currency==="EUR";
+
+  const fee=isEUR ? 15 : 150;
+  const bracket=auction && Number(auction.firstBid)>0
+    ? Number(auction.firstBid)
+    : (isEUR ? 350 : 5000);
+
+  const currentPaid=isEUR
+    ? Number(bidder.securityFeesPaidEUR||0)
+    : Number(bidder.securityFeesPaidZAR||0);
+
+  const currentCapacity=
+    bracket + Math.floor(currentPaid/fee)*bracket;
+
+  const nextCapacity=currentCapacity+bracket;
+
+  const ok=confirm(
+    "Increase bidding capacity from "+
+    (isEUR ? "€" : "R")+currentCapacity+
+    " to "+
+    (isEUR ? "€" : "R")+nextCapacity+
+    "?\n\nSecurity fee: "+
+    (isEUR ? "€" : "R")+fee
+  );
+
+  if(!ok) return;
+
+  if(isEUR){
+    bidder.securityFeesPaidEUR=currentPaid+fee;
+  }else{
+    bidder.securityFeesPaidZAR=currentPaid+fee;
+  }
+
+  save();
+  refreshBidderSelect();
+
+  alert(
+    "Bidding capacity increased to "+
+    (isEUR ? "€" : "R")+nextCapacity+"."
+  );
+}     
 function refreshBidderSelect(){
   const select=document.getElementById("bidderSelect");
   const recognitionNotice=document.getElementById("bidderRecognitionNotice");
