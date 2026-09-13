@@ -812,6 +812,43 @@ th,td{
   </button>
 
 </div>
+      <div id="registeredBidderInfo" class="notice" style="margin-top:12px;">
+  Registered bidder information will appear here.
+</div>
+      <button type="button"
+        class="accountBtn"
+        style="margin-top:10px;margin-bottom:12px;"
+        onclick="showBidderAddressChange()">
+  CHANGE MY ADDRESS
+</button>
+   <div id="bidderAddressChangeBox"
+     style="display:none;margin:12px 0;padding:14px;border:1px solid #304233;border-radius:12px;">
+
+  <h3>Change Delivery Address</h3>
+
+  <label>Street Address *</label>
+  <input id="changeBidderAddress" type="text">
+
+  <label>Suburb *</label>
+  <input id="changeBidderSuburb" type="text">
+
+  <label>Postal / ZIP Code *</label>
+  <input id="changeBidderPostal" type="text">
+
+  <label>Country *</label>
+  <input id="changeBidderCountry" type="text">
+
+  <button type="button"
+          class="goldBtn"
+          style="margin-top:12px;"
+          onclick="saveBidderAddressChange()">
+    SAVE NEW ADDRESS
+  </button>
+
+  <div id="bidderAddressChangeMsg"
+       class="small"
+       style="margin-top:10px;"></div>
+</div>   
       <div id="bidderCapacityNotice" class="notice">
   Select a bidder to see bidding capacity.
 </div>
@@ -1299,6 +1336,44 @@ th,td{
     No seller selected yet.
   </div>
 
+    <div id="registeredSellerInfo" class="notice" style="margin-top:12px;">
+  Registered seller information will appear here.
+</div>
+
+<button type="button"
+        class="accountBtn"
+        style="margin-top:10px;margin-bottom:12px;"
+        onclick="showSellerAddressChange()">
+  CHANGE MY ADDRESS
+</button>   
+ <div id="sellerAddressChangeBox"
+     style="display:none;margin:12px 0;padding:14px;border:1px solid #304233;border-radius:12px;">
+
+  <h3>Change Seller Address</h3>
+
+  <label>Street Address *</label>
+  <input id="changeSellerAddress" type="text">
+
+  <label>Suburb *</label>
+  <input id="changeSellerSuburb" type="text">
+
+  <label>Postal / ZIP Code *</label>
+  <input id="changeSellerPostal" type="text">
+
+  <label>Country *</label>
+  <input id="changeSellerCountry" type="text">
+
+  <button type="button"
+          class="goldBtn"
+          style="margin-top:12px;"
+          onclick="saveSellerAddressChange()">
+    SAVE NEW ADDRESS
+  </button>
+
+  <div id="sellerAddressChangeMsg"
+       class="small"
+       style="margin-top:10px;"></div>
+</div>       
 </div>  
     <div id="newSellerRegistrationSection" style="display:none;
   margin:12px 0;
@@ -2093,7 +2168,69 @@ function showRegisteredSeller(){
     block:"start"
   });
 }  
-      
+  function showSellerAddressChange(){
+  const seller=(state.sellers||[]).find(
+    s=>s.id===state.selectedSellerId
+  );
+
+  if(!seller){
+    alert("No registered seller selected.");
+    return;
+  }
+
+  const box=document.getElementById("sellerAddressChangeBox");
+
+  if(!box) return;
+
+  document.getElementById("changeSellerAddress").value=seller.address || "";
+  document.getElementById("changeSellerSuburb").value=seller.suburb || "";
+  document.getElementById("changeSellerPostal").value=seller.postal || "";
+  document.getElementById("changeSellerCountry").value=seller.country || "";
+
+  box.style.display="block";
+
+  box.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}    
+    function saveSellerAddressChange(){
+  const seller=(state.sellers||[]).find(
+    s=>s.id===state.selectedSellerId
+  );
+
+  if(!seller){
+    alert("No registered seller selected.");
+    return;
+  }
+
+  const address=document.getElementById("changeSellerAddress").value.trim();
+  const suburb=document.getElementById("changeSellerSuburb").value.trim();
+  const postal=document.getElementById("changeSellerPostal").value.trim();
+  const country=document.getElementById("changeSellerCountry").value.trim();
+  const msg=document.getElementById("sellerAddressChangeMsg");
+
+  if(!address || !suburb || !postal || !country){
+    if(msg){
+      msg.textContent="Please complete all address fields.";
+    }
+    return;
+  }
+
+  seller.address=address;
+  seller.suburb=suburb;
+  seller.postal=postal;
+  seller.country=country;
+
+  save();
+  refreshSellerSelect();
+
+  if(msg){
+    msg.textContent="✅ Address updated successfully.";
+  }
+
+  document.getElementById("sellerAddressChangeBox").style.display="none";
+}  
   function refreshSellerSelect(){
   const select=document.getElementById("sellerSelect");
    const adminSelect=document.getElementById("adminSellerSelect"); 
@@ -2114,6 +2251,20 @@ adminSelect.value="";
 const recognisedSeller=(state.sellers||[]).find(
   s=>s.id===state.selectedSellerId
 );
+const sellerInfo=document.getElementById("registeredSellerInfo");
+
+if(sellerInfo && recognisedSeller){
+  sellerInfo.innerHTML=
+    "<b>REGISTERED SELLER INFORMATION</b><br><br>"+
+    "Name / Company: "+(recognisedSeller.name || recognisedSeller.companyName || "-")+"<br>"+
+    "WhatsApp: "+(recognisedSeller.phone || recognisedSeller.businessPhone || "-")+"<br>"+
+    "Email: "+(recognisedSeller.email || "-")+"<br>"+
+    "Address: "+(recognisedSeller.address || "-")+"<br>"+
+    "Suburb: "+(recognisedSeller.suburb || "-")+"<br>"+
+    "Postal Code: "+(recognisedSeller.postal || "-")+"<br>"+
+    "Country: "+(recognisedSeller.country || "-")+"<br>"+
+    "Bank: "+(recognisedSeller.bankName || "-");
+}        
 
 const newSellerBtn=document.getElementById("newSellerBtn");
 
@@ -2524,6 +2675,69 @@ setTimeout(()=>{
   }
 },150);
 }
+  function saveBidderAddressChange(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!bidder){
+    alert("No registered bidder selected.");
+    return;
+  }
+
+  const address=document.getElementById("changeBidderAddress").value.trim();
+  const suburb=document.getElementById("changeBidderSuburb").value.trim();
+  const postal=document.getElementById("changeBidderPostal").value.trim();
+  const country=document.getElementById("changeBidderCountry").value.trim();
+  const msg=document.getElementById("bidderAddressChangeMsg");
+
+  if(!address || !suburb || !postal || !country){
+    if(msg){
+      msg.textContent="Please complete all address fields.";
+    }
+    return;
+  }
+
+  bidder.address=address;
+  bidder.suburb=suburb;
+  bidder.postal=postal;
+  bidder.country=country;
+
+  save();
+  refreshBidderSelect();
+
+  if(msg){
+    msg.textContent="✅ Address updated successfully.";
+  }
+
+  document.getElementById("bidderAddressChangeBox").style.display="none";
+}    
+   function showBidderAddressChange(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!bidder){
+    alert("No registered bidder selected.");
+    return;
+  }
+
+  const box=document.getElementById("bidderAddressChangeBox");
+
+  if(!box) return;
+
+  document.getElementById("changeBidderAddress").value=bidder.address || "";
+  document.getElementById("changeBidderSuburb").value=bidder.suburb || "";
+  document.getElementById("changeBidderPostal").value=bidder.postal || "";
+  document.getElementById("changeBidderCountry").value=bidder.country || "";
+
+  box.style.display="block";
+
+  box.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}   
     function selectBidderEntityType(type){
   const hidden=document.getElementById("regEntityType");
   if(hidden){
@@ -2881,7 +3095,20 @@ function refreshBidderSelect(){
     selectedBidderNotice();
     return;
   }
+const info=document.getElementById("registeredBidderInfo");
 
+if(info){
+  info.innerHTML=
+    "<b>REGISTERED BIDDER INFORMATION</b><br><br>"+
+    "Name / Company: "+(bidder.name || bidder.companyName || "-")+"<br>"+
+    "WhatsApp: "+(bidder.phone || bidder.businessPhone || "-")+"<br>"+
+    "Email: "+(bidder.email || "-")+"<br>"+
+    "Address: "+(bidder.address || "-")+"<br>"+
+    "Suburb: "+(bidder.suburb || "-")+"<br>"+
+    "Postal Code: "+(bidder.postal || "-")+"<br>"+
+    "Country: "+(bidder.country || "-")+"<br>"+
+    "Bank Status: "+(bidder.bankConfirmed ? "✅ CONFIRMED" : "🔴 NOT CONFIRMED");
+}
   select.value=bidder.id;
 
   const unlocked=
