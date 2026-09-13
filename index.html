@@ -1975,8 +1975,41 @@ function showNewSellerRegistration(){
   radio.checked=false;
 });    
 }
-
 function showSellerForgotPassword(){
+  const seller=(state.sellers||[]).find(
+    s=>s.id===state.selectedSellerId
+  );
+
+  const radio=document.querySelector(
+    'input[name="sellerForgotChoice"]'
+  );
+
+  if(!seller){
+    if(radio) radio.checked=false;
+
+    alert(
+      "No registered seller is recognised on this device.\n\nPlease register as a NEW SELLER first."
+    );
+    return;
+  }
+
+  const box=document.getElementById("sellerForgotPasswordBox");
+  const phone=document.getElementById("sellerForgotPhone");
+  const msg=document.getElementById("sellerForgotMsg");
+
+  if(box){
+    box.style.display="block";
+  }
+
+  if(msg){
+    msg.textContent="";
+  }
+
+  if(phone){
+    phone.value="";
+    setTimeout(()=>phone.focus(),100);
+  }
+}
  function sendSellerPasswordReset(){
   const seller=(state.sellers||[]).find(
     s=>s.id===state.selectedSellerId
@@ -2341,8 +2374,44 @@ document.getElementById("bidderBusinessFields").style.display="none";
     },300);
   }
 }  
-    function showBidderForgotPassword(){
-  function sendBidderPasswordReset(){
+      function showBidderForgotPassword(){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  const radio=document.querySelector(
+    'input[name="bidderForgotChoice"]'
+  );
+
+  if(!bidder){
+    if(radio) radio.checked=false;
+
+    alert(
+      "No registered bidder is recognised on this device.\n\nPlease register as a NEW BIDDER first."
+    );
+    return;
+  }
+
+  const box=document.getElementById("bidderForgotPasswordBox");
+  const phone=document.getElementById("bidderForgotPhone");
+  const msg=document.getElementById("bidderForgotMsg");
+
+  if(box){
+    box.style.display="block";
+  }
+
+  if(msg){
+    msg.textContent="";
+  }
+
+  if(phone){
+    phone.value="";
+    setTimeout(()=>phone.focus(),100);
+  }
+}
+
+function sendBidderPasswordReset(){
+      function sendBidderPasswordReset(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
   );
