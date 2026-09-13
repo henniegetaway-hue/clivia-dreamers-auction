@@ -2503,7 +2503,7 @@ function sendBidderPasswordReset(){
   document.getElementById("registeredBidderSection").style.display="block";
 
   document.getElementById("bidderSelect").value=bidder.id;
-  selectBidder();
+  refreshBidderSelect();
 
   document.getElementById("registeredBidderSection").scrollIntoView({
     behavior:"smooth",
