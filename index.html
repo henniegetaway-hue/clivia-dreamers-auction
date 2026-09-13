@@ -3571,23 +3571,26 @@ if(auction && auction.auctionDate && auction.auctionCloseTime && lot){
  const unlockedBidderId=sessionStorage.getItem("cliviaBidderUnlocked");
 
 if(unlockedBidderId!==bidder.id){
-  alert("Please enter your bidder password before placing a bid.");
-      
-  sessionStorage.setItem("cliviaPendingBidLot", lotId);    
-  showPage("register");
 
-  const passwordBox=document.getElementById("bidderPasswordUnlockBox");
-  if(passwordBox){
-    passwordBox.style.display="block";
+  const enteredPassword=prompt(
+    "REGISTERED BIDDER\n\nPlease enter your bidder password to place this bid:"
+  );
+
+  if(enteredPassword===null){
+    return;
   }
 
-  const passwordInput=document.getElementById("returningBidderPassword");
-  if(passwordInput){
-    setTimeout(()=>passwordInput.focus(),200);
+  if(enteredPassword!==bidder.password){
+    alert("Incorrect bidder password.");
+    return;
   }
 
-  return;
-}     
+  sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
+
+  refreshBidderSelect();
+
+  alert("Bidding unlocked for this visit.");
+}
   if(!bidder.isOwnerTest && bidder.isInternational && !bidder.internationalRegistrationPaid){
   alert("International bidders must pay the R2,000 registration fee before bidding.");
   return;
