@@ -579,17 +579,24 @@ th,td{
   I WANT TO SELL
 </button>
 <div id="bidderForgotPasswordBox" style="display:none;margin-top:10px;">
-  <label>Registered WhatsApp Number</label>
-  <input id="bidderForgotPhone" placeholder="e.g. +27 82 123 4567">
 
   <button
     type="button"
-    class="accountBtn"
-    style="margin-top:8px;"
+    style="
+      margin-top:8px;
+      padding:7px 14px;
+      width:auto;
+      background:#ff9800;
+      color:#111;
+      border:0;
+      border-radius:8px;
+      font-weight:bold;
+      cursor:pointer;
+    "
     onclick="sendBidderPasswordReset()"
-  >
-    SEND RESET
-  </button>
+>
+  RESET PASSWORD
+</button>
 
   <div id="bidderForgotMsg" class="small" style="margin-top:8px;"></div>
 </div>
@@ -2777,7 +2784,7 @@ document.getElementById("bidderBusinessFields").style.display="none";
     },300);
   }
 }  
-      function showBidderForgotPassword(){
+  function showBidderForgotPassword(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
   );
@@ -2796,7 +2803,6 @@ document.getElementById("bidderBusinessFields").style.display="none";
   }
 
   const box=document.getElementById("bidderForgotPasswordBox");
-  const phone=document.getElementById("bidderForgotPhone");
   const msg=document.getElementById("bidderForgotMsg");
 
   if(box){
@@ -2805,64 +2811,40 @@ document.getElementById("bidderBusinessFields").style.display="none";
 
   if(msg){
     msg.textContent="";
-  }
-
-  if(phone){
-    phone.value="";
-    setTimeout(()=>phone.focus(),100);
   }
 }
 
 function sendBidderPasswordReset(){
-      function sendBidderPasswordReset(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
   );
 
-  const phoneInput=document.getElementById("bidderForgotPhone");
   const msg=document.getElementById("bidderForgotMsg");
 
   if(!bidder){
-    if(msg) msg.textContent="No registered account is recognised.";
+    if(msg){
+      msg.textContent="No registered account is recognised.";
+    }
     return;
   }
 
-  const entered=(phoneInput?.value || "").replace(/\D/g,"");
-  const registered=String(bidder.phone || "").replace(/\D/g,"");
+  const registeredWhatsApp=bidder.phone || bidder.businessPhone || "";
 
-  if(!entered){
-    if(msg) msg.textContent="Please enter your registered WhatsApp number.";
+  if(!registeredWhatsApp){
+    if(msg){
+      msg.textContent=
+        "No registered WhatsApp number is available for this account.";
+    }
     return;
-  }
-
-  if(entered!==registered){
-    if(msg) msg.textContent=
-      "The WhatsApp number does not match the registered account.";
-    return;
-  }
-
- if(msg){
-  msg.textContent=
-    "WhatsApp number confirmed. A reset code will be sent to this registered WhatsApp number once OTP service is connected.";
-}
-}        
-  const box=document.getElementById("bidderForgotPasswordBox");
-  const phone=document.getElementById("bidderForgotPhone");
-  const msg=document.getElementById("bidderForgotMsg");
-
-  if(box){
-    box.style.display="block";
   }
 
   if(msg){
-    msg.textContent="";
+    msg.textContent=
+      "Password reset will be sent to your registered WhatsApp number.";
   }
 
-  if(phone){
-    phone.value="";
-    setTimeout(()=>phone.focus(),100);
-  }
-}  
+  // OTP / WhatsApp reset service will connect here later.
+}
   function showRegisteredBidder(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
