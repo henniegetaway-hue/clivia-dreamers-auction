@@ -1739,6 +1739,12 @@ function load(){
         if(bidder){
           state.selectedBidderId=bidder.id;
         }
+       const keepOwnerUnlocked=
+  localStorage.getItem("cliviaOwnerStayUnlocked")==="YES";
+
+if(bidder && keepOwnerUnlocked){
+  sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
+}     
       }
 
     }catch(e){
