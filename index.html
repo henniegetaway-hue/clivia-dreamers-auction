@@ -3493,14 +3493,27 @@ if(info){
       "";
   }
 
-  if(liveStatus){
-    liveStatus.innerHTML=
-      "✅ REGISTERED ACCOUNT — "+bidder.name+
-      "<br>"+
-      (unlocked
-        ? "🔓 Bidding unlocked."
-        : "🔒 Bidding locked — password required before placing a bid.");
-  }
+ if(liveStatus){
+  liveStatus.innerHTML=
+    "✅ REGISTERED ACCOUNT — "+bidder.name+
+    "<br>"+
+    (unlocked
+      ? "🔓 Account unlocked."
+      : "🔒 Account locked — password required.")+
+    "<div style='display:flex;align-items:center;gap:50px;margin-top:12px;flex-wrap:wrap;'>"+
+
+      "<label style='display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;'>"+
+        "<input type='radio' name='accountAction' value='BID' style='width:auto;' onchange='selectAccountAction(\"BID\")'>"+
+        "<b>I WANT TO BID</b>"+
+      "</label>"+
+
+      "<label style='display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;'>"+
+        "<input type='radio' name='accountAction' value='SELL' style='width:auto;' onchange='selectAccountAction(\"SELL\")'>"+
+        "<b>I WANT TO SELL</b>"+
+      "</label>"+
+
+    "</div>";
+}
 
   selectedBidderNotice();
   const recognisedBidder=(state.bidders||[]).find(
@@ -3550,7 +3563,56 @@ function refreshLotCategorySelect(){
     select.appendChild(option);
   });
 }
-      
+      function selectAccountAction(action){
+  const bidder=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!bidder){
+    alert("Please open your account first.");
+    return;
+  }
+
+  const unlocked=
+    sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+
+  if(!unlocked){
+    alert(
+      "Please open MY ACCOUNT and enter your account password first."
+    );
+
+    document.querySelectorAll('input[name="accountAction"]').forEach(radio=>{
+      radio.checked=false;
+    });
+
+    return;
+  }
+
+  if(action==="BID"){
+    const loadPanel=document.getElementById("sellerLoadPanel");
+
+    if(loadPanel){
+      loadPanel.style.display="none";
+    }
+
+    return;
+  }
+
+ if(action==="SELL"){
+  showPage("live");
+
+  const spaces=document.getElementById("availableAuctionSpaces");
+
+  if(spaces){
+    spaces.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+
+  return;
+}
+}
       function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
@@ -4422,7 +4484,7 @@ for(let i=0;i<samplesNeeded;i++){
              alt="Sample Clivia flower"
              style="width:100%;height:100%;object-fit:cover;opacity:0.35;">
 
-        <div onclick="openSellerLoadFromLot()" style="
+        <div onclick="openSellerLoadFromLot(state.selectedAuctionId,'${rowKey}')" style="
           position:absolute;
           inset:0;
           display:flex;
@@ -4449,8 +4511,10 @@ for(let i=0;i<samplesNeeded;i++){
 
 const rowCardsHtml=rowCards.join("");
 
-  return `
-    <div class="auctionRowBlock" style="margin-bottom:24px;">
+      return `
+  <div id="availableAuctionSpaces"
+       class="auctionRowBlock"
+       style="margin-bottom:24px;">
 
      <div style="display:flex;align-items:center;gap:4px;">
 
