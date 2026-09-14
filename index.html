@@ -4234,6 +4234,48 @@ const currencySymbol=auction && auction.currency==="EUR" ? "€" : "R";
 const viewerBidder=(state.bidders||[]).find(
   b=>b.id===state.selectedBidderId
 );
+const upcomingSellerAuctions=(state.auctions||[])
+  .filter(a=>
+    a.auctionDate &&
+    a.status!=="CLOSED"
+  )
+  .sort((a,b)=>{
+    const aDate=new Date(
+      a.auctionDate+"T"+(a.auctionTime || a.preferredAuctionTime || "00:00")
+    );
+
+    const bDate=new Date(
+      b.auctionDate+"T"+(b.auctionTime || b.preferredAuctionTime || "00:00")
+    );
+
+    return aDate-bDate;
+  });
+
+const sellerAuctionChoicesHtml=upcomingSellerAuctions.map(a=>{
+  const lotsInAuction=(state.lots||[]).filter(
+    lot=>lot.auctionId===a.id
+  ).length;
+
+  const spacesLeft=Math.max(0,48-lotsInAuction);
+
+  return `
+    <div class="notice" style="margin-bottom:10px;">
+      <b>${a.auctionDate || "Date to be announced"}</b><br>
+      Time: ${a.auctionTime || a.preferredAuctionTime || "To be announced"}<br>
+      Spaces left: <b>${spacesLeft}</b><br>
+      ${
+        spacesLeft>0
+          ? `<button type="button"
+                     class="goldBtn"
+                     style="margin-top:8px;"
+                     onclick="selectSellerAuction('${a.id}')">
+               VIEW AVAILABLE SPACES
+             </button>`
+          : `<b>FULL</b>`
+      }
+    </div>
+  `;
+}).join("");            
 
 const auctionLots=state.lots.filter(lot=>{
   if(lot.auctionId!==state.selectedAuctionId) return false;
@@ -4792,6 +4834,32 @@ if(Date.now()>=closeTime.getTime()-60000){
   save();
   renderLots();
 }
+   function selectSellerAuction(auctionId){
+  const auction=(state.auctions||[]).find(
+    a=>a.id===auctionId
+  );
+
+  if(!auction){
+    alert("That auction could not be found.");
+    return;
+  }
+
+  state.selectedAuctionId=auction.id;
+  save();
+  updateHeader();
+  renderLots();
+
+  setTimeout(()=>{
+    const spaces=document.getElementById("availableAuctionSpaces");
+
+    if(spaces){
+      spaces.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+  },150);
+}   
 function openSellerLoadFromLot(auctionId,rowKey){
   updateLotStartBidOptions();
     if(auctionId){
