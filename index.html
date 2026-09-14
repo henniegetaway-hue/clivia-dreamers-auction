@@ -2481,7 +2481,7 @@ function showRegisteredSeller(){
       adminSelect.appendChild(option);
     });
   }
-}}
+}
  function showSelectedExporterStatus(){
   const accountId=document.getElementById("adminSellerSelect").value;
 
@@ -3604,18 +3604,16 @@ if(currentAuction){
     showPage("live");
 
     setTimeout(()=>{
-      const plantInput=document.getElementById("lotPlant");
+     const loadPanel=document.getElementById("sellerLoadPanel");
 
-      if(plantInput){
-        const loadPanel=plantInput.closest(".panel");
-
-        if(loadPanel){
-          loadPanel.scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-          });
-        }
-      }
+if(loadPanel){
+      loadPanel.style.display="block";
+      
+  loadPanel.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
     },200);
 
     return;
@@ -3666,18 +3664,14 @@ if(currentAuction){
   showPage("live");
 
   setTimeout(()=>{
-    const plantInput=document.getElementById("lotPlant");
+    const loadPanel=document.getElementById("sellerLoadPanel");
 
-    if(plantInput){
-      const loadPanel=plantInput.closest(".panel");
-
-      if(loadPanel){
-        loadPanel.scrollIntoView({
-          behavior:"smooth",
-          block:"start"
-        });
-      }
-    }
+if(loadPanel){
+  loadPanel.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
   },200);
 }
   function isCategoryFull(auction,category){
