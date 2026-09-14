@@ -4758,8 +4758,21 @@ if(Date.now()>=closeTime.getTime()-60000){
   save();
   renderLots();
 }
-function openSellerLoadFromLot(){
+function openSellerLoadFromLot(auctionId,rowKey){
   updateLotStartBidOptions();
+    if(auctionId){
+  state.selectedAuctionId=auctionId;
+  save();
+}
+
+if(rowKey){
+  const rowSelect=document.getElementById("lotStartRow");
+
+  if(rowSelect){
+    rowSelect.value=rowKey;
+    updateLotStartBidOptions();
+  }
+}  
 
   const account=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
@@ -4777,18 +4790,26 @@ function openSellerLoadFromLot(){
     return;
   }
 
-  showPage("live");
+ showPage("live");
 
-  setTimeout(()=>{
-    const lotName=document.getElementById("lotName");
-    if(lotName){
-      lotName.scrollIntoView({
-        behavior:"smooth",
-        block:"center"
-      });
-      lotName.focus();
-    }
-  },100);
+setTimeout(()=>{
+  const loadPanel=document.getElementById("sellerLoadPanel");
+
+  if(loadPanel){
+    loadPanel.style.display="block";
+
+    loadPanel.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+
+  const lotName=document.getElementById("lotName");
+
+  if(lotName){
+    lotName.focus();
+  }
+},100);
 }
 function showPlantPhoto(lotId){
   const lot=state.lots.find(l=>l.id===lotId);
