@@ -3548,12 +3548,37 @@ function refreshLotCategorySelect(){
     return;
   }
 
-  const currentAuction=(state.auctions||[]).find(
-    a=>a.id===state.selectedAuctionId
-  );
+ let currentAuction=(state.auctions||[]).find(
+  a=>a.id===state.selectedAuctionId &&
+     a.status!=="CLOSED" &&
+     !isAuctionFull(a)
+);
 
-  // Current auction has available space
-  if(currentAuction && !isAuctionFull(currentAuction)){
+// If selected auction is not usable, find the first open auction with space
+if(!currentAuction){
+  currentAuction=(state.auctions||[])
+    .filter(a=>
+      a.status!=="CLOSED" &&
+      !isAuctionFull(a)
+    )
+    .sort((a,b)=>{
+      const da=new Date(
+        (a.auctionDate||"9999-12-31")+"T"+(a.auctionTime||"23:59")
+      );
+
+      const db=new Date(
+        (b.auctionDate||"9999-12-31")+"T"+(b.auctionTime||"23:59")
+      );
+
+      return da-db;
+    })[0];
+}
+
+if(currentAuction){
+  state.selectedAuctionId=currentAuction.id;
+  save();
+
+  showPage("live");
     showPage("live");
 
     setTimeout(()=>{
