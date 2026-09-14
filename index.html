@@ -3945,6 +3945,35 @@ function fileToDataURL(file){
   }
 }    
 async function addLot(){
+   const account=(state.bidders||[]).find(
+  b=>b.id===state.selectedBidderId
+);
+
+if(!account){
+  alert("Please register or open your account before loading an item.");
+  showPage("register");
+  return;
+}
+
+const unlocked=
+  sessionStorage.getItem("cliviaBidderUnlocked")===account.id;
+
+if(!unlocked){
+  const enteredPassword=prompt(
+    "SELLER CONFIRMATION\n\nPlease enter your account password to load this item:"
+  );
+
+  if(enteredPassword===null){
+    return;
+  }
+
+  if(enteredPassword!==account.password){
+    alert("Incorrect account password.");
+    return;
+  }
+
+  sessionStorage.setItem("cliviaBidderUnlocked",account.id);
+}   
    let auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
   const name=document.getElementById("lotName").value.trim();
    const breeding=document.getElementById("lotBreeding").value.trim();
