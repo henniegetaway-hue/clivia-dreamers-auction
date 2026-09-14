@@ -3558,31 +3558,24 @@ function refreshLotCategorySelect(){
   });
 }
       function selectAccountAction(action){
-  const bidder=(state.bidders||[]).find(
-    b=>b.id===state.selectedBidderId
+ const unlocked=
+  sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+
+if(action==="BID" && !unlocked){
+  alert(
+    "Please open ACCOUNT DETAILS and enter your account password before bidding."
   );
 
-  if(!bidder){
-    alert("Please open your account first.");
-    return;
-  }
-
-  const unlocked=
-    sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
-
-  if(!unlocked){
-    alert(
-  "Please open ACCOUNT DETAILS and enter your account password first."
-);
-
-    document.querySelectorAll('input[name="accountAction"]').forEach(radio=>{
+  document.querySelectorAll('input[name="accountAction"]').forEach(radio=>{
+    if(radio.value==="BID"){
       radio.checked=false;
-    });
+    }
+  });
 
-    return;
-  }
+  return;
+}
 
-  if(action==="BID"){
+if(action==="BID"){
     const loadPanel=document.getElementById("sellerLoadPanel");
 
     if(loadPanel){
