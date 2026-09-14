@@ -575,7 +575,7 @@ th,td{
         type="button"
         class="accountBtn"
         style="display:none;margin-top:10px;background:#ffcc80;color:#111;"
-        onclick="selectAccountAction('SELL')">
+        onclick="openSellerSpaces()"
   I WANT TO SELL
 </button>
 <div id="bidderForgotPasswordBox" style="display:none;margin-top:10px;">
@@ -3609,6 +3609,34 @@ if(action==="SELL"){
 }
 
   return;
+}
+      function openSellerSpaces(){
+  const account=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
+  );
+
+  if(!account){
+    alert("Please create an account first.");
+    showPage("register");
+    return;
+  }
+
+  showPage("live");
+
+  renderLots();
+
+  setTimeout(()=>{
+    const spaces=document.getElementById("availableAuctionSpaces");
+
+    if(spaces){
+      spaces.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }else{
+      alert("No available auction spaces are displayed yet.");
+    }
+  },300);
 }
       function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
