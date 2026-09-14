@@ -469,7 +469,6 @@ th,td{
   <button id="navLive" onclick="showPage('live')">Live Auction</button>
   <button id="navAdmin" onclick="showPage('admin')">Admin</button>
   <button id="navInvoices" onclick="showPage('invoices')">Invoices</button>
-  <button id="navSeller" onclick="showPage('seller')">Seller</button>
   <button id="navRules" onclick="showPage('rules')">Rules & Terms</button>
  <button id="navOwnEvent" class="ownEventBtn" onclick="showOwnEventPage()">CREATE YOUR OWN EVENT</button>
 </nav>
@@ -627,33 +626,45 @@ th,td{
 
   <label>WhatsApp Number *</label>
   <input id="regPhone" placeholder="e.g. +27 82 123 4567">
+</div>
+
+<div id="bidderCommonFields" style="display:none;">
 
   <label>Account Password *</label>
-  <input id="bidderPassword" type="password" placeholder="Create Account password">
-   <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
   <input
-    type="checkbox"
-
-</div>     
-         <div id="bidderCommonFields" style="display:none;"> 
-              onchange="document.getElementById('bidderPassword').type=this.checked?'text':'password';"
-    style="width:auto;"
+    id="bidderPassword"
+    type="password"
+    placeholder="Create account password"
   >
-  Show password
-</label>   
+
+  <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+    <input
+      type="checkbox"
+      onchange="document.getElementById('bidderPassword').type=this.checked?'text':'password';"
+      style="width:auto;"
+    >
+    Show password
+  </label>
 
   <label>Confirm Password *</label>
-  <input id="bidderPasswordConfirm" type="password" placeholder="Confirm Account password">
-      <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
   <input
-    type="checkbox"
-    onchange="document.getElementById('bidderPasswordConfirm').type=this.checked?'text':'password';"
-    style="width:auto;"
+    id="bidderPasswordConfirm"
+    type="password"
+    placeholder="Confirm account password"
   >
-  Show password
-</label>     
-          <label>Email (optional)</label>
-          <input id="regEmail">
+
+  <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+    <input
+      type="checkbox"
+      onchange="document.getElementById('bidderPasswordConfirm').type=this.checked?'text':'password';"
+      style="width:auto;"
+    >
+    Show password
+  </label>
+
+  <label>Email (optional)</label>
+  <input id="regEmail">
+
 </div>
           <div id="bidderBusinessFields" style="display:none;">
             <label>Registered Company / CC Name *</label>
@@ -760,7 +771,7 @@ th,td{
   <input id="registeredDefaultBankNumber" type="text" readonly>
 
   <div class="small" style="margin-top:8px;">
-    These two bank account numbers were supplied at registration and cannot be changed by the bidder.
+   These two bank account numbers were supplied at registration and cannot be changed directly.
   </div>
 
 </div>
@@ -885,7 +896,7 @@ th,td{
        style="margin-top:10px;"></div>
 </div>    
       <div id="bidderCapacityNotice" class="notice">
-  Select a bidder to see bidding capacity.
+  Select an account to see bidding capacity.
 </div>
   <div id="bidderCapacityControl" style="display:none;margin-top:12px;">
  <button class="goldBtn"
@@ -971,7 +982,77 @@ th,td{
   </div>
 
   <div id="lotsGrid" class="lotsGrid" style="flex:1;min-width:0;"></div>
+ <label>Name / Cross</label>
+        <input id="lotName" placeholder="e.g. Green Throat × White Stripe">
+            <label>Breeding</label>
+<input id="lotBreeding" placeholder="e.g. Mother Plant × Father Plant">
+           <label>Breeder</label>
+<input id="lotBreeder" placeholder="e.g. Hennie Vermeulen / Clivia Dreamers"> 
 
+<label>Trophy / Award</label>
+<input id="lotTrophy" placeholder="e.g. Best on Show 2026, First Prize, or leave blank">
+        <label>Preferred auction time</label>
+<select id="lotAuctionTime">
+  <option value="">Automatic / next available</option>
+  <option value="15:00">15:00 - 17:00</option>
+  <option value="17:00">17:00 - 19:00</option>
+  <option value="19:00">19:00 - 21:00</option>
+</select>
+
+        <div class="formGrid">
+          <div>
+            <label>Leaves</label>
+            <input id="lotLeaves" type="number">
+          </div>
+
+          <div>
+            <label>Offsets</label>
+            <input id="lotOffsets" type="number">
+          </div>
+
+          <div>
+<label>Category</label>
+<select id="lotCategory">
+  <option value="">Select category</option>
+</select>
+            <label>Starting Bid Row</label>
+<select id="lotStartRow" onchange="updateLotStartBidOptions()">
+  <option value="">-- SELECT STARTING BID ROW --</option>
+  <option value="ROW1">Row 1 — R200 to R300</option>
+  <option value="ROW2">Row 2 — R400</option>
+  <option value="ROW3">Row 3 — R600</option>
+  <option value="ROW4">Row 4 — R800</option>
+  <option value="ROW5">Row 5 — R1,000+</option>
+  <option value="ROW6">Row 6 — Sets / Bulk Plants — R1,000+</option>
+</select>
+
+<div id="lotStartBidChoice" style="margin-top:8px;">
+  <label>Starting Bid</label>
+  <input id="lotStart" type="number" min="200" step="50">
+</div>
+          </div>
+        </div>
+
+    <label>Bid increase</label>
+       <select id="lotIncrement">
+  <option value="50">R50</option>
+ <option value="100">R100</option>
+
+</select>
+
+        <label>Flower photo</label>
+        <input id="lotFlower" type="file" accept="image/*">
+
+        <label>Actual plant photo</label>
+        <input id="lotPlant" type="file" accept="image/*">
+<label style="margin-top:12px;">
+  <input id="lotExportEligible" type="checkbox">
+  This plant is available for international export
+</label>
+        <br><br>
+        <button class="goldBtn" onclick="addLot()">+ ADD LOT / ROW</button>
+        <div id="lotMsg" class="small" style="margin-top:8px"></div>
+      </div>
 </section>
 
 <section id="pageAdmin" class="page hidden">
@@ -1150,86 +1231,17 @@ th,td{
 
       <div class="panel">
         <h2>Add Auction Lot</h2>
-<label>Select seller</label>
+<label>Select account for exporter approval</label>
 <select id="adminSellerSelect" onchange="showSelectedExporterStatus()"></select>
-        <div id="adminExporterStatus" class="notice">
-  Select a seller to review exporter status.
+
+<div id="adminExporterStatus" class="notice">
+  Select an account to review exporter status.
 </div>
 
 <button class="goldBtn" onclick="approveSelectedExporter()">
   APPROVE EXPORTER
 </button>
-        <label>Name / Cross</label>
-        <input id="lotName" placeholder="e.g. Green Throat × White Stripe">
-            <label>Breeding</label>
-<input id="lotBreeding" placeholder="e.g. Mother Plant × Father Plant">
-           <label>Breeder</label>
-<input id="lotBreeder" placeholder="e.g. Hennie Vermeulen / Clivia Dreamers"> 
-
-<label>Trophy / Award</label>
-<input id="lotTrophy" placeholder="e.g. Best on Show 2026, First Prize, or leave blank">
-        <label>Preferred auction time</label>
-<select id="lotAuctionTime">
-  <option value="">Automatic / next available</option>
-  <option value="15:00">15:00 - 17:00</option>
-  <option value="17:00">17:00 - 19:00</option>
-  <option value="19:00">19:00 - 21:00</option>
-</select>
-
-        <div class="formGrid">
-          <div>
-            <label>Leaves</label>
-            <input id="lotLeaves" type="number">
-          </div>
-
-          <div>
-            <label>Offsets</label>
-            <input id="lotOffsets" type="number">
-          </div>
-
-          <div>
-<label>Category</label>
-<select id="lotCategory">
-  <option value="">Select category</option>
-</select>
-            <label>Starting Bid Row</label>
-<select id="lotStartRow" onchange="updateLotStartBidOptions()">
-  <option value="">-- SELECT STARTING BID ROW --</option>
-  <option value="ROW1">Row 1 — R200 to R300</option>
-  <option value="ROW2">Row 2 — R400</option>
-  <option value="ROW3">Row 3 — R600</option>
-  <option value="ROW4">Row 4 — R800</option>
-  <option value="ROW5">Row 5 — R1,000+</option>
-  <option value="ROW6">Row 6 — Sets / Bulk Plants — R1,000+</option>
-</select>
-
-<div id="lotStartBidChoice" style="margin-top:8px;">
-  <label>Starting Bid</label>
-  <input id="lotStart" type="number" min="200" step="50">
-</div>
-          </div>
-        </div>
-
-    <label>Bid increase</label>
-       <select id="lotIncrement">
-  <option value="50">R50</option>
- <option value="100">R100</option>
-
-</select>
-
-        <label>Flower photo</label>
-        <input id="lotFlower" type="file" accept="image/*">
-
-        <label>Actual plant photo</label>
-        <input id="lotPlant" type="file" accept="image/*">
-<label style="margin-top:12px;">
-  <input id="lotExportEligible" type="checkbox">
-  This plant is available for international export
-</label>
-        <br><br>
-        <button class="goldBtn" onclick="addLot()">+ ADD LOT / ROW</button>
-        <div id="lotMsg" class="small" style="margin-top:8px"></div>
-      </div>
+       
     </div>
 
     
@@ -1828,7 +1840,6 @@ function showPage(page){
   const map={
     register:["pageRegister","navRegister"],
     live:["pageLive","navLive"],
-    seller:["pageSeller","navSeller"],
     rules:["pageRules","navRules"],
     admin:["pageAdmin","navAdmin"],
     invoices:["pageInvoices","navInvoices"]
@@ -2440,121 +2451,112 @@ function showRegisteredSeller(){
   }
 
   document.getElementById("sellerAddressChangeBox").style.display="none";
-}  
-  function refreshSellerSelect(){
+}  function refreshSellerSelect(){
   const select=document.getElementById("sellerSelect");
-   const adminSelect=document.getElementById("adminSellerSelect"); 
-  if(!select || !adminSelect) return;
+  const adminSelect=document.getElementById("adminSellerSelect");
 
-  select.innerHTML='<option value="">Select seller</option>';
-adminSelect.innerHTML='<option value="">Select seller</option>';
-  (state.sellers||[]).forEach(seller=>{
-  const option=document.createElement("option");
-  option.value=seller.id;
-  option.textContent=seller.name;
-  select.appendChild(option);
-  adminSelect.appendChild(option.cloneNode(true));
-});
+  // Keep old Seller page working temporarily
+  if(select){
+    select.innerHTML='<option value="">Select seller</option>';
 
-adminSelect.value="";
+    (state.sellers||[]).forEach(seller=>{
+      const option=document.createElement("option");
+      option.value=seller.id;
+      option.textContent=seller.name;
+      select.appendChild(option);
+    });
+  }
 
-const recognisedSeller=(state.sellers||[]).find(
-  s=>s.id===state.selectedSellerId
-);
-const sellerInfo=document.getElementById("registeredSellerInfo");
+  // Admin exporter approval now uses registered accounts
+  if(adminSelect){
+    adminSelect.innerHTML='<option value="">Select account</option>';
 
-if(sellerInfo && recognisedSeller){
-  sellerInfo.innerHTML=
-    "<b>REGISTERED SELLER INFORMATION</b><br><br>"+
-    "Name / Company: "+(recognisedSeller.name || recognisedSeller.companyName || "-")+"<br>"+
-    "WhatsApp: "+(recognisedSeller.phone || recognisedSeller.businessPhone || "-")+"<br>"+
-    "Email: "+(recognisedSeller.email || "-")+"<br>"+
-    "Address: "+(recognisedSeller.address || "-")+"<br>"+
-    "Suburb: "+(recognisedSeller.suburb || "-")+"<br>"+
-    "Postal Code: "+(recognisedSeller.postal || "-")+"<br>"+
-    "Country: "+(recognisedSeller.country || "-")+"<br>"+
-    "Bank: "+(recognisedSeller.bankName || "-");
-}        
+    (state.bidders||[]).forEach(account=>{
+      const option=document.createElement("option");
+      option.value=account.id;
+      option.textContent=
+        account.name +
+        (account.isExporter ? " — EXPORTER" : "");
 
-const newSellerBtn=document.getElementById("newSellerBtn");
+      adminSelect.appendChild(option);
+    });
+  }
+}}
+ function showSelectedExporterStatus(){
+  const accountId=document.getElementById("adminSellerSelect").value;
 
-const recognisedBidder=(state.bidders||[]).find(
-  b=>b.id===state.selectedBidderId
-);
+  const account=(state.bidders||[]).find(
+    b=>b.id===accountId
+  );
 
-if(newSellerBtn){
-  newSellerBtn.style.display =
-    (recognisedSeller || recognisedBidder)
-      ? "none"
-      : "inline-block";
-
-if(sellerForgotRow){
-  sellerForgotRow.style.display = recognisedSeller ? "block" : "none";
-}    
-}
-const becomeSellerBtn=document.getElementById("becomeSellerBtn");
-
-if(becomeSellerBtn){
-  becomeSellerBtn.style.display =
-    (recognisedBidder && !recognisedSeller)
-      ? "inline-block"
-      : "none";
-}
-}
-  function showSelectedExporterStatus(){
-  const sellerId=document.getElementById("adminSellerSelect").value;
-  const seller=(state.sellers||[]).find(s=>s.id===sellerId);
   const status=document.getElementById("adminExporterStatus");
 
   if(!status) return;
 
-  if(!seller){
-    status.textContent="Select a seller to review exporter status.";
+  if(!account){
+    status.textContent="Select an account to review exporter status.";
     return;
   }
 
-  if(!seller.isExporter){
-    status.textContent="This seller is not registered as an export seller.";
+  if(!account.isExporter){
+    status.textContent=
+      "This account is not registered for international export.";
     return;
   }
 
-  if(seller.exporterApproved){
-    status.textContent="✅ EXPORTER APPROVED: "+seller.name;
+  if(account.exporterApproved){
+    status.textContent=
+      "✅ EXPORTER APPROVED: "+account.name;
     return;
   }
 
-  status.textContent="Exporter application waiting for Admin approval.";
+  status.textContent=
+    "Exporter application waiting for Admin approval.";
 }
-  function approveSelectedExporter(){
-  const sellerId=document.getElementById("adminSellerSelect").value;
-  const seller=(state.sellers||[]).find(s=>s.id===sellerId);
+
+function approveSelectedExporter(){
+  const accountId=document.getElementById("adminSellerSelect").value;
+
+  const account=(state.bidders||[]).find(
+    b=>b.id===accountId
+  );
+
   const status=document.getElementById("adminExporterStatus");
 
-  if(!seller){
-    alert("Please select a seller first.");
+  if(!account){
+    alert("Please select an account first.");
     return;
   }
 
-  if(!seller.isExporter){
-    alert("This seller did not register as an export seller.");
+  if(!account.isExporter){
+    alert(
+      "This account has not applied for international export."
+    );
     return;
   }
 
-  if(!seller.exporterDocsSubmitted || !seller.exporterRulesAccepted){
-    alert("Exporter documents and export-rules acceptance are required before approval.");
+  if(
+    !account.exporterDocsSubmitted ||
+    !account.exporterRulesAccepted
+  ){
+    alert(
+      "Exporter documents and export-rules acceptance are required before approval."
+    );
     return;
   }
 
-  seller.exporterApproved=true;
-  seller.exporterApprovedDate=new Date().toISOString();
+  account.exporterApproved=true;
+  account.exporterApprovedDate=new Date().toISOString();
 
   save();
 
   if(status){
-    status.textContent="✅ EXPORTER APPROVED: "+seller.name;
+    status.textContent=
+      "✅ EXPORTER APPROVED: "+account.name;
   }
 
   alert("Exporter approved successfully.");
+}
 }
    function selectSeller(){
   const sellerId=document.getElementById("sellerSelect").value;
@@ -4008,12 +4010,6 @@ const unpaidAccountInvoice=(state.invoices||[]).find(inv=>
 if(unpaidAccountInvoice){
   document.getElementById("lotMsg").textContent=
     "You have an outstanding invoice. Please pay all outstanding invoices before loading another item for sale.";
-  return;
-}
-  document.getElementById("lotMsg").textContent=
-    unpaidBidderInvoice
-      ? "This seller has an unpaid bidder invoice and cannot list another plant until it is paid."
-      : "This seller has an unpaid seller platform fee invoice and cannot list another plant until it is paid.";
   return;
 }
   if(!seller.bankConfirmed){
