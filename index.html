@@ -2891,6 +2891,8 @@ function sendBidderPasswordReset(){
     alert("No registered account is recognised on this device yet.");
     return;
   }
+   document.getElementById("bidderForgotChoiceRow").style.display="block";
+document.getElementById("bidderForgotPasswordBox").style.display="none";     
 
   const enteredPassword=prompt(
   "MY ACCOUNT\n\nPlease enter your account password:"
