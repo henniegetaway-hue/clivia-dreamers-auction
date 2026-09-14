@@ -5601,9 +5601,14 @@ if(state.selectedBidderId){
   );
 
   if(bidder){
-    sessionStorage.removeItem("cliviaBidderUnlocked");
 
-    const passwordInput=document.getElementById("returningBidderPassword");
+  if(bidder.isOwnerTest){
+    sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
+  }else{
+    sessionStorage.removeItem("cliviaBidderUnlocked");
+  }
+
+  const passwordInput=document.getElementById("returningBidderPassword");
     const unlockNotice=document.getElementById("bidderUnlockNotice");
 
     if(passwordInput){
