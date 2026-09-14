@@ -543,11 +543,11 @@ th,td{
 <section id="pageRegister" class="page">
   <div class="grid2">
     <div class="panel">
-      <h2>Bidder Registration</h2>
+     <h2>Clivia Dreamers Registration</h2>
 
 <div style="display:flex;gap:10px;margin:12px 0;">
-  <button id="newBidderBtn" type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW BIDDER</button>
-  <button type="button" class="accountBtn" onclick="showRegisteredBidder()">MY BIDDER ACCOUNT</button>
+  <button id="newBidderBtn" type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW ACCOUNT</button>
+  <button type="button" class="accountBtn" onclick="showRegisteredBidder()">MY ACCOUNT</button>
 </div>   
  <div id="bidderForgotChoiceRow" style="display:none;margin-top:8px;">
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
@@ -633,7 +633,10 @@ th,td{
    <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
   <input
     type="checkbox"
-    onchange="document.getElementById('bidderPassword').type=this.checked?'text':'password';"
+
+</div>     
+         <div id="bidderCommonFields" style="display:none;"> 
+              onchange="document.getElementById('bidderPassword').type=this.checked?'text':'password';"
     style="width:auto;"
   >
   Show password
@@ -648,9 +651,7 @@ th,td{
     style="width:auto;"
   >
   Show password
-</label>
-</div>     
-         <div id="bidderCommonFields" style="display:none;">     
+</label>     
           <label>Email (optional)</label>
           <input id="regEmail">
 </div>
@@ -735,7 +736,7 @@ th,td{
   <label>Select the auction(s) you want notifications for</label>
   <select id="bidderSelectedAuctions" multiple size="4"></select>
 </div>
-      <button class="goldBtn" onclick="registerBidder()">REGISTER BIDDER</button>
+      <button class="goldBtn" onclick="registerBidder()">REGISTER ACCOUNT</button>
 <div id="regMsg" class="small" style="margin-top:10px"></div>
     
 </div>
@@ -743,12 +744,12 @@ th,td{
 </div>
 </div>
 <div id="registeredBidderSection" class="panel" style="display:none;">
-     <h2>Already registered bidder</h2>
-      <p>Select your bidder profile on this device.</p>
+     <h2>My Clivia Dreamers Account</h2>
+      <p>Your registered account for bidding and selling.</p>
 
-      <label>Select bidder</label>
+      <label>Select account</label>
       <select id="bidderSelect" onchange="selectBidder()">
-        <option value="">— Select bidder —</option>
+        <option value="">— Select account —</option>
       </select>
       <div id="registeredBidderBankNumbers" style="display:none;margin-top:12px;">
 
@@ -773,7 +774,7 @@ th,td{
 
       <div id="selectedBidderNotice" class="notice">No bidder selected yet.</div>
       <div id="bidderPasswordUnlockBox" style="display:none;margin-top:12px;">
-  <label>Bidder Password</label>
+  <label>Account Password</label>
 
   <input
     id="returningBidderPassword"
@@ -819,7 +820,7 @@ th,td{
 
 </div>
       <div id="registeredBidderInfo" class="notice" style="margin-top:12px;">
-  Registered bidder information will appear here.
+  Registered account information will appear here.
 </div>
       <button type="button"
         class="accountBtn"
@@ -950,7 +951,7 @@ th,td{
     <div id="liveBidderStatus"
      class="notice"
      style="margin:10px 0;font-weight:bold;">
-  No registered bidder recognised.
+  No registered account recognised.
 </div>    
     <div>Register or select a bidder before bidding.</div>
     <div class="notice">
@@ -2272,7 +2273,7 @@ function showSellerForgotPassword(){
     if(radio) radio.checked=false;
 
     alert(
-      "No registered seller is recognised on this device.\n\nPlease register as a NEW SELLER first."
+      "No registered seller is recognised on this device.\n\nPlease create a NEW ACCOUNT first."
     );
     return;
   }
@@ -2676,7 +2677,7 @@ document.getElementById("bidderBusinessFields").style.display="none";
   const msg=document.getElementById("bidderResetMsg");
 
   if(!bidder){
-    if(msg) msg.textContent="No registered bidder is recognised.";
+    if(msg) msg.textContent="No registered account is recognised.";
     return;
   }
 
@@ -2706,7 +2707,7 @@ document.getElementById("bidderBusinessFields").style.display="none";
   );
 
   if(!bidder){
-    alert("No registered bidder selected.");
+    alert("No registered account selected.");
     return;
   }
 
@@ -2776,7 +2777,7 @@ document.getElementById("bidderBusinessFields").style.display="none";
     if(radio) radio.checked=false;
 
     alert(
-      "No registered bidder is recognised on this device.\n\nPlease register as a NEW BIDDER first."
+      "No registered account is recognised on this device.\n\nPlease create a NEW ACCOUNT first."
     );
     return;
   }
@@ -2809,7 +2810,7 @@ function sendBidderPasswordReset(){
   const msg=document.getElementById("bidderForgotMsg");
 
   if(!bidder){
-    if(msg) msg.textContent="No registered bidder is recognised.";
+    if(msg) msg.textContent="No registered account is recognised.";
     return;
   }
 
@@ -2855,13 +2856,13 @@ function sendBidderPasswordReset(){
   );
 
   if(!bidder){
-    alert("No registered bidder is recognised on this device yet.");
+    alert("No registered account is recognised on this device yet.");
     return;
   }
 
   const enteredPassword=prompt(
-    "MY BIDDER ACCOUNT\n\nPlease enter your bidder password:"
-  );
+  "MY ACCOUNT\n\nPlease enter your account password:"
+);
 
   if(enteredPassword===null){
     return;
@@ -3204,6 +3205,13 @@ defaultNumber:document.getElementById("regDefaultNumber").value.trim(),
 ],
 paymentHold:false,
 paymentHoldReason:"",
+        isExporter:false,
+exporterApproved:false,
+exporterDocsSubmitted:false,
+exporterRulesAccepted:false,
+completedSales:0,
+totalSalesValue:0,
+happyBuyers:0,
     rulesAccepted:true,
 rulesAcceptedDate:new Date().toISOString(),
     notifyNextAuction:notifyChoice,
@@ -3229,7 +3237,8 @@ localStorage.setItem(
 save();
 refreshBidderSelect();
 
-  document.getElementById("regMsg").textContent="Registered successfully.";
+  document.getElementById("regMsg").textContent=
+  "Account registration successful.";
  const whatsappMessage =
   "NEW CLIVIA DREAMERS BIDDER REGISTRATION\n\n" +
   "Register as: " + (entityType === "COMPANY" ? "Company / CC" : "Private Individual") + "\n" +
@@ -3249,14 +3258,17 @@ refreshBidderSelect();
   "Auction notifications: " + bidder.notifyNextAuction;
    window.lastBidderWhatsAppMessage = whatsappMessage; 
 
-document.getElementById("regMsg").textContent="Registered successfully. WhatsApp confirmation is optional.";
-    alert("✅ REGISTRATION SUCCESSFUL!\n\nYou are now registered with Clivia Dreamers Auction.\n\nNext time, click MY BIDDER ACCOUNT.");
+document.getElementById("regMsg").textContent=
+  "Account registration successful.";
+    alert("✅ REGISTRATION SUCCESSFUL!\n\nYour Clivia Dreamers account is now registered.\n\nYou can now bid or sell items.\n\nNext time, click MY ACCOUNT.");
  document.getElementById("sendBidderWhatsApp").style.display="block";
     document.getElementById("newBidderRegistration").style.display="none";
     refreshBidderSelect();   
 }
 function sendBidderRegistrationWhatsApp(){
-  const message = window.lastBidderWhatsAppMessage || "Clivia Dreamers Auction bidder registration.";
+  const message =
+  window.lastBidderWhatsAppMessage ||
+  "Clivia Dreamers Auction account registration.";
   window.open(
     "https://api.whatsapp.com/send?phone=27606866781&text=" + encodeURIComponent(message),
     "_blank"
@@ -3274,14 +3286,14 @@ function sendBidderRegistrationWhatsApp(){
   const testNotice=document.getElementById("ownerTestModeNotice");
 
   if(!bidder){
-    if(notice){
-      notice.textContent="No bidder selected yet.";
-    }
+  if(notice){
+    notice.textContent="No account selected yet.";
+  }
 
-    if(capacityNotice){
-      capacityNotice.textContent=
-        "Select a bidder to see bidding capacity.";
-    }
+  if(capacityNotice){
+    capacityNotice.textContent=
+      "Select an account to see bidding capacity.";
+  }
 
     if(capacityControl){
       capacityControl.style.display="none";
@@ -3347,7 +3359,7 @@ function sendBidderRegistrationWhatsApp(){
 
   if(notice){
     notice.textContent=
-      "Selected bidder: "+bidder.name+
+      "Account: "+bidder.name+
       (bidder.bankConfirmed
         ? " - ✅ BANK ACCOUNT CONFIRMED - BIDDING ENABLED"
         : " - 🔴 BANK ACCOUNT NOT CONFIRMED - BIDDING BLOCKED");
@@ -3416,7 +3428,7 @@ function refreshBidderSelect(){
   if(!select){
     if(recognitionNotice){
       recognitionNotice.textContent=
-        "No registered bidder recognised on this device.";
+        "No registered account is recognised on this device."
     }
     return;
   }
@@ -3443,12 +3455,12 @@ if(sellBtn){
 
     if(recognitionNotice){
       recognitionNotice.textContent=
-        "No registered bidder recognised on this device.";
+        "No registered account recognised on this device.";
     }
 
     if(liveStatus){
       liveStatus.textContent=
-        "No registered bidder recognised on this device.";
+        "No registered account recognised on this device.";
     }
 
     selectedBidderNotice();
@@ -3458,7 +3470,7 @@ const info=document.getElementById("registeredBidderInfo");
 
 if(info){
   info.innerHTML=
-    "<b>REGISTERED BIDDER INFORMATION</b><br><br>"+
+    "<b>REGISTERED ACCOUNT INFORMATION</b><br><br>"+
     "Name / Company: "+(bidder.name || bidder.companyName || "-")+"<br>"+
     "WhatsApp: "+(bidder.phone || bidder.businessPhone || "-")+"<br>"+
     "Email: "+(bidder.email || "-")+"<br>"+
@@ -3475,14 +3487,14 @@ if(info){
 
   if(recognitionNotice){
     recognitionNotice.innerHTML=
-      "✅ REGISTERED BIDDER — "+bidder.name+
+      "✅ REGISTERED ACCOUNT — "+bidder.name+
       "<br>"+
       "";
   }
 
   if(liveStatus){
     liveStatus.innerHTML=
-      "✅ REGISTERED BIDDER — "+bidder.name+
+      "✅ REGISTERED ACCOUNT — "+bidder.name+
       "<br>"+
       (unlocked
         ? "🔓 Bidding unlocked."
@@ -3547,7 +3559,15 @@ function refreshLotCategorySelect(){
     alert("Please register as a bidder before loading an item for sale.");
     return;
   }
+const unlocked=
+  sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
 
+if(!unlocked){
+  alert(
+    "Please open MY ACCOUNT and enter your account password before loading an item for sale."
+  );
+  return;
+}
  let currentAuction=(state.auctions||[]).find(
   a=>a.id===state.selectedAuctionId &&
      a.status!=="CLOSED" &&
@@ -3928,10 +3948,15 @@ if((startRow==="ROW5" || startRow==="ROW6") && start<1000){
 }
   const flowerFile=document.getElementById("lotFlower").files[0];
   const plantFile=document.getElementById("lotPlant").files[0];
-  const sellerId=document.getElementById("adminSellerSelect").value;
-const seller=(state.sellers||[]).find(s=>s.id===sellerId);
-  if(!seller){
-  document.getElementById("lotMsg").textContent="Please select a seller first.";
+  const sellerId=state.selectedBidderId;
+
+const seller=(state.bidders||[]).find(
+  b=>b.id===sellerId
+);
+
+if(!seller){
+  document.getElementById("lotMsg").textContent=
+    "Please open your registered account before loading a plant.";
   return;
 }
   const exportEligible=document.getElementById("lotExportEligible").checked;
@@ -3972,14 +3997,19 @@ if(exportEligible && !seller.exporterApproved){
 const listingCurrency=auction && auction.currency==="EUR" ? "EUR" : "ZAR";
 const listingFee=listingCurrency==="EUR" ? 5 : 50;
    
-const unpaidSellerInvoice=(state.invoices||[]).find(inv=>inv.sellerId===seller.id && inv.status!=="PAID");
-const matchingBidder=(state.bidders||[]).find(b=>
-  b.name===seller.name && b.phone===seller.phone && b.accountNumber===seller.accountNumber
+const unpaidAccountInvoice=(state.invoices||[]).find(inv=>
+  inv.status!=="PAID" &&
+  (
+    inv.bidderId===seller.id ||
+    inv.sellerId===seller.id
+  )
 );
-const unpaidBidderInvoice=matchingBidder
-  ? (state.invoices||[]).find(inv=>inv.bidderId===matchingBidder.id && inv.status!=="PAID")
-  : null;    
-if(unpaidSellerInvoice || unpaidBidderInvoice){
+
+if(unpaidAccountInvoice){
+  document.getElementById("lotMsg").textContent=
+    "You have an outstanding invoice. Please pay all outstanding invoices before loading another item for sale.";
+  return;
+}
   document.getElementById("lotMsg").textContent=
     unpaidBidderInvoice
       ? "This seller has an unpaid bidder invoice and cannot list another plant until it is paid."
@@ -4677,23 +4707,24 @@ if(Date.now()>=closeTime.getTime()-60000){
 }
 function openSellerLoadFromLot(){
   updateLotStartBidOptions();
-  const seller=(state.sellers||[]).find(
-    s=>s.id===state.selectedSellerId
+
+  const account=(state.bidders||[]).find(
+    b=>b.id===state.selectedBidderId
   );
 
-  if(!seller){
-    alert("Please register or select your seller profile before loading a plant.");
-    showPage("seller");
+  if(!account){
+    alert("Please register or open your account before loading a plant.");
+    showPage("register");
     return;
   }
 
-  if(!seller.rulesAccepted){
+  if(!account.rulesAccepted){
     alert("You must accept the Rules & Terms before loading a plant.");
     showPage("rules");
     return;
   }
 
-  showPage("seller");
+  showPage("live");
 
   setTimeout(()=>{
     const lotName=document.getElementById("lotName");
