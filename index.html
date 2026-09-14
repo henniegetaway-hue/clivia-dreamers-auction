@@ -1708,11 +1708,27 @@ let state = {
 
   // Later connect to email + WhatsApp notifications.
 }
+const ACCOUNT_STORAGE_KEY="cliviaDreamersAccounts";      
 function save(){
   try{
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    // Save registered accounts separately so they are not lost
+    localStorage.setItem(
+      ACCOUNT_STORAGE_KEY,
+      JSON.stringify(state.bidders||[])
+    );
+
+    // Save the rest of the site
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(state)
+    );
+
   }catch(e){
-    alert("The browser could not save the data. Large photos can use too much browser storage.");
+    console.log("Save error:",e);
+
+    alert(
+      "Some auction data could not be saved because browser storage is full."
+    );
   }
 }
 
@@ -1724,6 +1740,19 @@ function load(){
       state=JSON.parse(raw);
     }catch(e){}
   }
+ const savedAccounts=localStorage.getItem(ACCOUNT_STORAGE_KEY);
+
+if(savedAccounts){
+  try{
+    const accounts=JSON.parse(savedAccounts);
+
+    if(Array.isArray(accounts) && accounts.length){
+      state.bidders=accounts;
+    }
+  }catch(e){
+    console.log("Could not restore registered accounts",e);
+  }
+}     
 
   const savedLogin=localStorage.getItem(USER_LOGIN_KEY);
 
@@ -3227,6 +3256,10 @@ securityProof:"",
   };
   state.bidders.push(bidder);
 state.selectedBidderId=bidder.id;
+ localStorage.setItem(
+  ACCOUNT_STORAGE_KEY,
+  JSON.stringify(state.bidders||[])
+);       
 
 localStorage.setItem(
   USER_LOGIN_KEY,
