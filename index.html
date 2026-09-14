@@ -545,8 +545,20 @@ th,td{
      <h2>Clivia Dreamers Registration</h2>
 
 <div style="display:flex;gap:10px;margin:12px 0;">
-  <button id="newBidderBtn" type="button" class="goldBtn" onclick="showNewBidderRegistration()">NEW ACCOUNT</button>
-  <button type="button" class="accountBtn" onclick="showRegisteredBidder()">MY ACCOUNT</button>
+ <div style="display:flex;gap:10px;margin:12px 0;">
+  <button id="newBidderBtn"
+          type="button"
+          class="goldBtn"
+          onclick="showNewBidderRegistration()">
+    NEW ACCOUNT
+  </button>
+
+  <button type="button"
+          class="accountBtn"
+          onclick="showRegisteredBidder()">
+    ACCOUNT DETAILS
+  </button>
+</div>
 </div>   
  <div id="bidderForgotChoiceRow" style="display:none;margin-top:8px;">
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
@@ -563,7 +575,7 @@ th,td{
         type="button"
         class="accountBtn"
         style="display:none;margin-top:10px;background:#ffcc80;color:#111;"
-        onclick="openSellerLoadFromBidder()">
+        onclick="selectAccountAction('SELL')"
   I WANT TO SELL
 </button>
 <div id="bidderForgotPasswordBox" style="display:none;margin-top:10px;">
@@ -3578,8 +3590,8 @@ function refreshLotCategorySelect(){
 
   if(!unlocked){
     alert(
-      "Please open MY ACCOUNT and enter your account password first."
-    );
+  "Please open ACCOUNT DETAILS and enter your account password first."
+);
 
     document.querySelectorAll('input[name="accountAction"]').forEach(radio=>{
       radio.checked=false;
@@ -3598,17 +3610,22 @@ function refreshLotCategorySelect(){
     return;
   }
 
- if(action==="SELL"){
+if(action==="SELL"){
   showPage("live");
 
-  const spaces=document.getElementById("availableAuctionSpaces");
+  setTimeout(()=>{
+    const spaces=document.getElementById("availableAuctionSpaces");
 
-  if(spaces){
-    spaces.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-  }
+    if(spaces){
+      spaces.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+  },150);
+
+  return;
+}
 
   return;
 }
@@ -4462,7 +4479,7 @@ ${lot.exportEligible ? `
 
 const rowOrder=["ROW1","ROW2","ROW3","ROW4","ROW5","ROW6"];
 
-box.innerHTML=rowOrder.map(rowKey=>{
+const auctionRowsHtml=rowOrder.map(rowKey=>{
   const rowLots=displayLots
     .map((lot,index)=>({lot,index}))
     .filter(item=>item.lot.startRow===rowKey);
@@ -4512,8 +4529,7 @@ for(let i=0;i<samplesNeeded;i++){
 const rowCardsHtml=rowCards.join("");
 
       return `
-  <div id="availableAuctionSpaces"
-       class="auctionRowBlock"
+        class="auctionRowBlock"
        style="margin-bottom:24px;">
 
      <div style="display:flex;align-items:center;gap:4px;">
@@ -4560,6 +4576,24 @@ const rowCardsHtml=rowCards.join("");
     </div>
   `;
 }).join("");
+ const sellerAuction=(state.auctions||[]).find(
+  a=>a.id===state.selectedAuctionId
+);
+
+box.innerHTML=`
+  <div id="availableAuctionSpaces">
+
+    <div class="notice" style="margin-bottom:14px;">
+      <b>AVAILABLE AUCTION SPACES</b><br>
+      Date: ${sellerAuction?.auctionDate || "To be announced"}<br>
+      Time: ${sellerAuction?.auctionTime || sellerAuction?.preferredAuctionTime || "To be announced"}<br>
+      Choose a LOAD HERE space below.
+    </div>
+
+    ${auctionRowsHtml}
+
+  </div>
+`;           
 
 const sharedLotId=window.location.hash.replace("#lot=","");
 const sharedLotData=state.lots.find(lot=>lot.id===sharedLotId);
@@ -4763,6 +4797,24 @@ function openSellerLoadFromLot(auctionId,rowKey){
     if(auctionId){
   state.selectedAuctionId=auctionId;
   save();
+}
+ const selectedAuction=(state.auctions||[]).find(
+  a=>a.id===state.selectedAuctionId
+);
+
+const selectedNotice=document.getElementById("selectedSellerAuctionNotice");
+
+if(selectedNotice && selectedAuction){
+  const spacesLeft=rowKey
+    ? getStartRowSpacesLeft(rowKey)
+    : 0;
+
+  selectedNotice.innerHTML=
+    "<b>Selected Auction</b><br>"+
+    "Date: "+(selectedAuction.auctionDate || "To be announced")+"<br>"+
+    "Time: "+(selectedAuction.auctionTime || selectedAuction.preferredAuctionTime || "To be announced")+"<br>"+
+    "Row: "+(rowKey || "Not selected")+"<br>"+
+    "Spaces left in this row: <b>"+spacesLeft+"</b>";
 }
 
 if(rowKey){
