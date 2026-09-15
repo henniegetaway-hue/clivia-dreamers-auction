@@ -1429,6 +1429,9 @@ th,td{
   + ADD NEW PLANT
 </button>
 
+<!-- SELLER PLANT LOADING PAGE -->
+<section id="pageSellerLoad" class="page hidden">
+
 <div id="sellerLotForm" style="display:none;margin-top:16px;">
 
   <div class="panel">
@@ -1542,7 +1545,10 @@ th,td{
      style="margin-top:10px;"></div>    
   </div>
 
-</div>       
+</div>
+
+</section>
+<!-- END SELLER PLANT LOADING PAGE -->
 
 <button type="button"
         class="accountBtn"
@@ -4147,13 +4153,23 @@ function openSellerSpaces(){
     return;
   }
 
+  // Account password was already confirmed
   sessionStorage.setItem("cliviaBidderUnlocked", account.id);
 
-  showPage("live");
+  // Hide all normal pages
+  document.querySelectorAll(".page").forEach(page=>{
+    page.classList.add("hidden");
+  });
 
-  setTimeout(()=>{
-    showSellerLotForm();
-  },200);
+  // Open the separate plant-loading page
+  const sellerPage = document.getElementById("pageSellerLoad");
+
+  if(sellerPage){
+    sellerPage.classList.remove("hidden");
+  }
+
+  // Open and prepare the existing loading form
+  showSellerLotForm();
 }
       function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
