@@ -5626,18 +5626,24 @@ if(Date.now()>=closeTime.getTime()-60000){
   },150);
 }   
 function openSellerLoadFromLot(auctionId,rowKey){
-    const liveTopPanel = document.getElementById("liveAuctionTopPanel");
-
-  if(liveTopPanel){
-    liveTopPanel.style.display = "none";
-  }    
-
-  const account=(state.bidders||[]).find(
-    b=>b.id===state.selectedBidderId
+  const account = (state.bidders || []).find(
+    b => b.id === state.selectedBidderId
   );
 
   if(!account){
     alert("Please register or open your account before loading a plant.");
+    showPage("register");
+    return;
+  }
+
+  const unlocked =
+    sessionStorage.getItem("cliviaBidderUnlocked") === account.id;
+
+  if(!unlocked){
+    alert(
+      "Please open ACCOUNT DETAILS and enter your account password before loading a plant."
+    );
+
     showPage("register");
     return;
   }
@@ -5648,41 +5654,36 @@ function openSellerLoadFromLot(auctionId,rowKey){
     return;
   }
 
-  // Remember the exact auction selected from LOAD HERE
-  if(auctionId){
-    state.selectedAuctionId=auctionId;
-    save();
-  }
-
-  // Open the SAME seller loading page
+  // Open the seller loading page.
+  // Do NOT automatically choose an auction.
   openSellerSpaces();
 
-  setTimeout(()=>{
+  setTimeout(() => {
+    const auctionSelect =
+      document.getElementById("sellerLotAuction");
 
-    // Select the auction automatically
-    const auctionSelect=document.getElementById("sellerLotAuction");
-
-    if(auctionSelect && auctionId){
-      auctionSelect.value=auctionId;
+    if(auctionSelect){
+      auctionSelect.value = "";
     }
 
-    // Select the exact starting-bid row automatically
-    const rowSelect=document.getElementById("sellerLotStartRow");
+    // Keep the row selected from the LOAD HERE card.
+    const rowSelect =
+      document.getElementById("sellerLotStartRow");
 
     if(rowSelect && rowKey){
-      rowSelect.value=rowKey;
+      rowSelect.value = rowKey;
 
-      if(typeof updateSellerLotStartBid==="function"){
+      if(typeof updateSellerLotStartBid === "function"){
         updateSellerLotStartBid();
       }
     }
 
-    const lotName=document.getElementById("sellerLotName");
+    const lotName =
+      document.getElementById("sellerLotName");
 
     if(lotName){
       lotName.focus();
     }
-
   },200);
 }
 function showPlantPhoto(lotId){
