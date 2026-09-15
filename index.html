@@ -3379,6 +3379,16 @@ if(accountSection){
   accountSection.style.display="block";
   accountSection.classList.remove("hidden");
 }
+ const accountDetailsBtn = document.getElementById("accountDetailsBtn");
+const forgotRow = document.getElementById("bidderForgotChoiceRow");
+
+if(accountDetailsBtn){
+  accountDetailsBtn.style.display = "none";
+}
+
+if(forgotRow){
+  forgotRow.style.display = "none";
+}       
 const eventsPanel = document.getElementById("cliviaEventsPanel");
 
 if(eventsPanel){
