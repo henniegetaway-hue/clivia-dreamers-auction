@@ -540,8 +540,8 @@ th,td{
 </div>
 </section>
 <section id="pageRegister" class="page">
- <div id="registerPageGrid"
-     style="display:grid;grid-template-columns:minmax(520px,1.35fr) minmax(320px,0.65fr);gap:16px;align-items:start;">
+<div id="registerPageGrid"
+     style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start;">
    <div class="panel" id="registrationMainPanel">
      <h2>Clivia Dreamers Registration</h2>
 
@@ -3142,6 +3142,11 @@ function toggleBidderAuctionNotifications(){
   function showNewBidderRegistration(){
   document.getElementById("newBidderRegistration").style.display="block";
   document.getElementById("registeredBidderSection").style.display="none";
+      const eventsPanel = document.getElementById("cliviaEventsPanel");
+
+if(eventsPanel){
+  eventsPanel.style.display = "block";
+}  
         document.getElementById("bidderForgotChoiceRow").style.display="none";
 document.getElementById("bidderForgotPasswordBox").style.display="none";
     document.getElementById("bidderAddressFields").style.display="none";
@@ -3373,6 +3378,11 @@ if(accountSection){
   accountSection.style.display="block";
   accountSection.classList.remove("hidden");
 }
+const eventsPanel = document.getElementById("cliviaEventsPanel");
+
+if(eventsPanel){
+  eventsPanel.style.display = "none";
+}        
 
 if(bidderSelect){
   bidderSelect.value=bidder.id;
@@ -4141,12 +4151,24 @@ if(action==="SELL"){
     sessionStorage.setItem("cliviaBidderUnlocked", account.id);
   }
 const sellerSection = document.getElementById("registeredSellerSection");
+const sellerLotForm = document.getElementById("sellerLotForm");
 
 if(sellerSection){
   sellerSection.style.display = "block";
-  sellerSection.classList.remove("hidden");
 }
-  showSellerLotForm();
+
+if(sellerLotForm){
+  sellerLotForm.style.display = "block";
+
+  setTimeout(()=>{
+    sellerLotForm.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  },100);
+}
+
+showSellerLotForm();
 }
       function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
