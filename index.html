@@ -1466,10 +1466,21 @@ th,td{
        type="text"
        placeholder="Breeder name">
 
-<label>Description</label>
+<label>Description *</label>
 <textarea id="sellerLotDescription"
           rows="4"
-          placeholder="Describe the plant"></textarea>
+          placeholder="Describe the flower, colour, throat, markings, breeding, plant condition and any special features."
+          oninput="updateSellerAIKeywords()"></textarea>
+
+<label>AI Keywords</label>
+<textarea id="sellerLotKeywords"
+          rows="3"
+          readonly
+          placeholder="Keywords will be created automatically from the plant information."></textarea>
+
+<div class="small" style="margin-top:6px;">
+  AI uses the plant information and description to prepare searchable keywords for this lot.
+</div>
        <h3 style="margin-top:22px;">Photos</h3>
 
 <div class="formGrid">
