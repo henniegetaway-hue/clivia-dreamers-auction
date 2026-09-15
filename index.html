@@ -4144,10 +4144,26 @@ if(action==="SELL"){
     return;
   }
 
-  // Account Details password has already been accepted.
+  // Account password already confirmed
   sessionStorage.setItem("cliviaBidderUnlocked", account.id);
 
-  openSellerLoadFromBidder();
+  // Go to Live Auction / seller loading page
+  showPage("live");
+
+  setTimeout(()=>{
+    const loadPanel = document.getElementById("sellerLoadPanel");
+
+    if(loadPanel){
+      loadPanel.style.display = "block";
+
+      loadPanel.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }else{
+      alert("Seller loading page could not be found.");
+    }
+  },200);
 }
       function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
