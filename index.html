@@ -4119,6 +4119,14 @@ function refreshLotCategorySelect(){
   });
 }
       function selectAccountAction(action){
+          const bidder = (state.bidders || []).find(
+  b => b.id === state.selectedBidderId
+);
+
+if(!bidder){
+  alert("Please open your registered account first.");
+  return;
+}  
  const unlocked=
   sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
 
@@ -4147,55 +4155,40 @@ if(action==="BID"){
   }
 
 if(action==="SELL"){
-  showPage("live");
-
-  setTimeout(()=>{
-    const spaces=document.getElementById("availableAuctionSpaces");
-
-    if(spaces){
-      spaces.scrollIntoView({
-        behavior:"smooth",
-        block:"start"
-      });
-    }
-  },150);
-
+  openSellerSpaces();
   return;
 }
 
   return;
 }
   function openSellerSpaces(){
-  const seller = (state.sellers || []).find(
-    s => s.id === state.selectedSellerId
+  const account = (state.bidders || []).find(
+    b => b.id === state.selectedBidderId
   );
 
-  if(!seller){
-    alert("Please register or open your seller account first.");
-    return;
-  }
-const sellerUnlocked =
-  sessionStorage.getItem("cliviaSellerUnlocked") === seller.id;
-
-if(!sellerUnlocked){
-  const enteredPassword = prompt(
-    "SELLER ACCOUNT\n\nPlease enter your seller password:"
-  );
-
-  if(enteredPassword === null) return;
-
-  if(enteredPassword !== seller.password){
-    alert("Incorrect seller password.");
+  if(!account){
+    alert("Please open your registered account first.");
     return;
   }
 
-  sessionStorage.setItem("cliviaSellerUnlocked", seller.id);
-}        
-const sellerSection = document.getElementById("registeredSellerSection");
+  const unlocked =
+    sessionStorage.getItem("cliviaBidderUnlocked") === account.id;
 
-if(sellerSection){
-  sellerSection.style.display = "block";
-}
+  if(!unlocked){
+    const enteredPassword = prompt(
+      "SELLER CONFIRMATION\n\nPlease enter your account password:"
+    );
+
+    if(enteredPassword === null) return;
+
+    if(enteredPassword !== account.password){
+      alert("Incorrect account password.");
+      return;
+    }
+
+    sessionStorage.setItem("cliviaBidderUnlocked", account.id);
+  }
+
   showSellerLotForm();
 }
       function openSellerLoadFromBidder(){
