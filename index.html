@@ -2036,13 +2036,14 @@ function showPage(page){
   document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
   document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
 
-  const map={
-    register:["pageRegister","navRegister"],
-    live:["pageLive","navLive"],
-    rules:["pageRules","navRules"],
-    admin:["pageAdmin","navAdmin"],
-    invoices:["pageInvoices","navInvoices"]
-  };
+ const map={
+  register:["pageRegister","navRegister"],
+  live:["pageLive","navLive"],
+  sellerLoad:["pageSellerLoad","navLive"],
+  rules:["pageRules","navRules"],
+  admin:["pageAdmin","navAdmin"],
+  invoices:["pageInvoices","navInvoices"]
+};
 
   document.getElementById(map[page][0]).classList.remove("hidden");
   document.getElementById(map[page][1]).classList.add("active");
@@ -4350,6 +4351,7 @@ function openSellerSpaces(){
 
   if(!account){
     alert("Please open your registered account first.");
+    showPage("register");
     return;
   }
 
@@ -4360,19 +4362,38 @@ function openSellerSpaces(){
     alert(
       "Please open ACCOUNT DETAILS and enter your account password before selling."
     );
+    showPage("register");
     return;
   }
 
-  // Open the seller plant loading form
-  showSellerLotForm();
+  // Go to the page that contains the seller loading form
+  showPage("sellerLoad");
 
   setTimeout(() => {
+
+    // Open and prepare the SAME plant loading form
+    if(typeof showSellerLotForm === "function"){
+      showSellerLotForm();
+    }
+
     const auctionSelect =
       document.getElementById("sellerLotAuction");
 
-    // Seller must choose an available auction/date
+    // Seller chooses the available auction
     if(auctionSelect){
       auctionSelect.value = "";
+    }
+
+    const form =
+      document.getElementById("sellerLotForm");
+
+    if(form){
+      form.style.display = "block";
+
+      form.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
     }
 
     const lotName =
@@ -4381,9 +4402,9 @@ function openSellerSpaces(){
     if(lotName){
       lotName.focus();
     }
-  },100);
-}
 
+  },150);
+}
 function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
