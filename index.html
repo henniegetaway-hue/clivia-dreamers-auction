@@ -961,7 +961,7 @@ th,td{
 </div>  <!-- closes registeredBidderSection -->
  </div>  <!-- closes registrationMainPanel -->      
 
-<div id="cliviaEventsPanel" class="panel">
+<div id="cliviaEventsPanel" class="panel" style="display:none;">
   <h2>🌱 Clivia Events & Shows</h2>
 
   <div id="cliviaEventsList">
@@ -974,7 +974,7 @@ th,td{
 </section>
 
 <section id="pageLive" class="page hidden">
-  <div class="panel">
+  <div id="liveAuctionTopPanel" class="panel">
     <h2 id="liveTitle">Clivia Dreamers Live Auction</h2>
     <div id="liveBidderStatus"
      class="notice"
@@ -4110,6 +4110,7 @@ if(!bidder){
   alert("Please open your registered account first.");
   return;
 }  
+            
  const unlocked=
   sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
 
@@ -4144,6 +4145,7 @@ if(action==="SELL"){
 
   return;
 }
+
 function openSellerSpaces(){
   const account = (state.bidders || []).find(
     b => b.id === state.selectedBidderId
@@ -4153,47 +4155,10 @@ function openSellerSpaces(){
     alert("Please open your registered account first.");
     return;
   }
-
-  sessionStorage.setItem("cliviaBidderUnlocked", account.id);
-
-  const sellerPage = document.getElementById("pageSellerLoad");
-  const sellerForm = document.getElementById("sellerLotForm");
-
-  if(!sellerPage || !sellerForm){
-    alert("Plant loading page could not be found.");
-    return;
-  }
-
-  // IMPORTANT:
-  // Move the seller loading page outside any hidden Register/Seller container.
-  const app = document.querySelector(".app");
-
-  if(app && sellerPage.parentElement !== app){
-    app.appendChild(sellerPage);
-  }
-
-  // Hide the other pages
-  document.querySelectorAll(".page").forEach(page=>{
-    page.classList.add("hidden");
-  });
-
-  // Show only the seller loading page
-  sellerPage.classList.remove("hidden");
-
-  // Make sure the actual loading form is visible
-  sellerForm.style.display = "block";
-
-  // Fill auction/category choices
-  showSellerLotForm();
-
-  setTimeout(()=>{
-    sellerForm.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-  },100);
+    openSellerLoadFromLot(state.selectedAuctionId, "");  
 }
-      function openSellerLoadFromBidder(){
+
+function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
   );
@@ -5463,6 +5428,11 @@ if(Date.now()>=closeTime.getTime()-60000){
   },150);
 }   
 function openSellerLoadFromLot(auctionId,rowKey){
+    const liveTopPanel = document.getElementById("liveAuctionTopPanel");
+
+  if(liveTopPanel){
+    liveTopPanel.style.display = "none";
+  }    
 
   const account=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
