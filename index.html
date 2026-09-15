@@ -2591,44 +2591,7 @@ function showSellerForgotPassword(){
     input.readOnly = false;
   }
 }   
-      function showSellerLotForm(){
-  const form = document.getElementById("sellerLotForm");
-
-  if(!form) return;
-
-   const savedDraft = localStorage.getItem("cliviaSellerLotDraft");
-
-if(savedDraft){
-  try{
-    const draft = JSON.parse(savedDraft);
-
-    document.getElementById("sellerLotAuction").value = draft.auction || "";
-    document.getElementById("sellerLotName").value = draft.name || "";
-    document.getElementById("sellerLotCategory").value = draft.category || "";
-    document.getElementById("sellerLotBreeding").value = draft.breeding || "";
-    document.getElementById("sellerLotBreeder").value = draft.breeder || "";
-    document.getElementById("sellerLotDescription").value = draft.description || "";
-     document.getElementById("sellerLotStartRow").value = draft.startRow || "";
-document.getElementById("sellerLotStart").value = draft.start || "";   
-  }catch(error){
-    console.log("Could not restore seller lot draft.");
-  }
-}         
-  form.style.display = "block";
-
-  form.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-}
-
-function closeSellerLotForm(){
-  const form = document.getElementById("sellerLotForm");
-
-  if(!form) return;
-
-  form.style.display = "none";
-}
+     
    function showSellerLotForm(){
   const form = document.getElementById("sellerLotForm");
 
