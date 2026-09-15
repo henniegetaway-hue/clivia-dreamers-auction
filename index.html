@@ -4158,7 +4158,12 @@ if(action==="SELL"){
 
     sessionStorage.setItem("cliviaBidderUnlocked", account.id);
   }
+const sellerSection = document.getElementById("registeredSellerSection");
 
+if(sellerSection){
+  sellerSection.style.display = "block";
+  sellerSection.classList.remove("hidden");
+}
   showSellerLotForm();
 }
       function openSellerLoadFromBidder(){
