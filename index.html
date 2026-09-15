@@ -4134,7 +4134,7 @@ if(action==="SELL"){
 
   return;
 }
-  function openSellerSpaces(){
+ function openSellerSpaces(){
   const account = (state.bidders || []).find(
     b => b.id === state.selectedBidderId
   );
@@ -4144,26 +4144,10 @@ if(action==="SELL"){
     return;
   }
 
+  // Account Details password has already been accepted.
   sessionStorage.setItem("cliviaBidderUnlocked", account.id);
-const sellerSection = document.getElementById("registeredSellerSection");
-const sellerLotForm = document.getElementById("sellerLotForm");
 
-if(sellerSection){
-  sellerSection.style.display = "block";
-}
-
-if(sellerLotForm){
-  sellerLotForm.style.display = "block";
-
-  setTimeout(()=>{
-    sellerLotForm.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-  },100);
-}
-
-showSellerLotForm();
+  openSellerLoadFromBidder();
 }
       function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
