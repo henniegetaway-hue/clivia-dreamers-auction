@@ -4031,25 +4031,8 @@ if(info){
   }
 
  if(liveStatus){
-  liveStatus.innerHTML=
-    "✅ REGISTERED ACCOUNT — "+bidder.name+
-    "<br>"+
-    (unlocked
-      ? "🔓 Account unlocked."
-      : "🔒 Account locked — password required.")+
-    "<div style='display:flex;align-items:center;gap:50px;margin-top:12px;flex-wrap:wrap;'>"+
-
-      "<label style='display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;'>"+
-        "<input type='radio' name='accountAction' value='BID' style='width:auto;' onchange='selectAccountAction(\"BID\")'>"+
-        "<b>I WANT TO BID</b>"+
-      "</label>"+
-
-      "<label style='display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;'>"+
-        "<input type='radio' name='accountAction' value='SELL' style='width:auto;' onchange='selectAccountAction(\"SELL\")'>"+
-        "<b>I WANT TO SELL</b>"+
-      "</label>"+
-
-    "</div>";
+  liveStatus.style.display="none";
+  liveStatus.innerHTML="";
 }
 
   selectedBidderNotice();
