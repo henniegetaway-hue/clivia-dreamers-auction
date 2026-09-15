@@ -5329,6 +5329,7 @@ if(unlockedBidderId!==bidder.id){
     alert("Incorrect Account password.");
     return;
   }
+   sessionStorage.setItem("cliviaBidderUnlocked", bidder.id);   
 
   sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
 
