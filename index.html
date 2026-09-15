@@ -4154,23 +4154,44 @@ function openSellerSpaces(){
     return;
   }
 
-  // Account password was already confirmed
   sessionStorage.setItem("cliviaBidderUnlocked", account.id);
 
-  // Hide all normal pages
+  const sellerPage = document.getElementById("pageSellerLoad");
+  const sellerForm = document.getElementById("sellerLotForm");
+
+  if(!sellerPage || !sellerForm){
+    alert("Plant loading page could not be found.");
+    return;
+  }
+
+  // IMPORTANT:
+  // Move the seller loading page outside any hidden Register/Seller container.
+  const app = document.querySelector(".app");
+
+  if(app && sellerPage.parentElement !== app){
+    app.appendChild(sellerPage);
+  }
+
+  // Hide the other pages
   document.querySelectorAll(".page").forEach(page=>{
     page.classList.add("hidden");
   });
 
-  // Open the separate plant-loading page
-  const sellerPage = document.getElementById("pageSellerLoad");
+  // Show only the seller loading page
+  sellerPage.classList.remove("hidden");
 
-  if(sellerPage){
-    sellerPage.classList.remove("hidden");
-  }
+  // Make sure the actual loading form is visible
+  sellerForm.style.display = "block";
 
-  // Open and prepare the existing loading form
+  // Fill auction/category choices
   showSellerLotForm();
+
+  setTimeout(()=>{
+    sellerForm.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  },100);
 }
       function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
