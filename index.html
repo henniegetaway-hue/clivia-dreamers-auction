@@ -5418,12 +5418,86 @@ box.innerHTML=`
       ${sellerAuctionChoicesHtml}
     </div>
 
-    <div class="notice" style="margin-bottom:14px;">
-      <b>AVAILABLE AUCTION SPACES</b><br>
-      Date: ${sellerAuction?.auctionDate || "To be announced"}<br>
-      Time: ${sellerAuction?.auctionTime || sellerAuction?.preferredAuctionTime || "To be announced"}<br>
-      Choose a LOAD HERE space below.
-    </div>
+   <div class="notice"
+     style="
+       margin-bottom:14px;
+       display:flex;
+       justify-content:space-between;
+       align-items:center;
+       gap:20px;
+       flex-wrap:wrap;
+     ">
+
+  <div>
+    <b>AVAILABLE AUCTION SPACES</b><br>
+
+    Date:
+    ${sellerAuction?.auctionDate || "To be announced"}
+    <br>
+
+    Time:
+    ${sellerAuction?.auctionTime ||
+      sellerAuction?.preferredAuctionTime ||
+      "To be announced"}
+    <br>
+
+    <span style="color:#d8ff9b;font-weight:bold;">
+      Auction Date:
+      ${sellerAuction?.auctionDate || "To be announced"}
+      &nbsp; | &nbsp;
+
+      Closes:
+      ${sellerAuction?.auctionCloseTime || "--"}
+      &nbsp; | &nbsp;
+
+     Time Remaining:
+${
+  sellerAuction &&
+  sellerAuction.auctionDate &&
+  sellerAuction.auctionCloseTime
+    ? (() => {
+        const closeTime = new Date(
+          sellerAuction.auctionDate +
+          "T" +
+          sellerAuction.auctionCloseTime +
+          ":00+02:00"
+        );
+
+        const ms = closeTime.getTime() - Date.now();
+
+        if(ms <= 0) return "CLOSED";
+
+        return (
+          Math.floor(ms / 3600000) + "h " +
+          Math.floor((ms % 3600000) / 60000) + "m " +
+          Math.floor((ms % 60000) / 1000) + "s"
+        );
+      })()
+    : "--"
+}
+    </span>
+
+    <br>
+
+    <span style="color:#d8ff9b;font-weight:bold;">
+      Default bid increase:
+      R${sellerAuction?.increment || state.settings.increment || 50}
+    </span>
+  </div>
+
+  <button type="button"
+          class="greenBtn"
+          style="
+            font-size:18px;
+            font-weight:bold;
+            padding:14px 22px;
+            white-space:nowrap;
+          "
+          onclick="openSellerSpaces()">
+    LOAD FOR NEXT AUCTION
+  </button>
+
+</div>
 
     ${auctionRowsHtml}
 
