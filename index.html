@@ -5463,38 +5463,6 @@ if(Date.now()>=closeTime.getTime()-60000){
   },150);
 }   
 function openSellerLoadFromLot(auctionId,rowKey){
-  updateLotStartBidOptions();
-    if(auctionId){
-  state.selectedAuctionId=auctionId;
-  save();
-}
- const selectedAuction=(state.auctions||[]).find(
-  a=>a.id===state.selectedAuctionId
-);
-
-const selectedNotice=document.getElementById("selectedSellerAuctionNotice");
-
-if(selectedNotice && selectedAuction){
-  const spacesLeft=rowKey
-    ? getStartRowSpacesLeft(rowKey)
-    : 0;
-
-  selectedNotice.innerHTML=
-    "<b>Selected Auction</b><br>"+
-    "Date: "+(selectedAuction.auctionDate || "To be announced")+"<br>"+
-    "Time: "+(selectedAuction.auctionTime || selectedAuction.preferredAuctionTime || "To be announced")+"<br>"+
-    "Row: "+(rowKey || "Not selected")+"<br>"+
-    "Spaces left in this row: <b>"+spacesLeft+"</b>";
-}
-
-if(rowKey){
-  const rowSelect=document.getElementById("lotStartRow");
-
-  if(rowSelect){
-    rowSelect.value=rowKey;
-    updateLotStartBidOptions();
-  }
-}  
 
   const account=(state.bidders||[]).find(
     b=>b.id===state.selectedBidderId
@@ -5512,26 +5480,42 @@ if(rowKey){
     return;
   }
 
- showPage("live");
-
-setTimeout(()=>{
-  const loadPanel=document.getElementById("sellerLoadPanel");
-
-  if(loadPanel){
-    loadPanel.style.display="block";
-
-    loadPanel.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
+  // Remember the exact auction selected from LOAD HERE
+  if(auctionId){
+    state.selectedAuctionId=auctionId;
+    save();
   }
 
-  const lotName=document.getElementById("lotName");
+  // Open the SAME seller loading page
+  openSellerSpaces();
 
-  if(lotName){
-    lotName.focus();
-  }
-},100);
+  setTimeout(()=>{
+
+    // Select the auction automatically
+    const auctionSelect=document.getElementById("sellerLotAuction");
+
+    if(auctionSelect && auctionId){
+      auctionSelect.value=auctionId;
+    }
+
+    // Select the exact starting-bid row automatically
+    const rowSelect=document.getElementById("sellerLotStartRow");
+
+    if(rowSelect && rowKey){
+      rowSelect.value=rowKey;
+
+      if(typeof updateSellerLotStartBid==="function"){
+        updateSellerLotStartBid();
+      }
+    }
+
+    const lotName=document.getElementById("sellerLotName");
+
+    if(lotName){
+      lotName.focus();
+    }
+
+  },200);
 }
 function showPlantPhoto(lotId){
   const lot=state.lots.find(l=>l.id===lotId);
