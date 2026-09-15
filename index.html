@@ -834,25 +834,6 @@ th,td{
     autocomplete="current-password"
   >
     <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
-  <input
-    type="checkbox"
-    onchange="document.getElementById('returningBidderPassword').type=this.checked?'text':'password';"
-    style="width:auto;"
-  >
-  Show password
-</label>        
-
-  <button
-    type="button"
-    class="goldBtn"
-    style="margin-top:10px;"
-    onclick="unlockReturningBidder()"
-  >
-    OPEN MY ACCOUNT
-  </button>
-
-  <div id="bidderUnlockNotice" class="small" style="margin-top:8px;"></div>
-</div>
       <div id="bidderStatusButtons"
      style="display:none;gap:10px;flex-wrap:wrap;margin:12px 0;">
 
@@ -991,7 +972,25 @@ th,td{
 
 </div>
 </div>
+<input
+    type="checkbox"
+    onchange="document.getElementById('returningBidderPassword').type=this.checked?'text':'password';"
+    style="width:auto;"
+  >
+  Show password
+</label>        
 
+  <button
+    type="button"
+    class="goldBtn"
+    style="margin-top:10px;"
+    onclick="unlockReturningBidder()"
+  >
+    SAVE PASSWORD
+  </button>
+
+  <div id="bidderUnlockNotice" class="small" style="margin-top:8px;"></div>
+</div>
 </div>  <!-- closes registeredBidderSection -->     
 
 <div id="cliviaEventsPanel" class="panel" style="display:none;">
