@@ -544,8 +544,8 @@ th,td{
     <div class="panel">
      <h2>Clivia Dreamers Registration</h2>
 
-<div style="display:flex;gap:10px;margin:12px 0;">
- <div style="display:flex;gap:10px;margin:12px 0;">
+<div style="display:flex;gap:10px;margin:12px 0;flex-wrap:wrap;">
+
   <button id="newBidderBtn"
           type="button"
           class="goldBtn"
@@ -558,9 +558,10 @@ th,td{
           onclick="showRegisteredBidder()">
     ACCOUNT DETAILS
   </button>
+
 </div>
-</div>   
- <div id="bidderForgotChoiceRow" style="display:none;margin-top:8px;">
+
+<div id="bidderForgotChoiceRow" style="display:none;margin-top:8px;">
   <label style="display:flex;align-items:center;gap:8px;margin:0;">
     <input
       type="radio"
@@ -571,15 +572,14 @@ th,td{
     FORGOT PASSWORD
   </label>
 </div>
+
 <button id="bidderWantToSellBtn"
         type="button"
         class="accountBtn"
         style="display:none;margin-top:10px;background:#ffcc80;color:#111;"
-        onclick="openSellerSpaces()"
+        onclick="openSellerSpaces()">
   I WANT TO SELL
 </button>
-<div id="bidderForgotPasswordBox" style="display:none;margin-top:10px;">
-
   <button
     type="button"
     style="
