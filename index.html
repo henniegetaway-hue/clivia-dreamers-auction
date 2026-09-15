@@ -4352,7 +4352,36 @@ function openSellerSpaces(){
     alert("Please open your registered account first.");
     return;
   }
-    openSellerLoadFromLot(state.selectedAuctionId, "");  
+
+  const unlocked =
+    sessionStorage.getItem("cliviaBidderUnlocked") === account.id;
+
+  if(!unlocked){
+    alert(
+      "Please open ACCOUNT DETAILS and enter your account password before selling."
+    );
+    return;
+  }
+
+  // Open the seller plant loading form
+  showSellerLotForm();
+
+  setTimeout(() => {
+    const auctionSelect =
+      document.getElementById("sellerLotAuction");
+
+    // Seller must choose an available auction/date
+    if(auctionSelect){
+      auctionSelect.value = "";
+    }
+
+    const lotName =
+      document.getElementById("sellerLotName");
+
+    if(lotName){
+      lotName.focus();
+    }
+  },100);
 }
 
 function openSellerLoadFromBidder(){
