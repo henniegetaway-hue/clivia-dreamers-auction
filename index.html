@@ -220,8 +220,54 @@ padding-right:16px !important;
 </div>
 </div>
 <div id="registeredBidderSection" class="panel" style="display:none;">
-     <h2>My Clivia Dreamers Account</h2>
-}
+  <h2>My Clivia Dreamers Account</h2>
+
+  <p>Your registered account for bidding and selling.</p>
+
+  <label>Select account</label>
+  <select id="bidderSelect" onchange="selectBidder()">
+    <option value="">-- Select account --</option>
+  </select>
+
+  <label style="margin-top:12px;">Account Password</label>
+  <input id="bidderLoginPassword"
+         type="password"
+         placeholder="Enter your account password">
+
+  <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+    <input type="checkbox"
+           style="width:auto;"
+           onchange="document.getElementById('bidderLoginPassword').type=this.checked?'text':'password';">
+    Show password
+  </label>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+
+    <button type="button"
+            class="greenBtn"
+            onclick="unlockBidderAccount()">
+      OPEN MY ACCOUNT
+    </button>
+
+    <button type="button"
+            class="accountBtn"
+            onclick="showBidderForgotPassword()">
+      FORGOT PASSWORD
+    </button>
+
+  </div>
+
+  <div id="bidderForgotMsg"
+       class="small"
+       style="margin-top:8px;">
+  </div>
+
+  <div id="registeredBidderInfo"
+       class="notice"
+       style="margin-top:12px;">
+  </div>
+
+</div>
 
 /* LIVE AUCTION — 4 LOTS PER ROW */
 .lotsGrid{
@@ -563,18 +609,6 @@ th,td{
 
 </div>
 
-<div id="bidderForgotChoiceRow" style="display:none;margin-top:8px;">
-  <label style="display:flex;align-items:center;gap:8px;margin:0;">
-    <input
-      type="radio"
-      name="bidderForgotChoice"
-      onchange="showBidderForgotPassword()"
-      style="width:auto;"
-    >
-    FORGOT PASSWORD
-  </label>
-</div>
-
 <button id="bidderWantToSellBtn"
         type="button"
         class="accountBtn"
@@ -790,7 +824,7 @@ th,td{
 </div>
 
       <div id="selectedBidderNotice" class="notice">No account selected yet.</div>
-      <div id="accountPasswordUnlockBox" style="display:none;margin-top:12px;">
+      <div id="accountPasswordUnlockBox" style="display:block;margin-top:12px;">
   <label>Account Password</label>
 
   <input
@@ -814,7 +848,7 @@ th,td{
     style="margin-top:10px;"
     onclick="unlockReturningBidder()"
   >
-    UNLOCK BIDDING
+    OPEN MY ACCOUNT
   </button>
 
   <div id="bidderUnlockNotice" class="small" style="margin-top:8px;"></div>
