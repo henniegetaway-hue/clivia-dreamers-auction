@@ -3356,9 +3356,16 @@ function sendBidderPasswordReset(){
     alert("No registered account is recognised on this device yet.");
     return;
   }
-   document.getElementById("bidderForgotChoiceRow").style.display="block";
-document.getElementById("bidderForgotPasswordBox").style.display="none";     
+   const forgotChoiceRow = document.getElementById("bidderForgotChoiceRow");
+const forgotPasswordBox = document.getElementById("bidderForgotPasswordBox");
 
+if(forgotChoiceRow){
+  forgotChoiceRow.style.display = "block";
+}
+
+if(forgotPasswordBox){
+  forgotPasswordBox.style.display = "none";
+}
   const enteredPassword=prompt(
   "MY ACCOUNT\n\nPlease enter your account password:"
 );
