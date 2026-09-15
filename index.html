@@ -974,7 +974,7 @@ th,td{
 
 <section id="pageLive" class="page hidden">
   <div id="liveAuctionTopPanel" class="panel">
-    <h2 id="liveTitle">Clivia Dreamers Live Auction</h2>
+    <h2 id="liveTitle" style="display:none;">Clivia Dreamers Live Auction</h2>
     <div id="liveBidderStatus"
      class="notice"
      style="margin:10px 0;font-weight:bold;">
@@ -1449,22 +1449,26 @@ th,td{
 <label>Plant / Flower Name *</label>
 <input id="sellerLotName"
        type="text"
-       placeholder="e.g. Green Throat × White Stripe">
+       placeholder="e.g. Green Throat × White Stripe"
+       oninput="updateSellerAIKeywords()">
 
 <label>Category *</label>
-<select id="sellerLotCategory">
+<select id="sellerLotCategory"
+        onchange="updateSellerAIKeywords()">
   <option value="">-- Select Category --</option>
 </select>
 
 <label>Breeding</label>
 <input id="sellerLotBreeding"
        type="text"
-       placeholder="e.g. Mother Plant × Father Plant">
+       placeholder="e.g. Mother Plant × Father Plant"
+       oninput="updateSellerAIKeywords()">
 
 <label>Breeder</label>
 <input id="sellerLotBreeder"
        type="text"
-       placeholder="Breeder name">
+       placeholder="Breeder name"
+       oninput="updateSellerAIKeywords()">
 
 <label>Description *</label>
 <textarea id="sellerLotDescription"
@@ -1479,7 +1483,7 @@ th,td{
           placeholder="Keywords will be created automatically from the plant information."></textarea>
 
 <div class="small" style="margin-top:6px;">
-  AI uses the plant information and description to prepare searchable keywords for this lot.
+  Keywords are created automatically from the plant information.
 </div>
        <h3 style="margin-top:22px;">Photos</h3>
 
@@ -2550,6 +2554,45 @@ function showSellerForgotPassword(){
     phone.value="";
     setTimeout(()=>phone.focus(),100);
   }   
+    function updateSellerAIKeywords(){
+  const name =
+    document.getElementById("sellerLotName")?.value || "";
+
+  const category =
+    document.getElementById("sellerLotCategory")?.value || "";
+
+  const breeding =
+    document.getElementById("sellerLotBreeding")?.value || "";
+
+  const breeder =
+    document.getElementById("sellerLotBreeder")?.value || "";
+
+  const description =
+    document.getElementById("sellerLotDescription")?.value || "";
+
+  const keywordBox =
+    document.getElementById("sellerLotKeywords");
+
+  if(!keywordBox) return;
+
+  const combined = [
+    name,
+    category,
+    breeding,
+    breeder,
+    description
+  ]
+  .join(" ")
+  .replace(/[×]/g," cross ")
+  .replace(/[^\w\s-]/g," ")
+  .split(/\s+/)
+  .map(word=>word.trim())
+  .filter(word=>word.length>2);
+
+  const uniqueKeywords = [...new Set(combined)];
+
+  keywordBox.value = uniqueKeywords.join(", ");
+}  
    function updateSellerLotStartBid(){
   const row = document.getElementById("sellerLotStartRow")?.value;
   const input = document.getElementById("sellerLotStart");
@@ -2595,46 +2638,158 @@ function showSellerForgotPassword(){
   }
 }   
      
-   function showSellerLotForm(){
+ function showSellerLotForm(){
   const form = document.getElementById("sellerLotForm");
 
   if(!form) return;
 
-   const auctionSelect = document.getElementById("sellerLotAuction");
+  const auctionSelect =
+    document.getElementById("sellerLotAuction");
 
-if(auctionSelect){
-  auctionSelect.innerHTML = '<option value="">-- Choose Auction --</option>';
+  if(auctionSelect){
+    auctionSelect.innerHTML =
+      '<option value="">-- Choose Auction --</option>';
 
-  (state.auctions || []).forEach(auction => {
+   (state.auctions || [])
+  .filter(auction =>
+    auction.status !== "CLOSED" &&
+    !(typeof isAuctionFull === "function" && isAuctionFull(auction))
+  )
+  .sort((a,b) => {
+    const dateA = new Date(
+      (a.auctionDate || "9999-12-31") +
+      "T" +
+      (a.auctionTime || a.preferredAuctionTime || "23:59")
+    );
+
+    const dateB = new Date(
+      (b.auctionDate || "9999-12-31") +
+      "T" +
+      (b.auctionTime || b.preferredAuctionTime || "23:59")
+    );
+
+    return dateA - dateB;
+  })
+  .forEach(auction => {
     const option = document.createElement("option");
+
     option.value = auction.id;
-    option.textContent = auction.name || "Auction";
+
+    const date =
+      auction.auctionDate || "Date to be announced";
+
+    const time =
+      auction.auctionTime ||
+      auction.preferredAuctionTime ||
+      "Time to be announced";
+
+    option.textContent =
+      date + " — " + time + " — Available";
+
     auctionSelect.appendChild(option);
   });
-}   
-  const categorySelect = document.getElementById("sellerLotCategory");
+  }
 
-if(categorySelect){
-  categorySelect.innerHTML =
-    '<option value="">-- Select Category --</option>';
+  const categorySelect =
+    document.getElementById("sellerLotCategory");
 
-  const categories = [
-    "Miniata",
-    "Interspecific",
-    "Caulescens",
-    "Gardenii",
-    "Nobilis",
-    "Robusta",
-    "Other"
-  ];
+  if(categorySelect){
+    categorySelect.innerHTML =
+      '<option value="">-- Select Category --</option>';
 
-  categories.forEach(category => {
-    const option = document.createElement("option");
-    option.value = category;
-    option.textContent = category;
-    categorySelect.appendChild(option);
-  });
-}       
+    const categories = [
+      "Miniata",
+      "Interspecific",
+      "Caulescens",
+      "Gardenii",
+      "Nobilis",
+      "Robusta",
+      "Other"
+    ];
+
+    categories.forEach(category => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category;
+      categorySelect.appendChild(option);
+    });
+  }
+
+  // Restore saved seller draft
+  const savedDraft =
+    localStorage.getItem("cliviaSellerLotDraft");
+
+  if(savedDraft){
+    try{
+      const draft = JSON.parse(savedDraft);
+
+      if(auctionSelect && draft.auctionId){
+        auctionSelect.value = draft.auctionId;
+      }
+
+      if(categorySelect && draft.category){
+        categorySelect.value = draft.category;
+      }
+
+      const name =
+        document.getElementById("sellerLotName");
+
+      const breeding =
+        document.getElementById("sellerLotBreeding");
+
+      const breeder =
+        document.getElementById("sellerLotBreeder");
+
+      const description =
+        document.getElementById("sellerLotDescription");
+
+      const keywords =
+        document.getElementById("sellerLotKeywords");
+
+      const startRow =
+        document.getElementById("sellerLotStartRow");
+
+      const startBid =
+        document.getElementById("sellerLotStart");
+
+      if(name){
+        name.value = draft.name || "";
+      }
+
+      if(breeding){
+        breeding.value = draft.breeding || "";
+      }
+
+      if(breeder){
+        breeder.value = draft.breeder || "";
+      }
+
+      if(description){
+        description.value = draft.description || "";
+      }
+
+      if(keywords){
+        keywords.value = draft.keywords || "";
+      }
+
+      if(startRow){
+        startRow.value = draft.startRow || "";
+      }
+
+      if(startBid){
+        startBid.value = draft.startBid || "";
+      }
+
+      // Recalculate keywords if necessary
+      if(typeof updateSellerAIKeywords === "function"){
+        updateSellerAIKeywords();
+      }
+
+    }catch(error){
+      console.log("Could not restore seller draft:", error);
+    }
+  }
+
   form.style.display = "block";
 
   form.scrollIntoView({
@@ -2642,7 +2797,6 @@ if(categorySelect){
     block: "start"
   });
 }
-
 function closeSellerLotForm(){
   const form = document.getElementById("sellerLotForm");
 
@@ -2650,6 +2804,51 @@ function closeSellerLotForm(){
 
   form.style.display = "none";
 }   
+ function saveSellerLotDraft(){
+  const draft = {
+    auctionId:
+      document.getElementById("sellerLotAuction")?.value || "",
+
+    name:
+      document.getElementById("sellerLotName")?.value.trim() || "",
+
+    category:
+      document.getElementById("sellerLotCategory")?.value || "",
+
+    breeding:
+      document.getElementById("sellerLotBreeding")?.value.trim() || "",
+
+    breeder:
+      document.getElementById("sellerLotBreeder")?.value.trim() || "",
+
+    description:
+      document.getElementById("sellerLotDescription")?.value.trim() || "",
+
+    keywords:
+      document.getElementById("sellerLotKeywords")?.value.trim() || "",
+
+    startRow:
+      document.getElementById("sellerLotStartRow")?.value || "",
+
+    startBid:
+      document.getElementById("sellerLotStart")?.value || "",
+
+    savedDate:
+      new Date().toISOString()
+  };
+
+  localStorage.setItem(
+    "cliviaSellerLotDraft",
+    JSON.stringify(draft)
+  );
+
+  const msg = document.getElementById("sellerLotMsg");
+
+  if(msg){
+    msg.innerHTML =
+      "<b>Draft saved successfully.</b> You can continue editing this plant before publishing.";
+  }
+}     
  async function publishSellerLot(){
 
   const auction = document.getElementById("sellerLotAuction")?.value || "";
@@ -2666,8 +2865,13 @@ const breeder =
   document.getElementById("sellerLotBreeder")?.value.trim() || "";
 
 const description =
-  document.getElementById("sellerLotDescription")?.value.trim() || "";     
-  const terms = document.getElementById("sellerLotTerms")?.checked;
+  document.getElementById("sellerLotDescription")?.value.trim() || "";
+
+const keywords =
+  document.getElementById("sellerLotKeywords")?.value.trim() || "";
+
+const terms =
+  document.getElementById("sellerLotTerms")?.checked;
 
   const msg = document.getElementById("sellerLotMsg");
  const seller = (state.sellers || []).find(
@@ -2724,15 +2928,13 @@ if(unpaidSellerInvoice){
     if(msg) msg.innerHTML = "<b>Please select a category.</b>";
     return;
   }
-   if(typeof isCategoryFull === "function"){
-  if(isCategoryFull(selectedAuction, category)){
-    if(msg){
-      msg.innerHTML =
-        "<b>This category is full. Please choose another category.</b>";
-    }
-    return;
+ if(!description){
+  if(msg){
+    msg.innerHTML =
+      "<b>Please enter a description of the plant.</b>";
   }
-}    
+  return;
+}      
    if(typeof isCategoryFull === "function"){
   if(isCategoryFull(selectedAuction, category)){
     if(msg){
@@ -2825,10 +3027,11 @@ const newLot = {
     ) + 1,
 
   name: name,
-  breeding: breeding,
-  breeder: breeder,
-  description: description,
-  category: category,
+breeding: breeding,
+breeder: breeder,
+description: description,
+keywords: keywords,
+category: category,
 
   startRow: startRow,
   startBid: start,
@@ -2861,6 +3064,7 @@ localStorage.removeItem("cliviaSellerLotDraft");
   "sellerLotBreeding",
   "sellerLotBreeder",
   "sellerLotDescription",
+  "sellerLotKeywords",
   "sellerLotStart"
 ].forEach(id => {
   const el = document.getElementById(id);
@@ -4970,13 +5174,20 @@ return `
     </span>
   </div>
 
-  <div class="lotName">${escapeHtml(lot.name)}</div>
-        <div class="small" style="margin-top:6px;">
+  <div class="small" style="margin-top:6px;">
   <b>Breeding:</b> ${escapeHtml(lot.breeding || "Not supplied")}
 </div>
+
 <div class="small" style="margin-top:4px;">
   <b>Breeder:</b> ${escapeHtml(lot.breeder || "Not supplied")}
 </div>
+
+${lot.description ? `
+  <div class="small" style="margin-top:6px;">
+    <b>Description:</b> ${escapeHtml(lot.description)}
+  </div>
+` : ""}
+
 ${lot.trophy ? `
   <div class="small" style="margin-top:4px;">
     <b>Award:</b> ${escapeHtml(lot.trophy)}
