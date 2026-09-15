@@ -4144,23 +4144,7 @@ if(action==="SELL"){
     return;
   }
 
-  const unlocked =
-    sessionStorage.getItem("cliviaBidderUnlocked") === account.id;
-
-  if(!unlocked){
-    const enteredPassword = prompt(
-      "SELLER CONFIRMATION\n\nPlease enter your account password:"
-    );
-
-    if(enteredPassword === null) return;
-
-    if(enteredPassword !== account.password){
-      alert("Incorrect account password.");
-      return;
-    }
-
-    sessionStorage.setItem("cliviaBidderUnlocked", account.id);
-  }
+  sessionStorage.setItem("cliviaBidderUnlocked", account.id);
 const sellerSection = document.getElementById("registeredSellerSection");
 const sellerLotForm = document.getElementById("sellerLotForm");
 
