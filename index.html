@@ -2592,6 +2592,8 @@ if(savedDraft){
     document.getElementById("sellerLotBreeding").value = draft.breeding || "";
     document.getElementById("sellerLotBreeder").value = draft.breeder || "";
     document.getElementById("sellerLotDescription").value = draft.description || "";
+     document.getElementById("sellerLotStartRow").value = draft.startRow || "";
+document.getElementById("sellerLotStart").value = draft.start || "";   
   }catch(error){
     console.log("Could not restore seller lot draft.");
   }
@@ -2740,6 +2742,24 @@ if(unpaidSellerInvoice){
     if(msg) msg.innerHTML = "<b>Please select a category.</b>";
     return;
   }
+   if(typeof isCategoryFull === "function"){
+  if(isCategoryFull(selectedAuction, category)){
+    if(msg){
+      msg.innerHTML =
+        "<b>This category is full. Please choose another category.</b>";
+    }
+    return;
+  }
+}    
+   if(typeof isCategoryFull === "function"){
+  if(isCategoryFull(selectedAuction, category)){
+    if(msg){
+      msg.innerHTML =
+        "<b>This category is full. Please choose another category.</b>";
+    }
+    return;
+  }
+}    
 
     if(!startRow){
   if(msg) msg.innerHTML = "<b>Please select a Starting Bid Row.</b>";
