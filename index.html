@@ -4165,33 +4165,38 @@ if(action==="SELL"){
 
   return;
 }
-      function openSellerSpaces(){
-  const account=(state.bidders||[]).find(
-    b=>b.id===state.selectedBidderId
+  function openSellerSpaces(){
+  const seller = (state.sellers || []).find(
+    s => s.id === state.selectedSellerId
   );
 
-  if(!account){
-    alert("Please create an account first.");
-    showPage("register");
+  if(!seller){
+    alert("Please register or open your seller account first.");
+    return;
+  }
+const sellerUnlocked =
+  sessionStorage.getItem("cliviaSellerUnlocked") === seller.id;
+
+if(!sellerUnlocked){
+  const enteredPassword = prompt(
+    "SELLER ACCOUNT\n\nPlease enter your seller password:"
+  );
+
+  if(enteredPassword === null) return;
+
+  if(enteredPassword !== seller.password){
+    alert("Incorrect seller password.");
     return;
   }
 
-  showPage("live");
+  sessionStorage.setItem("cliviaSellerUnlocked", seller.id);
+}        
+const sellerSection = document.getElementById("registeredSellerSection");
 
-  renderLots();
-
-  setTimeout(()=>{
-    const spaces=document.getElementById("availableAuctionSpaces");
-
-    if(spaces){
-      spaces.scrollIntoView({
-        behavior:"smooth",
-        block:"start"
-      });
-    }else{
-      alert("No available auction spaces are displayed yet.");
-    }
-  },300);
+if(sellerSection){
+  sellerSection.style.display = "block";
+}
+  showSellerLotForm();
 }
       function openSellerLoadFromBidder(){
   const bidder=(state.bidders||[]).find(
