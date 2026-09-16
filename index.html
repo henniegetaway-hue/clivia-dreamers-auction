@@ -271,9 +271,22 @@ padding-right:16px !important;
 
 /* LIVE AUCTION — 4 LOTS PER ROW */
 .lotsGrid{
-  display:block;
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:16px;
   width:100%;
 }
+ @media (max-width:900px){
+  .lotsGrid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width:600px){
+  .lotsGrid{
+    grid-template-columns:1fr;
+  }
+}     
 
 .lotCard{
   scroll-snap-align:start;
@@ -3512,7 +3525,7 @@ document.getElementById("bidderBusinessFields").style.display="none";
   sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
 
   if(notice){
-    notice.textContent="Bidding unlocked for this visit.";
+    notice.textContent="Password accepted. Account unlocked for this visit.";
   }
 
   if(passwordInput){
