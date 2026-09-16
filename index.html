@@ -1974,12 +1974,12 @@ if(savedAccounts){
         if(bidder){
           state.selectedBidderId=bidder.id;
         }
-       const keepOwnerUnlocked=
+      const keepOwnerUnlocked=
   localStorage.getItem("cliviaOwnerStayUnlocked")==="YES";
 
 if(bidder && keepOwnerUnlocked){
-  sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
-}     
+  localStorage.setItem("cliviaBidderUnlocked",bidder.id);
+}
       }
 
     }catch(e){
@@ -3576,7 +3576,7 @@ document.getElementById("bidderBusinessFields").style.display="none";
     return;
   }
 
-  sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
+ localStorage.setItem("cliviaBidderUnlocked",bidder.id);
 
   if(notice){
     notice.textContent="Password accepted. Account unlocked for this visit.";
@@ -4338,7 +4338,7 @@ if(info){
   select.value=bidder.id;
 
   const unlocked=
-    sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+  localStorage.getItem("cliviaBidderUnlocked")===bidder.id;
 
   if(recognitionNotice){
     recognitionNotice.innerHTML=
@@ -4411,7 +4411,7 @@ if(!bidder){
 }  
             
  const unlocked=
-  sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+  localStorage.getItem("cliviaBidderUnlocked")===bidder.id;
 
 if(action==="BID" && !unlocked){
   alert(
@@ -4456,16 +4456,23 @@ function openSellerSpaces(){
     return;
   }
 
-  const unlocked =
-    sessionStorage.getItem("cliviaBidderUnlocked") === account.id;
+ const unlocked =
+  localStorage.getItem("cliviaBidderUnlocked") === account.id;
+ if(!unlocked){
+  alert(
+    "For security, please open ACCOUNT DETAILS and enter your account password once before loading a plant."
+  );
 
-  if(!unlocked){
-    alert(
-      "Please open ACCOUNT DETAILS and enter your account password before selling."
-    );
-    showPage("register");
-    return;
-  }
+  showPage("register");
+
+  setTimeout(()=>{
+    if(typeof showRegisteredBidder === "function"){
+      showRegisteredBidder();
+    }
+  },100);
+
+  return;
+}
 
   // Go to the page that contains the seller loading form
   showPage("sellerLoad");
@@ -4516,7 +4523,7 @@ function openSellerLoadFromBidder(){
     return;
   }
 const unlocked=
-  sessionStorage.getItem("cliviaBidderUnlocked")===bidder.id;
+  localStorage.getItem("cliviaBidderUnlocked")===bidder.id;
 
 if(!unlocked){
   alert(
@@ -4858,7 +4865,7 @@ if(!account){
 }
 
 const unlocked=
-  sessionStorage.getItem("cliviaBidderUnlocked")===account.id;
+  localStorage.getItem("cliviaBidderUnlocked")===account.id;
 
 if(!unlocked){
   const enteredPassword=prompt(
@@ -4874,7 +4881,7 @@ if(!unlocked){
     return;
   }
 
-  sessionStorage.setItem("cliviaBidderUnlocked",account.id);
+  localStorage.setItem("cliviaBidderUnlocked",account.id);
 }   
    let auction=(state.auctions||[]).find(a=>a.id===state.selectedAuctionId);
   const name=document.getElementById("lotName").value.trim();
@@ -5692,7 +5699,7 @@ if(auction && auction.auctionDate && auction.auctionCloseTime && lot){
   showPage("register");
   return;
 }
- const unlockedBidderId=sessionStorage.getItem("cliviaBidderUnlocked");
+ const unlockedBidderId=localStorage.getItem("cliviaBidderUnlocked");
 
 if(unlockedBidderId!==bidder.id){
 
@@ -5708,13 +5715,11 @@ if(unlockedBidderId!==bidder.id){
     alert("Incorrect Account password.");
     return;
   }
-   sessionStorage.setItem("cliviaBidderUnlocked", bidder.id);   
-
-  sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
+  localStorage.setItem("cliviaBidderUnlocked", bidder.id);
 
   refreshBidderSelect();
 
-  alert("Bidding unlocked for this visit.");
+  alert("Bidding unlocked. This device will remain recognised.");
 }
   if(!bidder.isOwnerTest && bidder.isInternational && !bidder.internationalRegistrationPaid){
   alert("International bidders must pay the R2,000 registration fee before bidding.");
@@ -5857,8 +5862,8 @@ function openSellerLoadFromLot(auctionId,rowKey){
     return;
   }
 
-  const unlocked =
-    sessionStorage.getItem("cliviaBidderUnlocked") === account.id;
+ const unlocked =
+  localStorage.getItem("cliviaBidderUnlocked") === account.id;
 
   if(!unlocked){
     alert(
@@ -6566,11 +6571,9 @@ if(state.selectedBidderId){
 
   if(bidder){
 
-  if(bidder.isOwnerTest){
-    sessionStorage.setItem("cliviaBidderUnlocked",bidder.id);
-  }else{
-    sessionStorage.removeItem("cliviaBidderUnlocked");
-  }
+ if(bidder.isOwnerTest){
+  localStorage.setItem("cliviaBidderUnlocked",bidder.id);
+}
 
   const passwordInput=document.getElementById("returningBidderPassword");
     const unlockNotice=document.getElementById("bidderUnlockNotice");
