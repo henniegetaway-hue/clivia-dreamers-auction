@@ -3451,12 +3451,7 @@ function toggleBidderAuctionNotifications(){
   function showNewBidderRegistration(){
   document.getElementById("newBidderRegistration").style.display="block";
   document.getElementById("registeredBidderSection").style.display="none";
-      const eventsPanel = document.getElementById("cliviaEventsPanel");
-
-if(eventsPanel){
-  eventsPanel.style.display = "block";
-}  
-        document.getElementById("bidderForgotChoiceRow").style.display="none";
+             document.getElementById("bidderForgotChoiceRow").style.display="none";
 document.getElementById("bidderForgotPasswordBox").style.display="none";
     document.getElementById("bidderAddressFields").style.display="none";
     document.getElementById("bidderPrivateFields").style.display="none";
@@ -3697,11 +3692,6 @@ if(accountDetailsBtn){
 if(forgotRow){
   forgotRow.style.display = "none";
 }       
-const eventsPanel = document.getElementById("cliviaEventsPanel");
-
-if(eventsPanel){
-  eventsPanel.style.display = "none";
-}        
 
 if(bidderSelect){
   bidderSelect.value=bidder.id;
