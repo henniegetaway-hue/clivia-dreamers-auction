@@ -2501,13 +2501,25 @@ refreshSellerSelect();
     s=>s.phone===bidder.phone
   );
 
-  if(existingSeller){
-    state.selectedSellerId=existingSeller.id;
-    save();
-    refreshSellerSelect();
-    alert("Seller account already exists.");
-    return;
-  }
+ if(existingSeller){
+  state.selectedSellerId=existingSeller.id;
+  save();
+  refreshSellerSelect();
+
+  showPage("sellerLoad");
+
+  setTimeout(()=>{
+    const form=document.getElementById("sellerLotForm");
+    if(form){
+      form.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+  },100);
+
+  return;
+}
 
   const seller={
     id:"S"+Date.now(),
@@ -2537,9 +2549,17 @@ refreshSellerSelect();
   save();
   refreshSellerSelect();
 
-  alert(
-    "Seller account created from your existing bidder registration."
-  );
+ showPage("sellerLoad");
+
+setTimeout(()=>{
+  const form=document.getElementById("sellerLotForm");
+  if(form){
+    form.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+},100);
 }    
 function showNewSellerRegistration(){
   document.getElementById("registeredSellerSection").style.display="none";
