@@ -467,20 +467,18 @@ th,td{
   text-align:left;
 }
 .auctionRowScroll{
-  display:flex;
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
   gap:15px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scroll-behavior:smooth;
+  width:100%;
+  overflow:visible;
   padding-bottom:10px;
-  -webkit-overflow-scrolling:touch;
-  touch-action:pan-x pan-y;
 }
 
 .auctionRowScroll .lotCard{
-  flex:0 0 calc((100% - 45px) / 4);
   min-width:0;
-  max-width:calc((100% - 45px) / 4);
+  width:100%;
+  max-width:none;
 }
 
 .lotCard:target{
