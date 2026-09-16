@@ -851,7 +851,9 @@ th,td{
   </button>
 
 </div>
-      <div id="registeredBidderInfo" class="notice" style="margin-top:12px;">
+      <div id="registeredBidderInfo"
+     class="notice"
+     style="margin-top:12px;width:100%;display:block;box-sizing:border-box;">
   Registered account information will appear here.
 </div>
       <button type="button"
@@ -5467,10 +5469,6 @@ const rowCardsHtml=rowCards.join("");
 
 box.innerHTML=`
   <div id="availableAuctionSpaces">
-      <div class="panel" style="margin-bottom:16px;">
-
-      ${sellerAuctionChoicesHtml}
-    </div>
 
    <div class="notice"
      style="
