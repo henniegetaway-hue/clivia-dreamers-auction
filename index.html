@@ -2017,16 +2017,23 @@ let state = {
   invoices:[]
 };
 
-    function validPhoneNumber(phone){
-  const cleaned=String(phone||"").replace(/[\s()-]/g,"");
-  return /^\+?[0-9]{9,15}$/.test(cleaned);
-}
-  function warnRegisteredUser(user,reason){
+    function warnRegisteredUser(user,reason){
   console.log("SECURITY WARNING:",reason,user);
 
   // Later connect to email + WhatsApp notifications.
 }
-const ACCOUNT_STORAGE_KEY="cliviaDreamersAccounts";      
+
+function isHotDeal(lot){
+  if(!lot) return false;
+
+  const bidCount = Array.isArray(lot.bids)
+    ? lot.bids.length
+    : Number(lot.bidCount || 0);
+
+  return bidCount >= 5;
+}
+
+const ACCOUNT_STORAGE_KEY="cliviaDreamersAccounts";     
 function save(){
   try{
     // Save registered accounts separately so they are not lost
@@ -3047,14 +3054,14 @@ function renderBestSellers(){
     })
     .slice(0,4);
 
-  if(!soldLots.length){
-    box.innerHTML=`
-      <div class="notice">
-        Best-selling Clivias will appear here after completed sales.
-      </div>
-    `;
-    return;
-  }
+ if(!soldLots.length){
+  box.innerHTML=`
+    <div class="notice">
+      🌟 Featured Clivias will appear here while we build our completed-sales history.
+    </div>
+  `;
+  return;
+}
 
   box.innerHTML=soldLots.map((lot,index)=>{
 
@@ -5627,7 +5634,21 @@ ${lot.exportEligible ? `
        <div class="bidRow">
   <input id="bid_${lot.id}" type="number" value="${next}" min="${next}">
 </div>
-
+${isHotDeal(lot) ? `
+  <div style="
+    margin:10px auto;
+    width:max-content;
+    background:#b3261e;
+    color:white;
+    padding:7px 14px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(255,80,40,.45);
+  ">
+    🔥 HOT DEAL — ${Array.isArray(lot.bids) ? lot.bids.length : Number(lot.bidCount || 0)} BIDS
+  </div>
+` : ""}
         <div class="bidHistory" style="
   margin-top:10px;
   text-align:center;
