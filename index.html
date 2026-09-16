@@ -3054,12 +3054,81 @@ function renderBestSellers(){
     })
     .slice(0,4);
 
- if(!soldLots.length){
-  box.innerHTML=`
-    <div class="notice">
-      🌟 Featured Clivias will appear here while we build our completed-sales history.
+if(!soldLots.length){
+
+  const featuredFlowers = [
+    {
+      name:"White / Green Throat",
+      photo:"featured-white.png",
+      description:"Cream-white Clivia with a fresh contrasting green throat.",
+      keywords:"Clivia, white, cream, green throat, collector flower",
+      exporter:false
+    },
+    {
+      name:"Yellow / Green Throat",
+      photo:"featured-yellow.png",
+      description:"Bright yellow Clivia with a strong contrasting green centre.",
+      keywords:"Clivia, yellow, green throat, bright flower, collector flower",
+      exporter:false
+    },
+    {
+      name:"Peach / Cream Throat",
+      photo:"featured-peach.png",
+      description:"Soft peach-pink Clivia with a lighter cream throat and pastel colouring.",
+      keywords:"Clivia, peach, pink, pastel, cream throat, collector flower",
+      exporter:false
+    },
+    {
+      name:"Red-Brown / Cream Throat",
+      photo:"featured-red.png",
+      description:"Deep red-brown Clivia with a contrasting pale cream throat.",
+      keywords:"Clivia, red, brown, bronze, cream throat, collector flower, export",
+      exporter:true
+    }
+  ];
+
+  box.innerHTML = featuredFlowers.map((flower,index)=>`
+    <div class="bestSellerCard">
+
+      <div class="bestSellerRank">
+        🌟 #${index+1}
+      </div>
+
+      <img
+        src="${flower.photo}"
+        class="bestSellerPhoto"
+        alt="${flower.name}"
+      >
+
+      <div class="bestSellerDetails">
+
+        ${flower.exporter ? `
+          <div style="
+            color:#ff9f1c;
+            font-weight:bold;
+            margin-bottom:5px;
+          ">
+            🌍 EXPORTER
+          </div>
+        ` : ""}
+
+        <strong>${flower.name}</strong>
+
+        <div class="small" style="margin-top:5px;">
+          <b>Description:</b><br>
+          ${flower.description}
+        </div>
+
+        <div class="small" style="margin-top:7px;">
+          <b>Keywords:</b><br>
+          ${flower.keywords}
+        </div>
+
+      </div>
+
     </div>
-  `;
+  `).join("");
+
   return;
 }
 
