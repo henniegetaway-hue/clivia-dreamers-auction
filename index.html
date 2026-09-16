@@ -824,16 +824,7 @@ th,td{
 </div>
 
       <div id="selectedBidderNotice" class="notice">No account selected yet.</div>
-      <div id="accountPasswordUnlockBox" style="display:block;margin-top:12px;">
-  <label>Account Password</label>
-
-  <input
-    id="returningBidderPassword"
-    type="password"
-    placeholder="Enter your Account password"
-    autocomplete="current-password"
-  >
-    <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+        
       <div id="bidderStatusButtons"
      style="display:none;gap:10px;flex-wrap:wrap;margin:12px 0;">
 
@@ -974,13 +965,24 @@ th,td{
 
 </div>
 </div>
-<input
-    type="checkbox"
-    onchange="document.getElementById('returningBidderPassword').type=this.checked?'text':'password';"
-    style="width:auto;"
+    <div id="accountPasswordBottom" style="margin-top:18px;">
+  <label>Account Password</label>
+
+  <input
+    id="returningBidderPassword"
+    type="password"
+    placeholder="Enter your Account password"
+    autocomplete="current-password"
   >
-  Show password
-</label>        
+
+  <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+    <input
+      type="checkbox"
+      onchange="document.getElementById('returningBidderPassword').type=this.checked?'text':'password';"
+      style="width:auto;"
+    >
+    Show password
+  </label>
 
   <button
     type="button"
@@ -991,7 +993,9 @@ th,td{
     SAVE PASSWORD
   </button>
 
-  <div id="bidderUnlockNotice" class="small" style="margin-top:8px;"></div>
+  <div id="bidderUnlockNotice"
+       class="small"
+       style="margin-top:8px;"></div>
 </div>
 </div>  <!-- closes registeredBidderSection -->     
 
@@ -1008,7 +1012,7 @@ th,td{
 </section>
 
 <section id="pageLive" class="page hidden">
- <div id="liveAuctionTopPanel" class="panel">
+ <div id="liveAuctionTopPanel" class="panel" style="display:none;">
     <h2 id="liveTitle" style="display:none;">Clivia Dreamers Live Auction</h2>
     <div id="liveBidderStatus"
      class="notice"
