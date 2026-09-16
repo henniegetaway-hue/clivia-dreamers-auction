@@ -1484,141 +1484,6 @@ th,td{
 </div> <!-- closes Seller Registration panel -->
 </section> <!-- closes pageSeller -->
 
-<!-- SELLER PLANT LOADING PAGE -->
-<section id="pageSellerLoad" class="page hidden">
-
-<div id="sellerLotForm" style="display:block;margin-top:16px;">
-
-  <div class="panel">
-    <h2>Add New Plant / Create a Lot</h2>
-    <p>List your Clivia for auction.</p>
-
-    <h3>1. Auction Selection</h3>
-
-    <label>Select Auction *</label>
-    <select id="sellerLotAuction">
-      <option value="">-- Choose Auction --</option>
-    </select>
-<h3 style="margin-top:22px;">2. Plant Details</h3>
-
-<label>Plant / Flower Name *</label>
-<input id="sellerLotName"
-       type="text"
-       placeholder="e.g. Green Throat × White Stripe"
-       oninput="updateSellerAIKeywords()">
-
-<label>Category *</label>
-<select id="sellerLotCategory"
-        onchange="updateSellerAIKeywords()">
-  <option value="">-- Select Category --</option>
-</select>
-
-<label>Breeding</label>
-<input id="sellerLotBreeding"
-       type="text"
-       placeholder="e.g. Mother Plant × Father Plant"
-       oninput="updateSellerAIKeywords()">
-
-<label>Breeder</label>
-<input id="sellerLotBreeder"
-       type="text"
-       placeholder="Breeder name"
-       oninput="updateSellerAIKeywords()">
-
-<label>Description *</label>
-<textarea id="sellerLotDescription"
-          rows="4"
-          placeholder="Describe the flower, colour, throat, markings, breeding, plant condition and any special features."
-          oninput="updateSellerAIKeywords()"></textarea>
-
-<label>AI Keywords</label>
-<textarea id="sellerLotKeywords"
-          rows="3"
-          readonly
-          placeholder="Keywords will be created automatically from the plant information."></textarea>
-
-<div class="small" style="margin-top:6px;">
-  Keywords are created automatically from the plant information.
-</div>
-       <h3 style="margin-top:22px;">Photos</h3>
-
-<div class="formGrid">
-
-  <div>
-    <label>Main Photo *</label>
-    <input id="sellerLotPhoto1"
-           type="file"
-           accept="image/*">
-  </div>
-
-  <div>
-    <label>Photo 2 (optional)</label>
-    <input id="sellerLotPhoto2"
-           type="file"
-           accept="image/*">
-  </div>
-
-</div> 
-    <h3 style="margin-top:22px;">3. Starting Bid</h3>
-
-<label>Starting Bid Row *</label>
-<select id="sellerLotStartRow" onchange="updateSellerLotStartBid()">
-  <option value="">-- SELECT STARTING BID ROW --</option>
-  <option value="ROW1">Row 1 — R200 to R300</option>
-  <option value="ROW2">Row 2 — R400</option>
-  <option value="ROW3">Row 3 — R600</option>
-  <option value="ROW4">Row 4 — R800</option>
-  <option value="ROW5">Row 5 — R1,000+</option>
-  <option value="ROW6">Row 6 — Sets / Bulk Plants — R1,000+</option>
-</select>
-
-<label>Starting Bid *</label>
-<input id="sellerLotStart"
-       type="number"
-       min="200"
-       step="50"
-       placeholder="Select a Starting Bid Row first">
-        <h3 style="margin-top:22px;">3. Confirm & Publish</h3>
-
-<label style="display:flex;align-items:center;gap:8px;margin:12px 0;">
-  <input id="sellerLotTerms"
-         type="checkbox"
-         style="width:auto;">
-  I confirm that this plant is my own, the information is correct,
-  and I accept the Rules & Terms.
-</label>
-
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
-
-  <button type="button"
-          class="accountBtn"
-          onclick="closeSellerLotForm()">
-    CANCEL
-  </button>
-
-  <button type="button"
-          class="goldBtn"
-          onclick="saveSellerLotDraft()">
-    SAVE AS DRAFT
-  </button>
-
-  <button type="button"
-          class="greenBtn"
-          onclick="publishSellerLot()">
-    PUBLISH LOT
-  </button>
-
-</div>
-
-<div id="sellerLotMsg"
-     class="small"
-     style="margin-top:10px;"></div>    
-  </div>
-
-</div>
-
-</section>
-<!-- END SELLER PLANT LOADING PAGE -->
 
 <button type="button"
         class="accountBtn"
@@ -1856,6 +1721,142 @@ th,td{
 
 </div>
 </section>
+ <!-- SELLER PLANT LOADING PAGE -->
+<section id="pageSellerLoad" class="page hidden">
+
+<div id="sellerLotForm" style="display:block;margin-top:16px;">
+
+  <div class="panel">
+    <h2>Add New Plant / Create a Lot</h2>
+    <p>List your Clivia for auction.</p>
+
+    <h3>1. Auction Selection</h3>
+
+    <label>Select Auction *</label>
+    <select id="sellerLotAuction">
+      <option value="">-- Choose Auction --</option>
+    </select>
+<h3 style="margin-top:22px;">2. Plant Details</h3>
+
+<label>Plant / Flower Name *</label>
+<input id="sellerLotName"
+       type="text"
+       placeholder="e.g. Green Throat × White Stripe"
+       oninput="updateSellerAIKeywords()">
+
+<label>Category *</label>
+<select id="sellerLotCategory"
+        onchange="updateSellerAIKeywords()">
+  <option value="">-- Select Category --</option>
+</select>
+
+<label>Breeding</label>
+<input id="sellerLotBreeding"
+       type="text"
+       placeholder="e.g. Mother Plant × Father Plant"
+       oninput="updateSellerAIKeywords()">
+
+<label>Breeder</label>
+<input id="sellerLotBreeder"
+       type="text"
+       placeholder="Breeder name"
+       oninput="updateSellerAIKeywords()">
+
+<label>Description *</label>
+<textarea id="sellerLotDescription"
+          rows="4"
+          placeholder="Describe the flower, colour, throat, markings, breeding, plant condition and any special features."
+          oninput="updateSellerAIKeywords()"></textarea>
+
+<label>AI Keywords</label>
+<textarea id="sellerLotKeywords"
+          rows="3"
+          readonly
+          placeholder="Keywords will be created automatically from the plant information."></textarea>
+
+<div class="small" style="margin-top:6px;">
+  Keywords are created automatically from the plant information.
+</div>
+       <h3 style="margin-top:22px;">Photos</h3>
+
+<div class="formGrid">
+
+  <div>
+    <label>Main Photo *</label>
+    <input id="sellerLotPhoto1"
+           type="file"
+           accept="image/*">
+  </div>
+
+  <div>
+    <label>Photo 2 (optional)</label>
+    <input id="sellerLotPhoto2"
+           type="file"
+           accept="image/*">
+  </div>
+
+</div> 
+    <h3 style="margin-top:22px;">3. Starting Bid</h3>
+
+<label>Starting Bid Row *</label>
+<select id="sellerLotStartRow" onchange="updateSellerLotStartBid()">
+  <option value="">-- SELECT STARTING BID ROW --</option>
+  <option value="ROW1">Row 1 — R200 to R300</option>
+  <option value="ROW2">Row 2 — R400</option>
+  <option value="ROW3">Row 3 — R600</option>
+  <option value="ROW4">Row 4 — R800</option>
+  <option value="ROW5">Row 5 — R1,000+</option>
+  <option value="ROW6">Row 6 — Sets / Bulk Plants — R1,000+</option>
+</select>
+
+<label>Starting Bid *</label>
+<input id="sellerLotStart"
+       type="number"
+       min="200"
+       step="50"
+       placeholder="Select a Starting Bid Row first">
+        <h3 style="margin-top:22px;">3. Confirm & Publish</h3>
+
+<label style="display:flex;align-items:center;gap:8px;margin:12px 0;">
+  <input id="sellerLotTerms"
+         type="checkbox"
+         style="width:auto;">
+  I confirm that this plant is my own, the information is correct,
+  and I accept the Rules & Terms.
+</label>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+
+  <button type="button"
+          class="accountBtn"
+          onclick="closeSellerLotForm()">
+    CANCEL
+  </button>
+
+  <button type="button"
+          class="goldBtn"
+          onclick="saveSellerLotDraft()">
+    SAVE AS DRAFT
+  </button>
+
+  <button type="button"
+          class="greenBtn"
+          onclick="publishSellerLot()">
+    PUBLISH LOT
+  </button>
+
+</div>
+
+<div id="sellerLotMsg"
+     class="small"
+     style="margin-top:10px;"></div>    
+  </div>
+
+</div>
+
+</section>
+<!-- END SELLER PLANT LOADING PAGE -->
+     
 <section id="pageInvoices" class="page hidden">
   <div class="panel">
     <h2>Invoices</h2>
