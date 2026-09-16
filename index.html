@@ -528,8 +528,9 @@ th,td{
   <button id="navLive" onclick="showPage('live')">Live Auction</button>
   <button id="navAdmin" onclick="showPage('admin')">Admin</button>
   <button id="navInvoices" onclick="showPage('invoices')">Invoices</button>
-  <button id="navRules" onclick="showPage('rules')">Rules & Terms</button>
- <button id="navOwnEvent" class="ownEventBtn" onclick="showOwnEventPage()">CREATE YOUR OWN EVENT</button>
+ <button id="navRules" onclick="showPage('rules')">Rules & Terms</button>
+<button id="navCliviaEvents" onclick="showCliviaEvents()">🌱 Clivia Events & Shows</button>
+<button id="navOwnEvent" class="ownEventBtn" onclick="showOwnEventPage()">CREATE YOUR OWN EVENT</button>
 </nav>
   <section id="pageOwnEvent" class="page hidden">
 <div class="grid2" style="align-items:start;">
@@ -2063,6 +2064,36 @@ function setCliviaSEO(){
       "Buy and sell quality Clivia plants through live online auctions.";
   }
 }
+   function showCliviaEvents(){
+  document.querySelectorAll(".page").forEach(x=>{
+    x.classList.add("hidden");
+  });
+
+  document.querySelectorAll("nav button").forEach(x=>{
+    x.classList.remove("active");
+  });
+
+  const registerPage=document.getElementById("pageRegister");
+  const eventsPanel=document.getElementById("cliviaEventsPanel");
+  const eventsButton=document.getElementById("navCliviaEvents");
+
+  if(registerPage){
+    registerPage.classList.remove("hidden");
+  }
+
+  if(eventsPanel){
+    eventsPanel.style.display="block";
+  }
+
+  if(eventsButton){
+    eventsButton.classList.add("active");
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}   
 function showPage(page){
     // Lock account sections whenever another page is opened
   if(page!=="register"){
