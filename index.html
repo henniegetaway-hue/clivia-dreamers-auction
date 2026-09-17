@@ -3025,20 +3025,7 @@ function showSellerForgotPassword(){
        
 if(typeof renderBestSellers === "function"){
   renderBestSellers();
-}
-setTimeout(() => {
-
-    // Open and prepare the SAME plant loading form
-    if(typeof showSellerLotForm === "function"){
-      showSellerLotForm();
-    }
-
-    if(typeof renderBestSellers === "function"){
-      renderBestSellers();
-    }
-
-    const auctionSelect =
-      document.getElementById("sellerLotAuction");       
+}      
   form.scrollIntoView({
     behavior: "smooth",
     block: "start"
