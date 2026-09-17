@@ -648,7 +648,58 @@ th,td{
     </p>
 
   
+<div id="ownEventSetup" class="panel">
 
+  <h2>Create Your Auction</h2>
+
+  <p class="small">
+    Your auction will use the Clivia Dreamers auction system and layout,
+    with your own event name, logo and text.
+  </p>
+
+  <label>Event / Auction Name *</label>
+  <input id="ownEventName"
+         placeholder="e.g. Collectors Dreams Auction">
+
+  <label>Event Slogan / Short Text</label>
+  <input id="ownEventTagline"
+         placeholder="e.g. Quality Collectables • Trusted Sellers">
+   <label>About Your Auction</label>
+<textarea id="ownEventDescription"
+          rows="4"
+          placeholder="Tell bidders about your auction, business or event."></textarea>   
+<div class="notice" style="margin-top:12px;">
+  🤖 AI PAGE INFORMATION
+  <div class="small" style="margin-top:6px;">
+    AI will automatically create and update the page description
+    and relevant keywords for this auction.
+  </div>
+</div>
+
+<input id="ownEventAIDescription" type="hidden">
+<input id="ownEventAIKeywords" type="hidden">
+  <label>Your Logo</label>
+  <input id="ownEventLogo"
+         type="file"
+         accept="image/*">
+<label>Auction / Event Type *</label>
+<input id="ownEventType"
+       placeholder="e.g. Racing Horses, Bulls, Cars, Livestock, Collectables">
+      <label>Number of Auction Rows *</label>
+<select id="ownEventRows">
+  <option value="">-- Select Number of Rows --</option>
+  <option value="1">1 Row — 4 Lots</option>
+  <option value="2">2 Rows — 8 Lots</option>
+  <option value="3">3 Rows — 12 Lots</option>
+  <option value="4">4 Rows — 16 Lots</option>
+  <option value="5">5 Rows — 20 Lots</option>
+  <option value="6">6 Rows — 24 Lots</option>
+</select>
+
+<div class="small" style="margin-top:5px;">
+  Each auction row contains 4 lot spaces.
+</div>
+</div>
     <br>
 
     <button type="button" class="goldBtn" onclick="startOwnEventCreation()">
