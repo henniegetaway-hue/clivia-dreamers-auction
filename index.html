@@ -2111,6 +2111,7 @@ if(bidder && keepOwnerUnlocked){
 });
 }
 localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+   const OWN_EVENTS_STORAGE_KEY = "cliviaDreamersOwnEvents";   
   function toggleGeneralEventFields(){
   const type = document.getElementById("newAuctionType")?.value;
   const generalFields = document.getElementById("generalEventBrandingFields");
