@@ -6912,6 +6912,86 @@ if(state.selectedBidderId){
 }
   }
 },500);   
+function startOwnEventCreation(){
+
+  const eventName =
+    document.getElementById("ownEventName")?.value.trim();
+
+  const tagline =
+    document.getElementById("ownEventTagline")?.value.trim();
+
+  const description =
+    document.getElementById("ownEventDescription")?.value.trim();
+
+  const eventType =
+    document.getElementById("ownEventType")?.value.trim();
+
+  const rows =
+    document.getElementById("ownEventRows")?.value;
+
+  if(!eventName){
+    alert("Please enter your Event / Auction Name.");
+    return;
+  }
+
+  if(!eventType){
+    alert("Please enter your Auction / Event Type.");
+    return;
+  }
+
+  if(!rows){
+    alert("Please select the Number of Auction Rows.");
+    return;
+  }
+
+  alert(
+    "EVENT DETAILS ACCEPTED\n\n" +
+    "Event: " + eventName + "\n" +
+    "Type: " + eventType + "\n" +
+    "Rows: " + rows + "\n\n" +
+    "Your auction is ready for the next setup step."
+  );
+}      
+function startOwnEventCreation(){
+
+  const eventName =
+    document.getElementById("ownEventName")?.value.trim();
+
+  const tagline =
+    document.getElementById("ownEventTagline")?.value.trim();
+
+  const description =
+    document.getElementById("ownEventDescription")?.value.trim();
+
+  const eventType =
+    document.getElementById("ownEventType")?.value.trim();
+
+  const rows =
+    document.getElementById("ownEventRows")?.value;
+
+  if(!eventName){
+    alert("Please enter your Event / Auction Name.");
+    return;
+  }
+
+  if(!eventType){
+    alert("Please enter your Auction / Event Type.");
+    return;
+  }
+
+  if(!rows){
+    alert("Please select the Number of Auction Rows.");
+    return;
+  }
+
+  alert(
+    "EVENT DETAILS ACCEPTED\n\n" +
+    "Event: " + eventName + "\n" +
+    "Type: " + eventType + "\n" +
+    "Rows: " + rows + "\n\n" +
+    "Your auction is ready for the next setup step."
+  );
+}      
 </script>
 
 <footer style="text-align:center;padding:25px 10px;color:#aaa;font-size:13px;">
