@@ -7121,22 +7121,26 @@ function previewOwnEventLogo(input){
 
   if(!logo) return;
 
+  /* If no personal logo is selected,
+     show the faded horse auction sample */
   if(!input.files || !input.files[0]){
-    logo.src = "";
-    logo.style.display = "none";
+    logo.src = "HORSE%20AUCTION%20LOGO.png";
+    logo.style.display = "block";
+    logo.style.opacity = ".35";
     return;
   }
 
+  /* Show creator's own logo clearly */
   const reader = new FileReader();
 
   reader.onload = function(e){
     logo.src = e.target.result;
     logo.style.display = "block";
+    logo.style.opacity = "1";
   };
 
   reader.readAsDataURL(input.files[0]);
-}      
-
+}
 </script>
 
 <footer style="text-align:center;padding:25px 10px;color:#aaa;font-size:13px;">
