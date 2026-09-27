@@ -669,7 +669,8 @@ th,td{
    <label>About Your Auction</label>
 <textarea id="ownEventDescription"
           rows="4"
-          placeholder="Tell bidders about your auction, business or event."></textarea>   
+          placeholder="Tell bidders about your auction, business or event."
+          oninput="updateOwnEventPreview()"></textarea>   
 
 <input id="ownEventAIDescription" type="hidden">
 <input id="ownEventAIKeywords" type="hidden">
@@ -766,7 +767,16 @@ th,td{
                style="text-align:center;font-weight:bold;margin-bottom:22px;">
             Your slogan will appear here
           </div>
-
+<div id="previewEventDescription"
+     style="
+       text-align:center;
+       font-size:12px;
+       margin:0 auto 18px;
+       max-width:360px;
+       opacity:.9;
+     ">
+  Tell bidders about your auction, business or event.
+</div>
           <div style="
             display:grid;
             grid-template-columns:repeat(2,1fr);
@@ -7085,9 +7095,11 @@ function updateOwnEventPreview(){
 
   const name = document.getElementById("ownEventName")?.value.trim();
   const tagline = document.getElementById("ownEventTagline")?.value.trim();
+    const description = document.getElementById("ownEventDescription")?.value.trim();  
 
   const previewName = document.getElementById("previewEventName");
   const previewTagline = document.getElementById("previewEventTagline");
+   const previewDescription = document.getElementById("previewEventDescription");   
 
   if(previewName){
     previewName.textContent = name || "YOUR AUCTION NAME";
@@ -7097,6 +7109,10 @@ function updateOwnEventPreview(){
     previewTagline.textContent =
       tagline || "Your slogan will appear here";
   }
+if(previewDescription){
+  previewDescription.textContent =
+    description || "Tell bidders about your auction, business or event.";
+}
 }
 function previewOwnEventLogo(input){
 
