@@ -658,12 +658,14 @@ th,td{
   </p>
 
   <label>Event / Auction Name *</label>
-  <input id="ownEventName"
-         placeholder="e.g. Collectors Dreams Auction">
+<input id="ownEventName"
+       placeholder="e.g. Collectors Dreams Auction"
+       oninput="updateOwnEventPreview()">
 
   <label>Event Slogan / Short Text</label>
-  <input id="ownEventTagline"
-         placeholder="e.g. Quality Collectables • Trusted Sellers">
+<input id="ownEventTagline"
+       placeholder="e.g. Quality Collectables • Trusted Sellers"
+       oninput="updateOwnEventPreview()">
    <label>About Your Auction</label>
 <textarea id="ownEventDescription"
           rows="4"
@@ -7063,8 +7065,28 @@ function startOwnEventCreation(){
     "Type: " + eventType + "\n" +
     "Rows: " + rows + "\n\n" +
     "Your auction is ready for the next setup step."
-  );
-}      
+   );
+}
+
+/* LIVE PREVIEW - CREATE YOUR OWN EVENT */
+function updateOwnEventPreview(){
+
+  const name = document.getElementById("ownEventName")?.value.trim();
+  const tagline = document.getElementById("ownEventTagline")?.value.trim();
+
+  const previewName = document.getElementById("previewEventName");
+  const previewTagline = document.getElementById("previewEventTagline");
+
+  if(previewName){
+    previewName.textContent = name || "YOUR AUCTION NAME";
+  }
+
+  if(previewTagline){
+    previewTagline.textContent =
+      tagline || "Your slogan will appear here";
+  }
+}
+
 </script>
 
 <footer style="text-align:center;padding:25px 10px;color:#aaa;font-size:13px;">
