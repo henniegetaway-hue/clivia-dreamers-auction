@@ -682,6 +682,13 @@ th,td{
 <label>Auction / Event Type *</label>
 <input id="ownEventType"
        placeholder="e.g. Racing Horses, Bulls, Cars, Livestock, Collectables">
+      <label>Auction Currency *</label>
+<select id="ownEventCurrency" onchange="updateOwnEventRowsPreview()">
+  <option value="ZAR">ZAR — South African Rand (R)</option>
+  <option value="EUR">EUR — Euro (€)</option>
+  <option value="USD">USD — US Dollar ($)</option>
+  <option value="GBP">GBP — British Pound (£)</option>
+</select>
       <label>Number of Auction Rows *</label>
 <select id="ownEventRows" onchange="updateOwnEventRowsPreview()">
   <option value="">-- Select Number of Rows --</option>
@@ -691,6 +698,10 @@ th,td{
   <option value="4">4 Rows — 16 Lots</option>
   <option value="5">5 Rows — 20 Lots</option>
   <option value="6">6 Rows — 24 Lots</option>
+     <option value="7">7 Rows — 28 Lots</option>
+<option value="8">8 Rows — 32 Lots</option>
+<option value="9">9 Rows — 36 Lots</option>
+<option value="10">10 Rows — 40 Lots</option> 
 </select>
 
 <div class="small" style="margin-top:5px;">
@@ -708,7 +719,24 @@ th,td{
   <!-- RIGHT SIDE: LIVE AUCTION PAGE PREVIEW -->
   <div class="panel" id="ownEventPreviewPanel">
 
-    <h2 style="margin-bottom:4px;">Build Your Auction Page</h2>
+    <div style="
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:4px;
+">
+  <h2 style="margin:0;">Build Your Auction Page</h2>
+
+  <span style="
+    font-size:11px;
+    letter-spacing:3px;
+    opacity:.55;
+    white-space:nowrap;
+  ">
+    SAMPLE PREVIEW
+  </span>
+</div>
 
     <div class="small" style="margin-bottom:14px;">
       Your auction page will appear here while you create it.
@@ -751,18 +779,9 @@ max-height:110px;
          margin:0;;
        ">
 </div>
-          <div style="
-  text-align:left;
-  font-size:11px;
-  letter-spacing:3px;
-  opacity:.55;
-  margin:0 0 4px 220px;
-">
-  SAMPLE PREVIEW
-</div>
 
           <h2 id="previewEventName" style="
-  text-align:left;
+ text-align:center;
   margin:8px 0 4px 220px;
 ">
             YOUR AUCTION NAME
@@ -770,7 +789,7 @@ max-height:110px;
 
           <div id="previewEventTagline"
      style="
-       text-align:left;
+       text-align:center;
        font-weight:bold;
        margin:0 0 8px 220px;
      ">
@@ -781,81 +800,85 @@ max-height:110px;
        text-align:center;
        font-size:12px;
        margin:0 0 18px 220px;
-       max-width:360px;
+       max-width:none;
        opacity:.9;
      ">
   Tell bidders about your auction, business or event.
 </div>
          <div id="previewLotsGrid" style="
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+ grid-template-columns:repeat(4,minmax(0,1fr));
   gap:7px;
   margin-top:12px;
-  opacity:.40;
+  opacity:1;
 ">
 
  <div class="previewSampleLot">
-  <img src="mix%20auction%20lot%20.png"
-       alt="Sample Auction Lots"
-       style="
-         width:100%;
-         height:85px;
-         object-fit:cover;
-         object-position:0% 0%;
-         border-radius:6px;
-         display:block;
-         margin-bottom:6px;
-       ">
-  <strong>LOT 1</strong><br>
-  <span>Starting Bid</span>
+  <div onclick="document.getElementById('lotPhoto${i}').click()"
+     style="
+       height:100px;
+       border-radius:6px;
+       background:
+         linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+         url('mix%20auction%20lot%20.png') center/cover no-repeat;
+       display:flex;
+       align-items:center;
+       justify-content:center;
+       text-align:center;
+       font-weight:bold;
+       font-size:11px;
+       cursor:pointer;
+border:1px dashed rgba(255,255,255,.45);
+margin-bottom:5px;
+     ">
+ 📷 CLICK TO LOAD PHOTO
 </div>
 
-<div class="previewSampleLot">
-  <img src="mix%20auction%20lot%20.png"
-       alt="Sample Auction Lots"
+<input id="lotPhoto${i}"
+       type="file"
+       accept="image/*"
+       style="display:none;"
+       onchange="previewCreatorLotPhoto(this, ${i})">
+  <strong>LOT ${i}</strong>
+       
+  <input type="text"
+       placeholder="Item name"
        style="
          width:100%;
-         height:85px;
-         object-fit:cover;
-         object-position:50% 0%;
-         border-radius:6px;
-         display:block;
-         margin-bottom:6px;
-       ">
-  <strong>LOT 2</strong><br>
-  <span>Starting Bid</span>
-</div>
-
-<div class="previewSampleLot">
-  <img src="mix%20auction%20lot%20.png"
-       alt="Sample Auction Lots"
+         margin-top:5px;
+         padding:5px;
+        font-size:11px;
+         box-sizing:border-box;
+       ">  
+     <input type="number"
+      placeholder="Starting bid amount"
+       min="0"
        style="
          width:100%;
-         height:85px;
-         object-fit:cover;
-         object-position:100% 0%;
-         border-radius:6px;
-         display:block;
-         margin-bottom:6px;
-       ">
-  <strong>LOT 3</strong><br>
-  <span>Starting Bid</span>
-</div>
-
-<div class="previewSampleLot">
-  <img src="mix%20auction%20lot%20.png"
-       alt="Sample Auction Lots"
+         margin-top:4px;
+         padding:5px;
+         font-size:11px;  
+         box-sizing:border-box;
+       "> 
+       <textarea placeholder="Short description"
+          rows="2"
+          style="
+            width:100%;
+            margin-top:4px;
+            padding:5px;
+            font-size:11px; 
+            box-sizing:border-box;
+            resize:vertical;
+          "></textarea>
+       <input type="url"
+       placeholder="Link (optional)"
        style="
          width:100%;
-         height:85px;
-         object-fit:cover;
-         object-position:0% 100%;
-         border-radius:6px;
-         display:block;
-         margin-bottom:6px;
+         margin-top:4px;
+         padding:5px;
+         font-size:11px;    
+         box-sizing:border-box;
        ">
-  <strong>LOT 4</strong><br>
-  <span>Starting Bid</span>
 </div>
 </div>
 
@@ -7203,28 +7226,95 @@ if(previewDescription){
 
     const lot = document.createElement("div");
     lot.className = "previewSampleLot";
+     lot.style.display = "flex";
+lot.style.flexDirection = "column";
+lot.style.gap = "4px";
+lot.style.minWidth = "0";
+lot.style.padding = "5px";
+lot.style.boxSizing = "border-box";  
+   lot.style.border = "1px solid rgba(255,255,255,.15)";
+lot.style.borderRadius = "7px";     
 
     lot.innerHTML = `
-      <img src="mix%20auction%20lot%20.png"
-           alt="Sample Auction Lot"
-           style="
-             width:100%;
-             height:70px;
-             object-fit:cover;
-             border-radius:5px;
-             display:block;
-             margin-bottom:5px;
-           ">
+      <div onclick="document.getElementById('lotPhoto${i}').click()"
+     style="
+       height:100px;
+       border-radius:6px;
+       background:
+         linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+         url('mix%20auction%20lot%20.png') center/cover no-repeat;
+       display:flex;
+       align-items:center;
+       justify-content:center;
+       text-align:center;
+       font-weight:bold;
+       font-size:11px;
+       cursor:pointer;
+       border:1px dashed rgba(255,255,255,.45);
+       margin-bottom:5px;
+     ">
+  + LOAD PHOTO HERE
+</div>
 
-      <strong>LOT ${i}</strong><br>
-      <span>Starting Bid</span>
+<input id="lotPhoto${i}"
+       type="file"
+       accept="image/*"
+       style="display:none;"
+       onchange="previewCreatorLotPhoto(this, ${i})">
+
+    <strong style="
+  display:block;
+  text-align:center;
+  font-size:13px;
+  margin:4px 0;
+">
+  LOT ${i}
+</strong>
+
+<input type="text"
+       placeholder="Item name"
+       style="width:100%;margin-top:5px;padding:5px;font-size:11px;box-sizing:border-box;">
+
+<input type="number"
+       placeholder="Starting bid"
+       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;">
+
+<textarea placeholder="Short description"
+          rows="2"
+          style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;"
+          <input type="url"
+       placeholder="Link (optional)"
+       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;"
+</button>
     `;
 
     grid.appendChild(lot);
   }
 }    
   updateOwnEventRowsPreview();    
-      
+
+ function previewCreatorLotPhoto(input, lotNumber){
+
+  if(!input.files || !input.files[0]) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    const uploadBox = input.previousElementSibling;
+
+    if(!uploadBox) return;
+
+    uploadBox.style.background =
+      "url('" + e.target.result + "') center/cover no-repeat";
+
+    uploadBox.innerHTML = "";
+     uploadBox.style.border = "none";
+    uploadBox.style.opacity = "1";    
+  };
+
+  reader.readAsDataURL(input.files[0]);
+}     
 function previewOwnEventLogo(input){
 
   const logo = document.getElementById("previewEventLogo");
