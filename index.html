@@ -684,11 +684,61 @@ th,td{
        placeholder="e.g. Racing Horses, Bulls, Cars, Livestock, Collectables">
       <label>Auction Currency *</label>
 <select id="ownEventCurrency" onchange="updateOwnEventRowsPreview()">
-  <option value="ZAR">ZAR — South African Rand (R)</option>
+ <option value="ZAR" selected>ZAR — South African Rand (R)</option>
   <option value="EUR">EUR — Euro (€)</option>
   <option value="USD">USD — US Dollar ($)</option>
   <option value="GBP">GBP — British Pound (£)</option>
 </select>
+      <label>Choose Your Auction Page Background Color</label>
+<input id="ownEventBgColor"
+       type="color"
+       value="#000000"
+       oninput="updateOwnEventBackground()"
+       style="
+         width:100%;
+         height:42px;
+         cursor:pointer;
+       ">
+      <button type="button"
+        onclick="resetOwnEventBackground()"
+        style="
+          margin-top:5px;
+          margin-bottom:8px;
+          padding:6px 10px;
+          cursor:pointer;
+        ">
+  RESET TO BLACK
+</button>
+<label>Choose Text Color</label>
+<input id="ownEventTextColor"
+       type="color"
+       value="#ffffff"
+       oninput="updateOwnEventTextColor()"
+       style="
+         width:100%;
+         height:42px;
+         cursor:pointer;
+       ">  
+      <button type="button"
+        onclick="resetOwnEventTextColor()"
+        style="
+          margin-top:5px;
+          margin-bottom:8px;
+          padding:6px 10px;
+          cursor:pointer;
+        ">
+  RESET TEXT TO WHITE
+</button>
+      <label>Choose Auction Accent Color</label>
+<input id="ownEventAccentColor"
+       type="color"
+       value="#9acd32"
+       oninput="updateOwnEventAccentColor()"
+       style="
+         width:100%;
+         height:42px;
+         cursor:pointer;
+       ">
       <label>Number of Auction Rows *</label>
 <select id="ownEventRows" onchange="updateOwnEventRowsPreview()">
   <option value="">-- Select Number of Rows --</option>
@@ -744,7 +794,7 @@ th,td{
 
     <div id="ownEventPreview">
 
-      <div style="
+      <div id="ownEventPreviewFrame" style="
         position:relative;
         min-height:430px;
         border:1px solid rgba(255,255,255,.18);
@@ -851,7 +901,7 @@ margin-bottom:5px;
          box-sizing:border-box;
        ">  
      <input type="number"
-      placeholder="Starting bid amount"
+      placeholder="${currency} Starting bid"
        min="0"
        style="
          width:100%;
@@ -7206,10 +7256,66 @@ if(previewDescription){
     description || "Tell bidders about your auction, business or event.";
 }
 }
+    function updateOwnEventBackground(){
+
+  const color = document.getElementById("ownEventBgColor")?.value;
+  const frame = document.getElementById("ownEventPreviewFrame");
+
+  if(!frame || !color) return;
+
+  frame.style.background = color;
+}  
+   function resetOwnEventBackground(){
+
+  const picker = document.getElementById("ownEventBgColor");
+  const frame = document.getElementById("ownEventPreviewFrame");
+
+  if(picker){
+    picker.value = "#000000";
+  }
+
+  if(frame){
+    frame.style.background = "#000000";
+  }
+}   
+      function updateOwnEventTextColor(){
+
+  const color = document.getElementById("ownEventTextColor")?.value;
+  const frame = document.getElementById("ownEventPreviewFrame");
+
+  if(!frame || !color) return;
+
+  frame.style.color = color;
+}
+  function resetOwnEventTextColor(){
+
+  const picker = document.getElementById("ownEventTextColor");
+  const frame = document.getElementById("ownEventPreviewFrame");
+
+  if(picker){
+    picker.value = "#ffffff";
+  }
+
+  if(frame){
+    frame.style.color = "#ffffff";
+  }
+}    
+   function updateOwnEventAccentColor(){
+
+  const color = document.getElementById("ownEventAccentColor")?.value;
+  const frame = document.getElementById("ownEventPreviewFrame");
+
+  if(!frame || !color) return;
+
+  frame.style.borderColor = color;
+}   
   function updateOwnEventRowsPreview(){
 
   const select = document.getElementById("ownEventRows");
   const grid = document.getElementById("previewLotsGrid");
+   const currency = document.getElementById("ownEventCurrency")?.value || "ZAR";  
+    const accentColor =
+  document.getElementById("ownEventAccentColor")?.value || "#9acd32";    
 
   if(!grid) return;
 
@@ -7232,7 +7338,7 @@ lot.style.gap = "4px";
 lot.style.minWidth = "0";
 lot.style.padding = "5px";
 lot.style.boxSizing = "border-box";  
-   lot.style.border = "1px solid rgba(255,255,255,.15)";
+  lot.style.border = "1px solid " + accentColor;
 lot.style.borderRadius = "7px";     
 
     lot.innerHTML = `
