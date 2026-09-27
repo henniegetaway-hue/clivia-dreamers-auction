@@ -738,7 +738,7 @@ th,td{
         "></div>
 
         <div style="position:relative;z-index:2;">
-<div style="text-align:center;margin-bottom:10px;">
+<div style="text-align:left;margin-bottom:10px;">
  <img id="previewEventLogo"
      src="HORSE%20AUCTION%20LOGO.png"
      alt="Sample Horse Auction"
@@ -748,7 +748,7 @@ opacity:.35;
          max-width:110px;
          max-height:80px;
          object-fit:contain;
-         margin:auto;
+         margin:0;;
        ">
 </div>
           <div style="
@@ -779,7 +779,7 @@ opacity:.35;
      ">
   Tell bidders about your auction, business or event.
 </div>
-         <div style="
+         <div id="previewLotsGrid" style="
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:7px;
@@ -7176,6 +7176,48 @@ if(previewDescription){
     description || "Tell bidders about your auction, business or event.";
 }
 }
+  function updateOwnEventRowsPreview(){
+
+  const select = document.getElementById("ownEventRows");
+  const grid = document.getElementById("previewLotsGrid");
+
+  if(!grid) return;
+
+  // Show 5 rows before creator chooses
+  const rows = select && select.value
+    ? parseInt(select.value, 10)
+    : 5;
+
+  const totalLots = rows * 4;
+
+  grid.innerHTML = "";
+
+  for(let i = 1; i <= totalLots; i++){
+
+    const lot = document.createElement("div");
+    lot.className = "previewSampleLot";
+
+    lot.innerHTML = `
+      <img src="mix%20auction%20lot%20.png"
+           alt="Sample Auction Lot"
+           style="
+             width:100%;
+             height:70px;
+             object-fit:cover;
+             border-radius:5px;
+             display:block;
+             margin-bottom:5px;
+           ">
+
+      <strong>LOT ${i}</strong><br>
+      <span>Starting Bid</span>
+    `;
+
+    grid.appendChild(lot);
+  }
+}    
+  updateOwnEventRowsPreview();    
+      
 function previewOwnEventLogo(input){
 
   const logo = document.getElementById("previewEventLogo");
