@@ -674,9 +674,10 @@ th,td{
 <input id="ownEventAIDescription" type="hidden">
 <input id="ownEventAIKeywords" type="hidden">
   <label>Your Logo</label>
-  <input id="ownEventLogo"
-         type="file"
-         accept="image/*">
+ <input id="ownEventLogo"
+       type="file"
+       accept="image/*"
+       onchange="previewOwnEventLogo(this)">
 <label>Auction / Event Type *</label>
 <input id="ownEventType"
        placeholder="e.g. Racing Horses, Bulls, Cars, Livestock, Collectables">
@@ -735,7 +736,18 @@ th,td{
         "></div>
 
         <div style="position:relative;z-index:2;">
-
+<div style="text-align:center;margin-bottom:10px;">
+  <img id="previewEventLogo"
+       src=""
+       alt=""
+       style="
+         display:none;
+         max-width:110px;
+         max-height:80px;
+         object-fit:contain;
+         margin:auto;
+       ">
+</div>
           <div style="
             text-align:center;
             font-size:11px;
@@ -7086,6 +7098,27 @@ function updateOwnEventPreview(){
       tagline || "Your slogan will appear here";
   }
 }
+function previewOwnEventLogo(input){
+
+  const logo = document.getElementById("previewEventLogo");
+
+  if(!logo) return;
+
+  if(!input.files || !input.files[0]){
+    logo.src = "";
+    logo.style.display = "none";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+    logo.src = e.target.result;
+    logo.style.display = "block";
+  };
+
+  reader.readAsDataURL(input.files[0]);
+}      
 
 </script>
 
