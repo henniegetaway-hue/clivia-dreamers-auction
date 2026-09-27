@@ -683,7 +683,7 @@ th,td{
 <input id="ownEventType"
        placeholder="e.g. Racing Horses, Bulls, Cars, Livestock, Collectables">
       <label>Auction Currency *</label>
-<select id="ownEventCurrency" onchange="updateOwnEventRowsPreview()">
+<select id="ownEventCurrency" onchange="updateOwnEventCurrency()">
  <option value="ZAR" selected>ZAR — South African Rand (R)</option>
   <option value="EUR">EUR — Euro (€)</option>
   <option value="USD">USD — US Dollar ($)</option>
@@ -733,12 +733,22 @@ th,td{
 <input id="ownEventAccentColor"
        type="color"
        value="#9acd32"
-       oninput="updateOwnEventAccentColor()"
+       oninput="updateOwnEventAccentColor();"
        style="
          width:100%;
          height:42px;
          cursor:pointer;
        ">
+      <button type="button"
+        onclick="resetOwnEventAccentColor()"
+        style="
+          margin-top:5px;
+          margin-bottom:8px;
+          padding:6px 10px;
+          cursor:pointer;
+        ">
+  RESET ACCENT TO GREEN
+</button>
       <label>Number of Auction Rows *</label>
 <select id="ownEventRows" onchange="updateOwnEventRowsPreview()">
   <option value="">-- Select Number of Rows --</option>
@@ -878,7 +888,7 @@ max-height:110px;
        font-weight:bold;
        font-size:11px;
        cursor:pointer;
-border:1px dashed rgba(255,255,255,.45);
+border:1px dashed ${accentColor};
 margin-bottom:5px;
      ">
  📷 CLICK TO LOAD PHOTO
@@ -907,8 +917,9 @@ margin-bottom:5px;
          width:100%;
          margin-top:4px;
          padding:5px;
-         font-size:11px;  
-         box-sizing:border-box;
+         font-size:11px;
+box-sizing:border-box;
+border:1px solid ${accentColor};
        "> 
        <textarea placeholder="Short description"
           rows="2"
@@ -918,6 +929,7 @@ margin-bottom:5px;
             padding:5px;
             font-size:11px; 
             box-sizing:border-box;
+             border:1px solid ${accentColor};
             resize:vertical;
           "></textarea>
        <input type="url"
@@ -928,6 +940,7 @@ margin-bottom:5px;
          padding:5px;
          font-size:11px;    
          box-sizing:border-box;
+         border:1px solid ${accentColor};    
        ">
 </div>
 </div>
@@ -7304,10 +7317,82 @@ if(previewDescription){
 
   const color = document.getElementById("ownEventAccentColor")?.value;
   const frame = document.getElementById("ownEventPreviewFrame");
+   const title = document.getElementById("previewEventName");  
+   const tagline = document.getElementById("previewEventTagline");          
 
   if(!frame || !color) return;
 
   frame.style.borderColor = color;
+   if(title){
+  title.style.color = color;
+}  
+if(tagline){
+  tagline.style.color = color;
+} 
+   document.querySelectorAll("#previewLotsGrid .previewSampleLot").forEach(function(lot){
+  lot.style.borderColor = color;
+});
+
+document.querySelectorAll("#previewLotsGrid strong").forEach(function(lotTitle){
+  lotTitle.style.color = color;
+});
+
+document.querySelectorAll("#previewLotsGrid input, #previewLotsGrid textarea").forEach(function(field){
+  field.style.borderColor = color;
+}); 
+ document.querySelectorAll("#previewLotsGrid [onclick*='lotPhoto']").forEach(function(photoBox){
+  photoBox.style.borderColor = color;
+});        
+}   
+  function resetOwnEventAccentColor(){
+
+  const picker = document.getElementById("ownEventAccentColor");
+  const frame = document.getElementById("ownEventPreviewFrame");
+   const title = document.getElementById("previewEventName");  
+  const tagline = document.getElementById("previewEventTagline");      
+
+  if(picker){
+    picker.value = "#9acd32";
+  }
+
+  if(frame){
+    frame.style.borderColor = "#9acd32";
+  }
+   if(title){
+  title.style.color = "#9acd32";
+} 
+ if(tagline){
+  tagline.style.color = "#9acd32";
+} 
+  document.querySelectorAll("#previewLotsGrid .previewSampleLot").forEach(function(lot){
+  lot.style.borderColor = "#9acd32";
+});
+
+document.querySelectorAll("#previewLotsGrid strong").forEach(function(lotTitle){
+  lotTitle.style.color = "#9acd32";
+});
+
+document.querySelectorAll("#previewLotsGrid input, #previewLotsGrid textarea").forEach(function(field){
+  field.style.borderColor = "#9acd32";
+});
+
+document.querySelectorAll("#previewLotsGrid [onclick*='lotPhoto']").forEach(function(photoBox){
+  photoBox.style.borderColor = "#9acd32";
+});      
+
+}    
+   function updateOwnEventCurrency(){
+
+  const currency =
+    document.getElementById("ownEventCurrency")?.value || "ZAR";
+
+  document.querySelectorAll("#previewLotsGrid input[type='number']").forEach(function(field){
+
+    if(field.placeholder.includes("Starting bid")){
+      field.placeholder = currency + " Starting bid";
+    }
+
+  });
 }   
   function updateOwnEventRowsPreview(){
 
@@ -7326,9 +7411,12 @@ if(previewDescription){
 
   const totalLots = rows * 4;
 
-  grid.innerHTML = "";
+  const existingLots = grid.querySelectorAll(".previewSampleLot").length;
 
-  for(let i = 1; i <= totalLots; i++){
+   while(grid.children.length > totalLots){
+  grid.removeChild(grid.lastElementChild);
+}     
+  for(let i = grid.children.length + 1; i <= totalLots; i++){
 
     const lot = document.createElement("div");
     lot.className = "previewSampleLot";
@@ -7356,7 +7444,7 @@ lot.style.borderRadius = "7px";
        font-weight:bold;
        font-size:11px;
        cursor:pointer;
-       border:1px dashed rgba(255,255,255,.45);
+       border:1px dashed ${accentColor};
        margin-bottom:5px;
      ">
   + LOAD PHOTO HERE
@@ -7372,26 +7460,28 @@ lot.style.borderRadius = "7px";
   display:block;
   text-align:center;
   font-size:13px;
+  color:${accentColor};
   margin:4px 0;
 ">
   LOT ${i}
 </strong>
 
 <input type="text"
-       placeholder="Item name"
-       style="width:100%;margin-top:5px;padding:5px;font-size:11px;box-sizing:border-box;">
+      placeholder="Lot / Item Name"
+       style="width:100%;margin-top:5px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};">
 
 <input type="number"
-       placeholder="Starting bid"
-       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;">
+       placeholder="${currency} Starting bid"
+       min="0"
+       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};">
 
 <textarea placeholder="Short description"
           rows="2"
-          style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;"
-          <input type="url"
+          style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;border:1px solid ${accentColor};"></textarea>
+         <input type="url"
+       <input type="url"
        placeholder="Link (optional)"
-       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;"
-</button>
+       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};">
     `;
 
     grid.appendChild(lot);
