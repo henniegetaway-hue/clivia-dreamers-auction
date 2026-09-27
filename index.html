@@ -695,11 +695,83 @@ th,td{
 </div>
     <br>
 
-    <button type="button" class="goldBtn" onclick="startOwnEventCreation()">
+        <button type="button" class="goldBtn" onclick="startOwnEventCreation()">
       CREATE YOUR OWN EVENT
     </button>
 
-   </div>
+  </div>
+
+  <!-- RIGHT SIDE: LIVE AUCTION PAGE PREVIEW -->
+  <div class="panel" id="ownEventPreviewPanel">
+
+    <h2 style="margin-bottom:4px;">Build Your Auction Page</h2>
+
+    <div class="small" style="margin-bottom:14px;">
+      Your auction page will appear here while you create it.
+    </div>
+
+    <div id="ownEventPreview">
+
+      <div style="
+        position:relative;
+        min-height:430px;
+        border:1px solid rgba(255,255,255,.18);
+        border-radius:14px;
+        overflow:hidden;
+        padding:18px;
+      ">
+
+        <!-- FADED SAMPLE BACKGROUND -->
+        <div style="
+          position:absolute;
+          inset:0;
+          opacity:.18;
+          background:
+            linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.25)),
+            url('https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1200&q=80')
+            center/cover no-repeat;
+        "></div>
+
+        <div style="position:relative;z-index:2;">
+
+          <div style="
+            text-align:center;
+            font-size:11px;
+            letter-spacing:3px;
+            opacity:.55;
+            margin-bottom:12px;
+          ">
+            SAMPLE PREVIEW
+          </div>
+
+          <h2 id="previewEventName" style="text-align:center;margin:8px 0;">
+            YOUR AUCTION NAME
+          </h2>
+
+          <div id="previewEventTagline"
+               style="text-align:center;font-weight:bold;margin-bottom:22px;">
+            Your slogan will appear here
+          </div>
+
+          <div style="
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:10px;
+          ">
+
+            <div class="previewSampleLot">SAMPLE LOT</div>
+            <div class="previewSampleLot">SAMPLE LOT</div>
+            <div class="previewSampleLot">SAMPLE LOT</div>
+            <div class="previewSampleLot">SAMPLE LOT</div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 </section>
 <section id="pageRegister" class="page">
