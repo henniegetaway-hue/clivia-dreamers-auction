@@ -683,7 +683,7 @@ th,td{
 <input id="ownEventType"
        placeholder="e.g. Racing Horses, Bulls, Cars, Livestock, Collectables">
       <label>Number of Auction Rows *</label>
-<select id="ownEventRows">
+<select id="ownEventRows" onchange="updateOwnEventRowsPreview()">
   <option value="">-- Select Number of Rows --</option>
   <option value="1">1 Row — 4 Lots</option>
   <option value="2">2 Rows — 8 Lots</option>
