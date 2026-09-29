@@ -755,7 +755,7 @@ th,td{
   <option value="1">1 Row — 4 Lots</option>
   <option value="2">2 Rows — 8 Lots</option>
   <option value="3">3 Rows — 12 Lots</option>
-  <option value="4">4 Rows — 16 Lots</option>
+  <option value="4" selected>4 Rows — 16 Lots</option>
   <option value="5">5 Rows — 20 Lots</option>
   <option value="6">6 Rows — 24 Lots</option>
      <option value="7">7 Rows — 28 Lots</option>
@@ -7479,10 +7479,10 @@ document.querySelectorAll("#previewLotsGrid [onclick*='lotPhoto']").forEach(func
 
   if(!grid) return;
 
-  // Show 5 rows before creator chooses
-  const rows = select && select.value
-    ? parseInt(select.value, 10)
-    : 5;
+  // Show 4 rows before creator chooses
+const rows = select && select.value
+  ? parseInt(select.value, 10)
+  : 4;
 
   const totalLots = rows * 4;
 
@@ -7553,8 +7553,7 @@ lot.style.borderRadius = "7px";
 <textarea placeholder="Short description"
           rows="2"
           style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;border:1px solid ${accentColor};"></textarea>
-         <input type="url"
-       <input type="url"
+               <input type="url"
        placeholder="Link (optional)"
        style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};">
     `;
