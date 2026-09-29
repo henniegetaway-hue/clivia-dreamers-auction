@@ -7553,14 +7553,19 @@ lot.style.borderRadius = "7px";
        border:1px dashed ${accentColor};
        margin-bottom:5px;
      ">
-  + LOAD PHOTO HERE
+  + LOAD UP TO 3 PHOTOS HERE
 </div>
 
 <input id="lotPhoto${i}"
        type="file"
        accept="image/*"
+multiple
        style="display:none;"
        onchange="previewCreatorLotPhoto(this, ${i})">
+       <div id="lotPhotoCount${i}"
+     style="font-size:10px;text-align:center;opacity:.75;margin-top:2px;">
+  Up to 3 photos
+</div>
 
     <strong style="
   display:block;
@@ -7601,9 +7606,19 @@ lot.style.borderRadius = "7px";
 
  function previewCreatorLotPhoto(input, lotNumber){
 
-  if(!input.files || !input.files[0]) return;
+ window.creatorLotPhotos = window.creatorLotPhotos || {};      
 
-  const reader = new FileReader();
+ if(!input.files || !input.files.length) return;
+
+if(input.files.length > 3){
+  alert("Maximum 3 photos per lot.");
+  input.value = "";
+  return;
+}
+
+window.creatorLotPhotos[lotNumber] = Array.from(input.files).slice(0, 3);   
+       
+const reader = new FileReader();
 
   reader.onload = function(e){
 
@@ -7619,6 +7634,14 @@ lot.style.borderRadius = "7px";
     uploadBox.style.opacity = "1";    
   };
 
+  input.dataset.photoCount = input.files.length;   
+   const photoCount = document.getElementById("lotPhotoCount" + lotNumber);
+
+if(photoCount){
+  photoCount.textContent =
+    input.files.length + (input.files.length === 1 ? " photo selected" : " photos selected");
+}    
+       
   reader.readAsDataURL(input.files[0]);
 }     
 function previewOwnEventLogo(input){
