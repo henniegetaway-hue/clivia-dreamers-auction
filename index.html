@@ -689,6 +689,24 @@ th,td{
   <option value="USD">USD — US Dollar ($)</option>
   <option value="GBP">GBP — British Pound (£)</option>
 </select>
+    <label>Number of Auction Rows *</label>
+<select id="ownEventRows" onchange="updateOwnEventRowsPreview()">
+  <option value="">-- Select Number of Rows --</option>
+  <option value="1">1 Row — 4 Lots</option>
+  <option value="2">2 Rows — 8 Lots</option>
+  <option value="3">3 Rows — 12 Lots</option>
+  <option value="4" selected>4 Rows — 16 Lots</option>
+  <option value="5">5 Rows — 20 Lots</option>
+  <option value="6">6 Rows — 24 Lots</option>
+  <option value="7">7 Rows — 28 Lots</option>
+  <option value="8">8 Rows — 32 Lots</option>
+  <option value="9">9 Rows — 36 Lots</option>
+  <option value="10">10 Rows — 40 Lots</option>
+</select>
+
+<div class="small" style="margin-top:5px;">
+  Each auction row contains 4 lot spaces.
+</div>  
       <label>Choose Your Auction Page Background Color</label>
 <input id="ownEventBgColor"
        type="color"
