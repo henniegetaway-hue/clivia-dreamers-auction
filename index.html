@@ -686,6 +686,32 @@ th,td{
 <input id="ownEventType"
        placeholder="e.g. Racing Horses, Bulls, Cars, Livestock, Collectables">
       <input id="ownEventCurrency" type="hidden" value="ZAR">
+      <div id="ownEventCurrencyDisplay" class="small" style="margin:5px 0 10px 0;">
+  Auction Currency: <strong>ZAR (R)</strong>
+</div>
+      <label>Auction Country *</label>
+<select id="ownEventCountry" onchange="updateOwnEventCountryCurrency()">
+  <option value="">-- Select Auction Country --</option>
+  <option value="ZA">South Africa</option>
+  <option value="EU">Eurozone / Euro (€)</option>
+  <option value="US">United States</option>
+  <option value="GB">United Kingdom</option>
+  <option value="AU">Australia</option>
+  <option value="NZ">New Zealand</option>
+  <option value="CA">Canada</option>
+  <option value="OTHER">Other Country</option>
+</select>
+
+<div class="small" style="margin-top:5px;margin-bottom:10px;">
+  Currency is automatically set by auction country:<br>
+  South Africa → ZAR (R) •
+  Eurozone → EUR (€) •
+  United States → USD ($) •
+  United Kingdom → GBP (£) •
+  Australia → AUD (A$) •
+  New Zealand → NZD (NZ$) •
+  Canada → CAD (C$)
+</div>
     <label>Number of Auction Rows *</label>
 <select id="ownEventRows" onchange="updateOwnEventRowsPreview()">
   <option value="">-- Select Number of Rows --</option>
@@ -7218,10 +7244,13 @@ function startOwnEventCreation(){
     document.getElementById("ownEventDescription")?.value.trim();
 
   const eventType =
-    document.getElementById("ownEventType")?.value.trim();
+  document.getElementById("ownEventType")?.value.trim();
 
-  const rows =
-    document.getElementById("ownEventRows")?.value;
+const country =
+  document.getElementById("ownEventCountry")?.value;
+
+const rows =
+  document.getElementById("ownEventRows")?.value;
 
   if(!eventName){
     alert("Please enter your Event / Auction Name.");
@@ -7233,10 +7262,15 @@ function startOwnEventCreation(){
     return;
   }
 
-  if(!rows){
-    alert("Please select the Number of Auction Rows.");
-    return;
-  }
+ if(!country){
+  alert("Please select the Auction Country.");
+  return;
+}
+
+if(!rows){
+  alert("Please select the Number of Auction Rows.");
+  return;
+}
 
   alert(
     "EVENT DETAILS ACCEPTED\n\n" +
@@ -7383,20 +7417,80 @@ document.querySelectorAll("#previewLotsGrid [onclick*='lotPhoto']").forEach(func
 });      
 
 }    
-   function updateOwnEventCurrency(){
+  function updateOwnEventCurrency(){
 
   const currency =
-    document.getElementById("ownEventCurrency")?.value || "ZAR";
+    document.getElementById("ownEventCurrency")?.value || "ZAR";   
 
-  document.querySelectorAll("#previewLotsGrid input[type='number']").forEach(function(field){
+  const currencySymbols = {
+    ZAR: "R",
+    EUR: "€",
+    USD: "$",
+    GBP: "£",
+    AUD: "A$",
+    NZD: "NZ$",
+    CAD: "C$"
+  };
 
-    if(field.placeholder.includes("Starting bid")){
-      field.placeholder = currency + " Starting bid";
-    }
+  const symbol = currencySymbols[currency] || currency;
 
-  });
-}   
-  function updateOwnEventRowsPreview(){
+document.querySelectorAll("#previewLotsGrid input[type='number']").forEach(function(field){
+
+  if(field.placeholder.includes("Starting bid")){
+    field.placeholder = symbol + " Starting bid";
+  }
+
+  if(field.placeholder.includes("Minimum increment")){
+    field.placeholder = symbol + " Minimum increment";
+  }
+
+});
+
+}
+
+function updateOwnEventCountryCurrency(){
+  const country = document.getElementById("ownEventCountry")?.value;
+  const currencyInput = document.getElementById("ownEventCurrency");
+  const display = document.getElementById("ownEventCurrencyDisplay");
+
+  if(!currencyInput) return;
+
+  const currencyByCountry = {
+    ZA: "ZAR",
+    EU: "EUR",
+    US: "USD",
+    GB: "GBP",
+    AU: "AUD",
+    NZ: "NZD",
+    CA: "CAD"
+  };
+
+  const currencySymbols = {
+    ZAR: "R",
+    EUR: "€",
+    USD: "$",
+    GBP: "£",
+    AUD: "A$",
+    NZD: "NZ$",
+    CAD: "C$"
+  };
+
+  const selectedCurrency = currencyByCountry[country] || "USD";
+
+  currencyInput.value = selectedCurrency;
+
+  if(display){
+    display.innerHTML =
+      "Auction Currency: <strong>" +
+      selectedCurrency + " (" +
+      (currencySymbols[selectedCurrency] || selectedCurrency) +
+      ")</strong>";
+  }
+
+  updateOwnEventCurrency();
+}
+
+function updateOwnEventRowsPreview(){
 
   const select = document.getElementById("ownEventRows");
   const grid = document.getElementById("previewLotsGrid");
@@ -7473,10 +7567,13 @@ lot.style.borderRadius = "7px";
        style="width:100%;margin-top:5px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};">
 
 <input type="number"
-       placeholder="${currency} Starting bid"
+       placeholder="${currencySymbols[currency] || currency} Starting bid"
        min="0"
        style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};">
-
+<input type="number"
+       placeholder="${currencySymbols[currency] || currency} Minimum increment"
+       min="0"
+       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};">
 <textarea placeholder="Short description"
           rows="2"
           style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;border:1px solid ${accentColor};"></textarea>
@@ -7485,9 +7582,11 @@ lot.style.borderRadius = "7px";
        style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};">
     `;
 
-    grid.appendChild(lot);
+   grid.appendChild(lot);
   }
-}    
+
+  updateOwnEventCurrency();
+}
   updateOwnEventRowsPreview();    
 
  function previewCreatorLotPhoto(input, lotNumber){
