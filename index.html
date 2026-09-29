@@ -7494,7 +7494,17 @@ function updateOwnEventRowsPreview(){
 
   const select = document.getElementById("ownEventRows");
   const grid = document.getElementById("previewLotsGrid");
-   const currency = document.getElementById("ownEventCurrency")?.value || "ZAR";  
+   const currency = document.getElementById("ownEventCurrency")?.value || "ZAR"; 
+      
+      const currencySymbols = {
+  ZAR: "R",
+  EUR: "€",
+  USD: "$",
+  GBP: "£",
+  AUD: "A$",
+  NZD: "NZ$",
+  CAD: "C$"
+};
     const accentColor =
   document.getElementById("ownEventAccentColor")?.value || "#9acd32";    
 
