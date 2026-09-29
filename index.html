@@ -685,13 +685,7 @@ th,td{
 <label>Auction / Event Type *</label>
 <input id="ownEventType"
        placeholder="e.g. Racing Horses, Bulls, Cars, Livestock, Collectables">
-      <label>Auction Currency *</label>
-<select id="ownEventCurrency" onchange="updateOwnEventCurrency()">
- <option value="ZAR" selected>ZAR — South African Rand (R)</option>
-  <option value="EUR">EUR — Euro (€)</option>
-  <option value="USD">USD — US Dollar ($)</option>
-  <option value="GBP">GBP — British Pound (£)</option>
-</select>
+      <input id="ownEventCurrency" type="hidden" value="ZAR">
     <label>Number of Auction Rows *</label>
 <select id="ownEventRows" onchange="updateOwnEventRowsPreview()">
   <option value="">-- Select Number of Rows --</option>
