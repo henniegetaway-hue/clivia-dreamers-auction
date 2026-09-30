@@ -7238,7 +7238,14 @@ if(state.selectedBidderId){
   });
 }
   }
-},500);   
+},500); 
+try {
+  window.createdOwnEvents =
+    JSON.parse(localStorage.getItem("createdOwnEvents") || "[]");
+} catch(e) {
+  window.createdOwnEvents = [];
+}
+      
 function startOwnEventCreation(){
 
   const eventName =
@@ -7258,18 +7265,22 @@ const country =
 
 const rows =
   document.getElementById("ownEventRows")?.value;
+  const aiDescription =
+  document.getElementById("ownEventAIDescription");
 
-  if(!eventName){
-    alert("Please enter your Event / Auction Name.");
-    return;
-  }
+const aiKeywords =
+  document.getElementById("ownEventAIKeywords");    
+ if(!eventName){
+  alert("Please enter your Event / Auction Name.");
+  return;
+}
 
-  if(!eventType){
-    alert("Please enter your Auction / Event Type.");
-    return;
-  }
+if(!eventType){
+  alert("Please enter your Auction / Event Type.");
+  return;
+}
 
- if(!country){
+if(!country){
   alert("Please select the Auction Country.");
   return;
 }
@@ -7279,6 +7290,50 @@ if(!rows){
   return;
 }
 
+if(aiDescription){
+  aiDescription.value =
+    eventName + " — " +
+    (tagline ? tagline + ". " : "") +
+    (description ? description + " " : "") +
+    "Online " + eventType + " auction.";
+}
+
+if(aiKeywords){
+  aiKeywords.value =
+    [
+      eventName,
+      eventType,
+      eventType + " auction",
+      "online " + eventType + " auction",
+      "online auction",
+      "live auction",
+      country
+    ]
+    .filter(Boolean)
+    .join(", ");
+}
+ const newEvent = {
+  name: eventName,
+  tagline: tagline,
+  description: description,
+  type: eventType,
+  country: country,
+   currency: document.getElementById("ownEventCurrency")?.value || "USD",
+   backgroundColor: document.getElementById("ownEventBgColor")?.value || "#000000",
+textColor: document.getElementById("ownEventTextColor")?.value || "#ffffff",
+accentColor: document.getElementById("ownEventAccentColor")?.value || "#9acd32", 
+ logo: document.getElementById("previewOwnEventLogo")?.src || "",      
+  rows: Number(rows),
+  aiDescription: aiDescription ? aiDescription.value : "",
+  aiKeywords: aiKeywords ? aiKeywords.value : ""
+};
+
+window.createdOwnEvents.push(newEvent); 
+      
+  localStorage.setItem(
+  "createdOwnEvents",
+  JSON.stringify(window.createdOwnEvents)
+);    
   alert(
     "EVENT DETAILS ACCEPTED\n\n" +
     "Event: " + eventName + "\n" +
