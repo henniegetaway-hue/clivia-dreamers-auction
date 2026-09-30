@@ -7312,6 +7312,21 @@ if(aiKeywords){
     .filter(Boolean)
     .join(", ");
 }
+const lots = [];
+
+document.querySelectorAll("#previewLotsGrid .previewSampleLot").forEach(function(lot, index){
+
+  lots.push({
+    lotNumber: index + 1,
+    name: lot.querySelector(".ownLotName")?.value.trim() || "",
+    startingBid: Number(lot.querySelector(".ownLotStartingBid")?.value || 0),
+    increment: Number(lot.querySelector(".ownLotIncrement")?.value || 0),
+    description: lot.querySelector(".ownLotDescription")?.value.trim() || "",
+    link: lot.querySelector(".ownLotLink")?.value.trim() || "",
+photoCount: window.creatorLotPhotos?.[index + 1]?.length || 0
+  });
+
+});      
  const newEvent = {
   name: eventName,
   tagline: tagline,
@@ -7324,6 +7339,7 @@ textColor: document.getElementById("ownEventTextColor")?.value || "#ffffff",
 accentColor: document.getElementById("ownEventAccentColor")?.value || "#9acd32", 
  logo: document.getElementById("previewOwnEventLogo")?.src || "",      
   rows: Number(rows),
+  lots: lots,     
   aiDescription: aiDescription ? aiDescription.value : "",
   aiKeywords: aiKeywords ? aiKeywords.value : ""
 };
@@ -7639,22 +7655,22 @@ multiple
   LOT ${i}
 </strong>
 
-<input type="text"
+<input type="text" class="ownLotName"
        placeholder="Lot / Item Name"
        style="width:100%;margin-top:5px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};color:#fff;background:#000;">
 
-<input type="number"
+<input type="number" class="ownLotStartingBid"
        placeholder="${currencySymbols[currency] || currency} Starting bid"
        min="0"
        style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};color:#fff;background:#000;">
-<input type="number"
+<input type="number" class="ownLotStartingBid"
        placeholder="${currencySymbols[currency] || currency} Minimum increment"
        min="0"
       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};color:#fff;background:#000;">
-<textarea placeholder="Short description"
+<textarea class="ownLotDescription" placeholder="Short description"
           rows="1"
           style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;border:1px solid ${accentColor};"></textarea>
-               <input type="url"
+              <input type="url" class="ownLotLink"
        placeholder="Link (optional)"
        style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;resize:vertical;border:1px solid ${accentColor};color:#fff;background:#000;">
     `;
