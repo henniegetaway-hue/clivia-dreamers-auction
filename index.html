@@ -1624,6 +1624,10 @@ color:#fff;
   <h2>Create New Auction</h2>
 <label>Auction date</label>
 <input id="newAuctionDate" type="date">
+
+<div style="font-size:13px;margin-top:5px;margin-bottom:10px;">
+  Auction date may be scheduled up to 4 months in advance.
+</div>
 <label>Auction start time</label>
 <input id="newAuctionTime" type="time">
         <label>Auction closing time</label>
@@ -2300,8 +2304,49 @@ color:#fff;
      
 <section id="pageInvoices" class="page hidden">
   <div class="panel">
+
     <h2>Invoices</h2>
-    <div id="invoiceList">Invoices will be created when the auction is closed.</div>
+
+    <div id="invoiceList">
+      Invoices will be created when the auction is closed.
+    </div>
+
+    <hr style="margin:25px 0;">
+
+    <h3>Creator Auction Downloads</h3>
+
+    <p style="font-size:14px;">
+      Auction records are available for 3 months after the auction closes.
+      Download and keep your records before the deletion date.
+    </p>
+
+    <div style="
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:15px;
+    ">
+
+      <button class="goldBtn"
+              onclick="downloadAuctionBidItems()">
+        DOWNLOAD AUCTION &amp; BID ITEMS
+      </button>
+
+      <button class="goldBtn"
+              onclick="downloadEventDatabase()">
+        DOWNLOAD EVENT DATABASE
+      </button>
+
+    </div>
+
+    <div id="auctionDeletionNotice"
+         style="
+           margin-top:15px;
+           font-weight:bold;
+         ">
+      Deletion date: --
+    </div>
+
   </div>
 </section>
 
@@ -7748,6 +7793,112 @@ function previewOwnEventLogo(input){
 
   reader.readAsDataURL(input.files[0]);
 }
+  reader.readAsDataURL(input.files[0]);
+}
+
+
+/* MAXIMUM AUCTION DATE — 4 MONTHS */
+function setAuctionDateLimit(){
+
+  const dateInput = document.getElementById("newAuctionDate");
+  if(!dateInput) return;
+
+  const today = new Date();
+
+  const maxDate = new Date(today);
+  maxDate.setMonth(maxDate.getMonth() + 4);
+
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  dateInput.min = formatDate(today);
+  dateInput.max = formatDate(maxDate);
+}
+
+document.addEventListener("DOMContentLoaded", setAuctionDateLimit);
+
+/* DOWNLOAD AUCTION AND BID ITEMS */
+function downloadAuctionBidItems(){
+
+  try{
+
+    const auctionData = {
+      exportedAt: new Date().toISOString(),
+      auction: state?.auction || null,
+      auctions: state?.auctions || [],
+      lots: state?.lots || [],
+      bids: state?.bids || []
+    };
+
+    const json = JSON.stringify(auctionData, null, 2);
+
+    const blob = new Blob([json], {
+      type: "application/json"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    const today = new Date().toISOString().slice(0,10);
+
+    link.href = url;
+    link.download = "auction-bid-items-" + today + ".json";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+  } catch(error){
+
+    console.error(error);
+    alert("The auction records could not be downloaded.");
+
+  }
+}
+    /* DOWNLOAD COMPLETE EVENT DATABASE */
+function downloadEventDatabase(){
+
+  try{
+
+    const databaseBackup = {
+      exportedAt: new Date().toISOString(),
+      version: "1.0",
+      database: state || {}
+    };
+
+    const json = JSON.stringify(databaseBackup, null, 2);
+
+    const blob = new Blob([json], {
+      type: "application/json"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    const today = new Date().toISOString().slice(0,10);
+
+    link.href = url;
+    link.download = "event-database-backup-" + today + ".json";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+  } catch(error){
+
+    console.error(error);
+    alert("The event database could not be downloaded.");
+
+  }
+}  
 </script>
 
 <footer style="text-align:center;padding:25px 10px;color:#aaa;font-size:13px;">
@@ -7755,4 +7906,4 @@ function previewOwnEventLogo(input){
 Website content, design and original material may not be copied or reproduced without permission.
 </footer>
 </body>
-</html>
+</html>      
