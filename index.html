@@ -7796,6 +7796,40 @@ function previewOwnEventLogo(input){
   reader.readAsDataURL(input.files[0]);
 }
 
+function openAdmin(){
+
+  const passwordInput = document.getElementById("adminPassword");
+  const adminLogin = document.getElementById("adminLogin");
+  const adminArea = document.getElementById("adminArea");
+
+  if(!passwordInput || !adminLogin || !adminArea){
+    alert("Admin section could not be opened.");
+    return;
+  }
+
+  const password = passwordInput.value.trim();
+
+  if(!password){
+    alert("Please enter the Admin password.");
+    return;
+  }
+
+  /*
+    Existing admin password verification
+    will be connected here.
+    For now this restores access to the
+    Admin control panel.
+  */
+
+  adminLogin.classList.add("hidden");
+  adminArea.classList.remove("hidden");
+
+  renderAdminLots();
+
+  if(typeof renderSiteErrorLog === "function"){
+    renderSiteErrorLog();
+  }
+}      
 function createAuction(){
 
   const date = document.getElementById("newAuctionDate")?.value || "";
