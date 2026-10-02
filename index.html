@@ -7796,7 +7796,92 @@ function previewOwnEventLogo(input){
   reader.readAsDataURL(input.files[0]);
 }
 
+function createAuction(){
 
+  const date = document.getElementById("newAuctionDate")?.value || "";
+  const startTime = document.getElementById("newAuctionTime")?.value || "";
+  const closeTime = document.getElementById("newAuctionCloseTime")?.value || "";
+  const name = document.getElementById("newAuctionName")?.value.trim() || "";
+  const firstBid = Number(
+    document.getElementById("newAuctionFirstBid")?.value || 0
+  );
+
+  if(!date){
+    alert("Please select an auction date.");
+    return;
+  }
+
+  if(!startTime){
+    alert("Please select an auction start time.");
+    return;
+  }
+
+  if(!closeTime){
+    alert("Please select an auction closing time.");
+    return;
+  }
+
+  if(!name){
+    alert("Please enter an auction name.");
+    return;
+  }
+
+  /* CHECK MAXIMUM 4 MONTH DATE */
+  const selectedDate = new Date(date + "T00:00:00");
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const maxDate = new Date(today);
+  maxDate.setMonth(maxDate.getMonth() + 4);
+
+  if(selectedDate < today){
+    alert("Auction date cannot be in the past.");
+    return;
+  }
+
+  if(selectedDate > maxDate){
+    alert("Auction date may not be more than 4 months in advance.");
+    return;
+  }
+
+  /* AUTOMATIC DELETION DATE — 3 MONTHS AFTER AUCTION */
+  const deletionDate = new Date(date + "T00:00:00");
+  deletionDate.setMonth(deletionDate.getMonth() + 3);
+
+  const auction = {
+    id: "AUC-" + Date.now(),
+    name: name,
+    auctionDate: date,
+    auctionTime: startTime,
+    closeTime: closeTime,
+    firstBid: firstBid,
+    status: "UPCOMING",
+    createdAt: new Date().toISOString(),
+    deletionDate: deletionDate.toISOString(),
+    type: document.getElementById("newAuctionType")?.value || "CLIVIA"
+  };
+
+  state.auctions = state.auctions || [];
+  state.auctions.push(auction);
+
+  state.selectedAuctionId = auction.id;
+
+  save();
+
+  alert(
+    "Auction created successfully.\n\n" +
+    "Auction records will be retained for 3 months after the auction date."
+  );
+
+  if(typeof refreshAuctionSelects === "function"){
+    refreshAuctionSelects();
+  }
+
+  if(typeof updateHeader === "function"){
+    updateHeader();
+  }
+}
 /* MAXIMUM AUCTION DATE — 4 MONTHS */
 function setAuctionDateLimit(){
 
