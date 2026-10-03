@@ -1006,12 +1006,11 @@ color:#fff;
   line-height:1.6;
 ">
 
-  <strong>ONE-TIME LIVE AUCTION ACTIVATION FEE</strong><br>
-  Build and test your auction free of charge.
-  A once-off fee of <strong>R2,000.00</strong> is payable only when
+ <div id="ownEventActivationFee">
+  The once-off activation fee is <strong>R2,000.00</strong>, payable only when
   you are satisfied with your auction and choose to go LIVE.
-  Returning Event Creators do not pay the activation fee again.
-
+</div>
+      
   <br><br>
 
   <strong>AUTOMATIC BUYER INVOICING</strong><br>
@@ -7358,20 +7357,66 @@ if(aiKeywords){
     .join(", ");
 }
 const lots = [];
+const eventCurrency =
+  document.getElementById("ownEventCurrency")?.value || "USD";
+
+const minimumStartingBidByCurrency = {
+  ZAR: 300,
+  EUR: 17,
+  USD: 20,
+  GBP: 15,
+  AUD: 30,
+  NZD: 35,
+  CAD: 25
+};
+
+const minimumStartingBid =
+  minimumStartingBidByCurrency[eventCurrency] || 20;
+
+let invalidStartingBid = false;      
 
 document.querySelectorAll("#previewLotsGrid .previewSampleLot").forEach(function(lot, index){
 
+const startingBid =
+  Number(lot.querySelector(".ownLotStartingBid")?.value || 0);
+
+if(startingBid > 0 && startingBid < minimumStartingBid){
+  invalidStartingBid = true;
+}      
   lots.push({
     lotNumber: index + 1,
     name: lot.querySelector(".ownLotName")?.value.trim() || "",
-    startingBid: Number(lot.querySelector(".ownLotStartingBid")?.value || 0),
-    increment: Number(lot.querySelector(".ownLotIncrement")?.value || 0),
+    startingBid: startingBid,
+    increment: Number(lot.querySelector(".ownLotMinimumIncrement")?.value || 0),
     description: lot.querySelector(".ownLotDescription")?.value.trim() || "",
     link: lot.querySelector(".ownLotLink")?.value.trim() || "",
 photoCount: window.creatorLotPhotos?.[index + 1]?.length || 0
   });
 
-});      
+});     
+  if(invalidStartingBid){
+
+ const minimumTextByCurrency = {
+  ZAR: "R300",
+  EUR: "€17",
+  USD: "$20",
+  GBP: "£15",
+  AUD: "A$30",
+  NZD: "NZ$35",
+  CAD: "C$25"
+};
+
+const minimumText =
+  minimumTextByCurrency[eventCurrency] || "$20";
+
+  alert(
+    "STARTING BID TOO LOW\n\n" +
+    "The minimum starting bid for this auction is " +
+    minimumText + "."
+  );
+
+  return;
+}    
  const newEvent = {
   name: eventName,
   tagline: tagline,
@@ -7601,7 +7646,28 @@ function updateOwnEventCountryCurrency(){
   const selectedCurrency = currencyByCountry[country] || "USD";
 
   currencyInput.value = selectedCurrency;
+const activationFeeByCurrency = {
+  ZAR: { amount: 2000, text: "R2,000.00" },
+  EUR: { amount: 108,  text: "€108.00" },
+  USD: { amount: 125,  text: "$125.00" },
+  GBP: { amount: 95,   text: "£95.00" },
+  AUD: { amount: 190,  text: "A$190.00" },
+  NZD: { amount: 215,  text: "NZ$215.00" },
+  CAD: { amount: 170,  text: "C$170.00" }
+};
 
+const selectedActivationFee =
+  activationFeeByCurrency[selectedCurrency];
+  const activationFeeDisplay =
+  document.getElementById("ownEventActivationFee");
+
+if(activationFeeDisplay && selectedActivationFee){
+  activationFeeDisplay.innerHTML =
+    'The once-off activation fee is <strong>' +
+    selectedActivationFee.text +
+    '</strong>, payable only when you are satisfied with your auction and choose to go LIVE.';
+}    
+      
   if(display){
     display.innerHTML =
       "Auction Currency: <strong>" +
@@ -7706,9 +7772,17 @@ multiple
 
 <input type="number" class="ownLotStartingBid"
        placeholder="${currencySymbols[currency] || currency} Starting bid"
-       min="0"
+      min="${
+  currency === 'ZAR' ? 300 :
+  currency === 'EUR' ? 17 :
+  currency === 'USD' ? 20 :
+  currency === 'GBP' ? 15 :
+  currency === 'AUD' ? 30 :
+  currency === 'NZD' ? 35 :
+  currency === 'CAD' ? 25 : 20
+}"
        style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};color:#fff;background:#000;">
-<input type="number" class="ownLotStartingBid"
+<input type="number" class="ownLotMinimumIncrement"
        placeholder="${currencySymbols[currency] || currency} Minimum increment"
        min="0"
       style="width:100%;margin-top:4px;padding:5px;font-size:11px;box-sizing:border-box;border:1px solid ${accentColor};color:#fff;background:#000;">
